@@ -1,32 +1,32 @@
 /* eslint-disable no-const-assign, no-eval */
 
-import React from "react";
-import Paper from "material-ui/Paper";
+import Paper from 'material-ui/Paper';
 import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn,
-} from "material-ui/Table";
+    Table,
+    TableBody,
+    TableHeader,
+    TableHeaderColumn,
+    TableRow,
+    TableRowColumn,
+} from 'material-ui/Table';
+import React from 'react';
 // import { Link } from 'react-router';
 
 const style = {
-  textAlign: "center",
-  display: "inline-block",
+  textAlign: 'center',
+  display: 'inline-block',
 };
 const textCenterAlign = {
-  textAlign: "center",
-  textOverflow: "inherit",
+  textAlign: 'center',
+  textOverflow: 'inherit',
 };
 const textRightAlign = {
-  textAlign: "right",
-  textOverflow: "inherit",
+  textAlign: 'right',
+  textOverflow: 'inherit',
 };
 const rightColumnBorder = {
-  borderRight: "1px solid #ccc",
-  textOverflow: "inherit",
+  borderRight: '1px solid #ccc',
+  textOverflow: 'inherit',
 };
 const total_blank_cost = 0.0;
 
@@ -51,7 +51,7 @@ export default class FinalCalculationCostView extends React.Component {
   render() {
     return (
       <div>
-        {typeof this.props.record.total_cost === "number" && (
+        {typeof this.props.record.total_cost === 'number' && (
           <h3>
             Total Cost($) : <b>${this.props.record.total_cost}</b>
           </h3>
@@ -70,7 +70,7 @@ export default class FinalCalculationCostView extends React.Component {
             </TableHeader>
             <TableBody displayRowCheckbox={false}>
               <TableRow>
-                <TableRowColumn style={rightColumnBorder} rowSpan="2">
+                <TableRowColumn style={rightColumnBorder} rowSpan='2'>
                   Raw Material
                 </TableRowColumn>
                 <TableHeaderColumn colSpan={2}>Name</TableHeaderColumn>
@@ -96,7 +96,7 @@ export default class FinalCalculationCostView extends React.Component {
                 </TableRowColumn>
               </TableRow>
               <TableRow>
-                <TableRowColumn style={rightColumnBorder} rowSpan="3">
+                <TableRowColumn style={rightColumnBorder} rowSpan='3'>
                   Colorant
                 </TableRowColumn>
                 <TableHeaderColumn>Name</TableHeaderColumn>
@@ -129,8 +129,8 @@ export default class FinalCalculationCostView extends React.Component {
               </TableRow>
               <TableRow>
                 <TableRowColumn>
-                  {this.props.record.colorant_two === ""
-                    ? "-"
+                  {this.props.record.colorant_two === ''
+                    ? '-'
                     : this.props.record.colorant_two}
                 </TableRowColumn>
                 <TableRowColumn style={textRightAlign}>
@@ -158,9 +158,9 @@ export default class FinalCalculationCostView extends React.Component {
           </Table>
         </Paper>
 
-        {typeof this.props.record.blank_average_cost === "string" && (
+        {typeof this.props.record.blank_average_cost === 'string' && (
           <h3>
-            Total Average Blank Cost($) :{" "}
+            Total Average Blank Cost($) :{' '}
             <b>${this.props.record.blank_average_cost}</b>
           </h3>
         )}
@@ -179,7 +179,7 @@ export default class FinalCalculationCostView extends React.Component {
             </TableHeader>
             <TableBody displayRowCheckbox={false}>
               {typeof this.props.record.blank_final_calculations_view ===
-                "object" && (
+                'object' && (
                 <TableRow>
                   <TableRowColumn
                     style={rightColumnBorder}
@@ -197,14 +197,14 @@ export default class FinalCalculationCostView extends React.Component {
                 </TableRow>
               )}
               {typeof this.props.record.blank_final_calculations_view ===
-                "object" &&
+                'object' &&
                 this.props.record.blank_final_calculations_view.map(
                   this.blankField
                 )}
               {typeof this.props.record.blank_final_calculations_view ===
-                "object" && (
+                'object' && (
                 <TableRow>
-                  <TableRowColumn style={textRightAlign} colSpan="3">
+                  <TableRowColumn style={textRightAlign} colSpan='3'>
                     Total Blank Cost($)
                   </TableRowColumn>
                   <TableRowColumn style={textRightAlign}>
@@ -213,9 +213,9 @@ export default class FinalCalculationCostView extends React.Component {
                 </TableRow>
               )}
               {typeof this.props.record.blank_final_calculations_view ===
-                "object" && (
+                'object' && (
                 <TableRow>
-                  <TableRowColumn style={textRightAlign} colSpan="3">
+                  <TableRowColumn style={textRightAlign} colSpan='3'>
                     Number Of Blank
                   </TableRowColumn>
                   <TableRowColumn style={textRightAlign}>
@@ -226,9 +226,9 @@ export default class FinalCalculationCostView extends React.Component {
                 </TableRow>
               )}
               {typeof this.props.record.blank_final_calculations_view ===
-                "object" && (
+                'object' && (
                 <TableRow>
-                  <TableRowColumn style={textRightAlign} colSpan="3">
+                  <TableRowColumn style={textRightAlign} colSpan='3'>
                     Total Average Blank Cost($)
                   </TableRowColumn>
                   <TableRowColumn style={textRightAlign}>

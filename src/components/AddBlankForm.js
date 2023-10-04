@@ -1,41 +1,41 @@
 /* eslint-disable */
-import React from "react";
-import AutoComplete from "material-ui/AutoComplete";
-import axios from "axios";
-import lodash from "lodash";
-import TextField from "material-ui/TextField";
-import RemoveButton from "material-ui/IconButton";
-import DeleteIcon from "material-ui/svg-icons/action/delete-forever";
-import AddBoxIcon from "material-ui/svg-icons/content/add-box";
-import AddButton from "material-ui/FlatButton";
-import { stringHelpers } from "../helpers/stringHelpers";
-import { GET_LIST, UPDATE } from "admin-on-rest";
-import restClient from "../restClient";
-import Snackbar from "material-ui/Snackbar";
+import { GET_LIST, UPDATE } from 'admin-on-rest';
+import axios from 'axios';
+import lodash from 'lodash';
+import AutoComplete from 'material-ui/AutoComplete';
+import AddButton from 'material-ui/FlatButton';
+import RemoveButton from 'material-ui/IconButton';
+import Snackbar from 'material-ui/Snackbar';
+import TextField from 'material-ui/TextField';
+import DeleteIcon from 'material-ui/svg-icons/action/delete-forever';
+import AddBoxIcon from 'material-ui/svg-icons/content/add-box';
+import React from 'react';
+import { stringHelpers } from '../helpers/stringHelpers';
+import restClient from '../restClient';
 
 class AddBlankForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      item_number: "",
+      item_number: '',
       copy_blanks: [],
       done: false,
       errors: {},
       loading: false,
       open_snackbar: false,
-      snackbar_message: "",
+      snackbar_message: '',
       blanks: [],
     };
   }
 
   fetchBlanks = () =>
-    restClient(GET_LIST, "blank-list-only", {
+    restClient(GET_LIST, 'blank-list-only', {
       pagination: { page: 1, perPage: -1 },
-      sort: { field: "id", order: "ASC" },
+      sort: { field: 'id', order: 'ASC' },
     });
 
   handleSnackbarClose = () =>
-    this.setState({ open_snackbar: false, snackbar_message: "" });
+    this.setState({ open_snackbar: false, snackbar_message: '' });
 
   componentDidMount() {
     axios.all([this.fetchBlanks()]).then(
@@ -54,7 +54,7 @@ class AddBlankForm extends React.Component {
   handleAddNewBlank = () => {
     this.setState({
       copy_blanks: this.state.copy_blanks.concat([
-        { blank_number: "", mult: 1, div: 1 },
+        { blank_number: '', mult: 1, div: 1 },
       ]),
     });
   };
@@ -88,23 +88,23 @@ class AddBlankForm extends React.Component {
   };
 
   submit = (dialogClose) => {
-    const payload = lodash.pick(this.state, ["item_number", "copy_blanks", "mult", "div"]);
+    const payload = lodash.pick(this.state, ['item_number', 'copy_blanks', 'mult', 'div']);
 
     var item_blanks = {
       blanks: payload.copy_blanks.map((blank) => ({
         blank_number: blank.value.toString(),
-        mult: blank.multiplication || "1",
-        div: blank.division || "1",
+        mult: blank.multiplication || '1',
+        div: blank.division || '1',
       })),
     };
 
-    restClient(UPDATE, "update-item-blanks-only", {
+    restClient(UPDATE, 'update-item-blanks-only', {
       id: payload.item_number,
       data: item_blanks,
     }).then((response) => {
       this.setState({
         open_snackbar: true,
-        snackbar_message: "Blanks added successfully",
+        snackbar_message: 'Blanks added successfully',
       });
 
       window.location.reload();
@@ -118,15 +118,15 @@ class AddBlankForm extends React.Component {
   blankField = (blank, index) => {
     const defaultBlank =
       blank.blank_number && blank.description
-        ? blank.blank_number + " - " + blank.description
-        : "";
+        ? blank.blank_number + ' - ' + blank.description
+        : '';
     return (
       <div key={index}>
         <AutoComplete
-          floatingLabelText="Type the blank number"
+          floatingLabelText='Type the blank number'
           filter={AutoComplete.fuzzyFilter}
           dataSource={this.state.blanks}
-          name="blank_number"
+          name='blank_number'
           maxSearchResults={5}
           onUpdateInput={this.handleBlankFieldSelectChange(index)}
           fullWidth={false}
@@ -134,22 +134,22 @@ class AddBlankForm extends React.Component {
         />
         &nbsp;&nbsp;
         <TextField
-          hintText="Multiplication"
-          floatingLabelText="Multiplication"
-          errorText=""
-          name="multiplication"
+          hintText='Multiplication'
+          floatingLabelText='Multiplication'
+          errorText=''
+          name='multiplication'
           onChange={this.handleBlankFieldChange(index)}
-          defaultValue={"1"}
-          style={{ width: "100px" }}
+          defaultValue={'1'}
+          style={{ width: '100px' }}
         />
         <TextField
-          hintText="Division"
-          floatingLabelText="Division"
-          errorText=""
-          name="division"
+          hintText='Division'
+          floatingLabelText='Division'
+          errorText=''
+          name='division'
           onChange={this.handleBlankFieldChange(index)}
-          defaultValue={"1"}
-          style={{ width: "100px" }}
+          defaultValue={'1'}
+          style={{ width: '100px' }}
         />
         <RemoveButton onClick={this.handleRemoveBlank(index)}>
           <DeleteIcon />
@@ -162,16 +162,16 @@ class AddBlankForm extends React.Component {
     const form = (
       <form onSubmit={this.submitForm}>
         <TextField
-          hintText="Item Number"
-          floatingLabelText="Item Number"
-          name="item_number"
+          hintText='Item Number'
+          floatingLabelText='Item Number'
+          name='item_number'
           disabled={true}
           value={this.state.item_number}
         />
         <br />
         <br />
         <AddButton
-          label="Add Blank"
+          label='Add Blank'
           icon={<AddBoxIcon />}
           onTouchTap={this.handleAddNewBlank}
           primary

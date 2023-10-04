@@ -1,18 +1,18 @@
-import React from 'react';
-import { Card, CardHeader, CardText } from 'material-ui/Card';
-import AutoComplete from 'material-ui/AutoComplete';
-import {stringHelpers} from '../../helpers/stringHelpers';
-import AddBoxIcon from 'material-ui/svg-icons/content/add-box';
-import AddJobButton from 'material-ui/FlatButton';
+import { GET_LIST } from 'admin-on-rest';
 import axios from 'axios';
-import {SERVER_URL} from '../../config/';
-import TextField from 'material-ui/TextField';
+import lodash from 'lodash';
+import AutoComplete from 'material-ui/AutoComplete';
+import { Card, CardHeader, CardText } from 'material-ui/Card';
+import AddJobButton from 'material-ui/FlatButton';
 import RemoveJobButton from 'material-ui/IconButton';
-import DeleteIcon from 'material-ui/svg-icons/action/delete-forever';
 import RaisedButton from 'material-ui/RaisedButton';
 import Snackbar from 'material-ui/Snackbar';
-import lodash from 'lodash';
-import { GET_LIST, UPDATE } from 'admin-on-rest';
+import TextField from 'material-ui/TextField';
+import DeleteIcon from 'material-ui/svg-icons/action/delete-forever';
+import AddBoxIcon from 'material-ui/svg-icons/content/add-box';
+import React from 'react';
+import { SERVER_URL } from '../../config/';
+import { stringHelpers } from '../../helpers/stringHelpers';
 import restClient from '../../restClient';
 
 class ItemJobCreate extends React.Component {
@@ -78,10 +78,10 @@ class ItemJobCreate extends React.Component {
         return (
             <div key={jobIndex}>
                 <AutoComplete
-                    floatingLabelText="Type the job number"
+                    floatingLabelText='Type the job number'
                     filter={AutoComplete.fuzzyFilter}
                     dataSource={this.state.jobs}
-                    name="job_listing_id"
+                    name='job_listing_id'
                     maxSearchResults={5}
                     onUpdateInput={this.handleJobFieldSelectChange(jobIndex)}
                     fullWidth={false}
@@ -89,10 +89,10 @@ class ItemJobCreate extends React.Component {
                 />
                 &nbsp;&nbsp;
                 <TextField
-                    hintText="Hour Per Piece"
-                    floatingLabelText="Hour Per Piece"
-                    errorText=""
-                    name="hour_per_piece"
+                    hintText='Hour Per Piece'
+                    floatingLabelText='Hour Per Piece'
+                    errorText=''
+                    name='hour_per_piece'
                     onChange={this.handleJobFieldChange(jobIndex)}
                     defaultValue={job.hour_per_piece}
                 />
@@ -120,11 +120,11 @@ class ItemJobCreate extends React.Component {
         return(
             <div>
                 <Card>
-                    <CardHeader title="Add Jobs to Item" />
+                    <CardHeader title='Add Jobs to Item' />
                     <CardText>
                         <form>
                             <AutoComplete
-                                floatingLabelText="Type the item number"
+                                floatingLabelText='Type the item number'
                                 filter={AutoComplete.fuzzyFilter}
                                 dataSource={this.state.items}
                                 maxSearchResults={5}
@@ -137,7 +137,7 @@ class ItemJobCreate extends React.Component {
                                 fullWidth={true}
                             />
                             <br /><br />
-                            <AddJobButton label="Add Job" icon={<AddBoxIcon />  }
+                            <AddJobButton label='Add Job' icon={<AddBoxIcon />  }
                                           onTouchTap={this.handleAddNewJob}
                                           primary/>
                             <br /><br />
@@ -146,7 +146,7 @@ class ItemJobCreate extends React.Component {
                             <br /><br />
 
 
-                            <RaisedButton label="Save" primary={true}
+                            <RaisedButton label='Save' primary={true}
                                           onTouchTap={this.submitForm}/>
 
                         </form>
@@ -169,4 +169,5 @@ class ItemJobCreate extends React.Component {
     }
 }
 
-export { ItemJobCreate }
+export { ItemJobCreate };
+

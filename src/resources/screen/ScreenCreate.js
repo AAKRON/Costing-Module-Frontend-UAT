@@ -1,23 +1,11 @@
-import React from 'react';
-import {Create, TextInput, SimpleForm} from 'admin-on-rest/lib/mui'
-
-const validateCreate = (values) => {
-    const errors = {};
-    for (const field of ['screen_size', 'cost']) {
-        if (!values[field]) {
-            let field_name = field.split('_').join(' ');
-            errors[field] = [`${field_name} cannot be blank!`];
-        }
-    }
-
-    return errors;
-};
+import React from 'react'
+import { Create, NumberInput, SimpleForm, TextInput, required } from 'react-admin'
 
 export const ScreenCreate = (props) => (
-    <Create {...props}>
-        <SimpleForm invalid={true} validation={validateCreate}>
-            <TextInput source='screen_size'/>
-            <TextInput source='cost' label="Cost ($)"/>
-        </SimpleForm>
-    </Create>
-);
+  <Create {...props}>
+    <SimpleForm>
+      <TextInput source='screen_size' validate={required()}/>
+      <NumberInput source='cost' label='Cost ($)' validate={required()}/>
+    </SimpleForm>
+  </Create>
+)

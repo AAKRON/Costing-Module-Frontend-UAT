@@ -1,8 +1,8 @@
-import React from "react";
-import Dialog from "material-ui/Dialog";
-import FlatButton from "material-ui/FlatButton";
-import AddIcon from "material-ui/svg-icons/content/add";
-import { AddBlankForm } from "./AddBlankForm";
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import AddIcon from 'material-ui/svg-icons/content/add';
+import React from 'react';
+import { AddBlankForm } from './AddBlankForm';
 
 class AddBlankModal extends React.Component {
   state = { open: false };
@@ -13,12 +13,12 @@ class AddBlankModal extends React.Component {
   render() {
     const actions = [
       <FlatButton
-        label="Cancel"
+        label='Cancel'
         primary={true}
         onTouchTap={this.handleClose}
       />,
       <FlatButton
-        label="Add Over"
+        label='Add Over'
         primary={true}
         keyboardFocused={true}
         onTouchTap={() => {
@@ -31,7 +31,7 @@ class AddBlankModal extends React.Component {
       <span>
         <FlatButton
           primary
-          label="Add Blank"
+          label='Add Blank'
           onTouchTap={this.handleOpen}
           icon={<AddIcon />}
         />
@@ -47,7 +47,7 @@ class AddBlankModal extends React.Component {
             data={this.props.data}
             type={this.props.type}
             path={this.props.basePath}
-            ref="copy_blank_form"
+            ref='copy_blank_form'
           />
         </Dialog>
       </span>

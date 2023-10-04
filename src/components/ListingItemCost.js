@@ -1,25 +1,23 @@
 /* eslint-disable */
-import React from "react";
+import { GET_LIST, GET_ONE, UPDATE } from 'admin-on-rest';
+import axios from 'axios';
+import AutoComplete from 'material-ui/AutoComplete';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import { default as Button, default as RemoveButton } from 'material-ui/IconButton';
 import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn,
-} from "material-ui/Table";
-import RemoveButton from "material-ui/IconButton";
-import Button from "material-ui/IconButton";
-import EditIcon from "material-ui/svg-icons/content/create";
-import DeleteIcon from "material-ui/svg-icons/action/delete-forever";
-import { GET_ONE, GET_LIST, UPDATE } from "admin-on-rest";
-import restClient from "../restClient";
-import axios from "axios";
-import FlatButton from "material-ui/FlatButton";
-import * as _ from "lodash";
-import Dialog from "material-ui/Dialog";
-import AutoComplete from "material-ui/AutoComplete";
-import TextField from "material-ui/TextField";
+    Table,
+    TableBody,
+    TableHeader,
+    TableHeaderColumn,
+    TableRow,
+    TableRowColumn,
+} from 'material-ui/Table';
+import TextField from 'material-ui/TextField';
+import DeleteIcon from 'material-ui/svg-icons/action/delete-forever';
+import EditIcon from 'material-ui/svg-icons/content/create';
+import React from 'react';
+import restClient from '../restClient';
 
 export default class ListingItemCost extends React.Component {
   constructor(props) {
@@ -46,15 +44,15 @@ export default class ListingItemCost extends React.Component {
     });
 
   fetchBlanks = () =>
-    restClient(GET_LIST, "blank-list-only", {
+    restClient(GET_LIST, 'blank-list-only', {
       pagination: { page: 1, perPage: -1 },
-      sort: { field: "id", order: "ASC" },
+      sort: { field: 'id', order: 'ASC' },
     });
 
   componentDidMount() {
     axios
       .all([
-        this.props.resource === "blanks_listing_by_items"
+        this.props.resource === 'blanks_listing_by_items'
           ? this.fetchBlankListByItem()
           : this.fecthBLIWC(),
         this.fetchBlanks(),
@@ -91,13 +89,13 @@ export default class ListingItemCost extends React.Component {
       open: false,
     });
 
-    restClient(UPDATE, "update-item-blanks-data", {
+    restClient(UPDATE, 'update-item-blanks-data', {
       id: this.state.item.data.item_id,
       data: editableBlank,
     }).then((response) => {
       this.setState({
         open_snackbar: true,
-        snackbar_message: "Item blank updated successfully",
+        snackbar_message: 'Item blank updated successfully',
       });
 
       setTimeout(() => {
@@ -116,7 +114,7 @@ export default class ListingItemCost extends React.Component {
   };
 
   hadleAutoComplete = () => (data) => {
-    const value = data.split(" - ");
+    const value = data.split(' - ');
     this.setState({
       editableBlank: {
         ...this.state.editableBlank,
@@ -140,7 +138,7 @@ export default class ListingItemCost extends React.Component {
     return (
       <TableRow key={index} selected={blank.selected}>
         <TableRowColumn>{blank.blank_number}</TableRowColumn>
-        <TableRowColumn>{blank.blank_description || "-"}</TableRowColumn>
+        <TableRowColumn>{blank.blank_description || '-'}</TableRowColumn>
         <TableRowColumn>{blank.mult == null ? 1 : blank.mult}</TableRowColumn>
         <TableRowColumn>{blank.div == null ? 1 : blank.div}</TableRowColumn>
         <TableRowColumn>
@@ -159,15 +157,15 @@ export default class ListingItemCost extends React.Component {
 
   render() {
     const { editableBlank } = this.state;
-    const defaultBlank = (editableBlank.blank_number && editableBlank.blank_description) ? editableBlank.blank_number + " - " + editableBlank.blank_description : "";
+    const defaultBlank = (editableBlank.blank_number && editableBlank.blank_description) ? editableBlank.blank_number + ' - ' + editableBlank.blank_description : '';
     const actions = [
       <FlatButton
-        label="Cancel"
+        label='Cancel'
         primary={true}
         onTouchTap={() => this.setState({ open: false })}
       />,
       <FlatButton
-        label="Update"
+        label='Update'
         primary={true}
         keyboardFocused={true}
         onTouchTap={() => {
@@ -184,7 +182,7 @@ export default class ListingItemCost extends React.Component {
         <div>
           <h2>Blanks By Item</h2>
           <Dialog
-            title="Edit Blank"
+            title='Edit Blank'
             actions={actions}
             modal={false}
             open={this.state.open}
@@ -192,10 +190,10 @@ export default class ListingItemCost extends React.Component {
             autoScrollBodyContent={true}
           >
             <AutoComplete
-              floatingLabelText="Type the blank number"
+              floatingLabelText='Type the blank number'
               filter={AutoComplete.fuzzyFilter}
               dataSource={this.state.blanks}
-              name="blank_number"
+              name='blank_number'
               maxSearchResults={5}
               onUpdateInput={this.hadleAutoComplete()}
               fullWidth={false}
@@ -203,22 +201,22 @@ export default class ListingItemCost extends React.Component {
             />
             &nbsp;&nbsp;
             <TextField
-              hintText="Multiplication"
-              floatingLabelText="Multiplication"
-              errorText=""
-              name="mult"
+              hintText='Multiplication'
+              floatingLabelText='Multiplication'
+              errorText=''
+              name='mult'
               onChange={this.handleBlankFieldChange()}
               value={this.state.editableBlank.mult}
-              style={{ width: "100px" }}
+              style={{ width: '100px' }}
             />
             <TextField
-              hintText="Division"
-              floatingLabelText="Division"
-              errorText=""
-              name="div"
+              hintText='Division'
+              floatingLabelText='Division'
+              errorText=''
+              name='div'
               onChange={this.handleBlankFieldChange()}
               value={this.state.editableBlank.div}
-              style={{ width: "100px" }}
+              style={{ width: '100px' }}
             />
           </Dialog>
 

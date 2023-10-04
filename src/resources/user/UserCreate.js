@@ -1,5 +1,5 @@
+import { Create, SelectInput, SimpleForm, TextInput } from 'admin-on-rest/lib/mui';
 import React from 'react';
-import {Create, TextInput, SimpleForm, SelectInput } from 'admin-on-rest/lib/mui'
 
 const validateCreate = (values) => {
     const errors = {};
@@ -18,7 +18,7 @@ export const UserCreate = (props) => (
         <SimpleForm invalid={true} validation={validateCreate}>
             <TextInput source='username' />
             <TextInput source='password' />
-            <SelectInput source="role" choices={[
+            <SelectInput source='role' choices={[
                 { id: 'admin', name: 'Admin' },
                 { id: 'user', name: 'User' },
             ]} />

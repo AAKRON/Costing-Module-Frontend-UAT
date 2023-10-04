@@ -1,6 +1,6 @@
+import MenuItem from 'material-ui/MenuItem';
+import SelectField from 'material-ui/SelectField';
 import React from 'react';
-import SelectField from "material-ui/SelectField";
-import MenuItem from "material-ui/MenuItem";
 
 class OverHeadCostFilter extends React.Component {
     state = {
@@ -25,11 +25,11 @@ class OverHeadCostFilter extends React.Component {
     render() {
         return(
             <SelectField
-                floatingLabelText="Overhead Cost"
+                floatingLabelText='Overhead Cost'
                 value={this.state.value}
                 onChange={this.handleChange}>
-                <MenuItem value='inventory' primaryText="Inventory" />
-                <MenuItem value='pricing' primaryText="Pricing" />
+                <MenuItem value='inventory' primaryText='Inventory' />
+                <MenuItem value='pricing' primaryText='Pricing' />
             </SelectField>
         )
     }

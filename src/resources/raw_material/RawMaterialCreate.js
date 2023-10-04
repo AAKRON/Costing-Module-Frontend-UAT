@@ -1,7 +1,7 @@
-import React from 'react';
-import {AutocompleteInput, Create, TextInput, SimpleForm } from 'admin-on-rest/lib/mui'
-import axios from 'axios';
 import { GET_LIST } from 'admin-on-rest';
+import { AutocompleteInput, Create, SimpleForm, TextInput } from 'admin-on-rest/lib/mui';
+import axios from 'axios';
+import React from 'react';
 import restClient from '../../restClient';
 
 export class RawMaterialCreate extends React.Component {
@@ -37,10 +37,10 @@ export class RawMaterialCreate extends React.Component {
             <SimpleForm>
                 <TextInput source='name'/>
                 <TextInput source='cost' label='Cost ($)'/>
-                <AutocompleteInput source="units_of_measure_id" choices={this.state.units_of_measures} />
-                <AutocompleteInput source="color_id" choices={this.state.colors} />
-                <AutocompleteInput source="vendor_id" choices={this.state.vendors} />
-                <AutocompleteInput source="rawmaterialtype_id" label="Raw Material Type" choices={this.state.raw_material_types} />
+                <AutocompleteInput source='units_of_measure_id' choices={this.state.units_of_measures} />
+                <AutocompleteInput source='color_id' choices={this.state.colors} />
+                <AutocompleteInput source='vendor_id' choices={this.state.vendors} />
+                <AutocompleteInput source='rawmaterialtype_id' label='Raw Material Type' choices={this.state.raw_material_types} />
             </SimpleForm>
         </Create>
         )

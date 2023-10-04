@@ -1,8 +1,8 @@
-import React from 'react';
-import axios from 'axios';
-import {Create, TextInput, SimpleForm, NumberInput, AutocompleteInput} from 'admin-on-rest/lib/mui'
-import AutoComplete from 'material-ui/AutoComplete';
 import { GET_LIST } from 'admin-on-rest';
+import { AutocompleteInput, Create, NumberInput, SimpleForm, TextInput } from 'admin-on-rest/lib/mui';
+import axios from 'axios';
+import AutoComplete from 'material-ui/AutoComplete';
+import React from 'react';
 import restClient from '../../restClient';
 
 const validateCreate = (fields) => {
@@ -43,8 +43,8 @@ export class  ItemCreate extends React.Component {
 		        <SimpleForm>
                 <NumberInput source='item_number'/>
                 <TextInput source='description'/>
-								<AutocompleteInput source="box_id" choices={this.state.boxes} filter={AutoComplete.fuzzyFilter} translateChoice={false} />
-								<AutocompleteInput source="item_type_id" choices={this.state.item_types} filter={AutoComplete.fuzzyFilter} translateChoice={false} />
+								<AutocompleteInput source='box_id' choices={this.state.boxes} filter={AutoComplete.fuzzyFilter} translateChoice={false} />
+								<AutocompleteInput source='item_type_id' choices={this.state.item_types} filter={AutoComplete.fuzzyFilter} translateChoice={false} />
 						</SimpleForm>
 				</Create>
 			)

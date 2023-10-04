@@ -1,12 +1,14 @@
 import ArrowRight from '@mui/icons-material/ArrowRight'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import JobIcon from '@mui/icons-material/Gavel'
+import BlankIcon from '@mui/icons-material/Loyalty'
 import { Divider, MenuItem, Popover } from '@mui/material'
 import { useState } from 'react'
 import { Link } from 'react-admin'
 
 export default () => {
   const [menuJobs, setMenuJobs] = useState(null)
+  const [menuBlanks, setMenuBlanks] = useState(null)
 
   return (
     <div className='menu'>
@@ -53,6 +55,51 @@ export default () => {
         <MenuItem className='link'>
           <Link to='screens'>
             Screen
+          </Link>
+        </MenuItem>
+      </Popover>
+  
+      <Divider style={{ margin: '0' }} />
+
+      <MenuItem
+        className='link'
+        aria-describedby={Boolean(menuBlanks) ? 'menu-blanks' : undefined}
+        onClick={(e) => setMenuBlanks(e.currentTarget)}
+      >
+        <Link>
+          <BlankIcon />
+          <span>Blanks</span>
+          <ArrowRight style={{ marginLeft: 'auto' }}/>
+        </Link>
+      </MenuItem>
+      <Popover
+        className='popover'
+        id={Boolean(menuBlanks) ? 'menu-blanks' : undefined}
+        open={Boolean(menuBlanks)}
+        anchorEl={menuBlanks}
+        onClose={() => setMenuBlanks(null)}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+      >
+        <MenuItem className='link'>
+          <Link to='blanks'>
+            Listing
+          </Link>
+        </MenuItem>
+        <MenuItem className='link'>
+          <Link to='blank_jobs'>
+            Jobs
+          </Link>
+        </MenuItem>
+        <MenuItem className='link'>
+          <Link to='blank_types'>
+            Types
           </Link>
         </MenuItem>
       </Popover>

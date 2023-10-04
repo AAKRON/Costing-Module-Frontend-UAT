@@ -1,23 +1,23 @@
-import React from "react";
-import AutoComplete from "material-ui/AutoComplete";
-import axios from "axios";
-import lodash from "lodash";
-import TextField from "material-ui/TextField";
-import RemoveJobButton from "material-ui/IconButton";
-import DeleteIcon from "material-ui/svg-icons/action/delete-forever";
-import AddBoxIcon from "material-ui/svg-icons/content/add-box";
-import AddJobButton from "material-ui/FlatButton";
-import { stringHelpers } from "../helpers/stringHelpers";
-import { GET_LIST, UPDATE } from "admin-on-rest";
-import restClient from "../restClient";
-import Snackbar from "material-ui/Snackbar";
+import { GET_LIST, UPDATE } from 'admin-on-rest';
+import axios from 'axios';
+import lodash from 'lodash';
+import AutoComplete from 'material-ui/AutoComplete';
+import AddJobButton from 'material-ui/FlatButton';
+import RemoveJobButton from 'material-ui/IconButton';
+import Snackbar from 'material-ui/Snackbar';
+import TextField from 'material-ui/TextField';
+import DeleteIcon from 'material-ui/svg-icons/action/delete-forever';
+import AddBoxIcon from 'material-ui/svg-icons/content/add-box';
+import React from 'react';
+import { stringHelpers } from '../helpers/stringHelpers';
+import restClient from '../restClient';
 
 class AddJobForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      blank: "",
-      item: "",
+      blank: '',
+      item: '',
       item_number: 0,
       blank_number: 0,
       copy_jobs: [],
@@ -27,35 +27,35 @@ class AddJobForm extends React.Component {
       items: [],
       jobs: [],
       open_snackbar: false,
-      snackbar_message: "",
+      snackbar_message: '',
       type: props.type,
       blanks: [],
     };
   }
 
   fetchItems = () =>
-    restClient(GET_LIST, "item-list-only", {
+    restClient(GET_LIST, 'item-list-only', {
       pagination: { page: 1, perPage: -1 },
-      sort: { field: "id", order: "ASC" },
+      sort: { field: 'id', order: 'ASC' },
     });
 
   fetchBlanks = () =>
-    restClient(GET_LIST, "blank-list-only", {
+    restClient(GET_LIST, 'blank-list-only', {
       pagination: { page: 1, perPage: -1 },
-      sort: { field: "id", order: "ASC" },
+      sort: { field: 'id', order: 'ASC' },
     });
 
   fetchJobs = () =>
-    restClient(GET_LIST, "job-list-only", {
+    restClient(GET_LIST, 'job-list-only', {
       pagination: { page: 1, perPage: -1 },
-      sort: { field: "id", order: "ASC" },
+      sort: { field: 'id', order: 'ASC' },
     });
 
   handleSnackbarClose = () =>
-    this.setState({ open_snackbar: false, snackbar_message: "" });
+    this.setState({ open_snackbar: false, snackbar_message: '' });
 
   componentDidMount() {
-    if (this.state.type === "item") {
+    if (this.state.type === 'item') {
       axios.all([this.fetchItems(), this.fetchJobs()]).then(
         axios.spread((item, job) => {
           const items = item.data.map(
@@ -110,8 +110,8 @@ class AddJobForm extends React.Component {
 
   componentWillMount() {
     let { copy_jobs, jobs } = this.props.data;
-    const fieldsToPick = ["job_listing_id", "hour_per_piece", "description"];
-    if (typeof jobs === "object") {
+    const fieldsToPick = ['job_listing_id', 'hour_per_piece', 'description'];
+    if (typeof jobs === 'object') {
       copy_jobs = jobs
         .filter((obj) => obj.selected)
         .map((obj) => lodash.pick(obj, fieldsToPick));
@@ -122,7 +122,7 @@ class AddJobForm extends React.Component {
   handleAddNewJob = () => {
     this.setState({
       copy_jobs: this.state.copy_jobs.concat([
-        { job_listing_id: "", hour_per_piece: "" },
+        { job_listing_id: '', hour_per_piece: '' },
       ]),
     });
   };
@@ -157,20 +157,20 @@ class AddJobForm extends React.Component {
 
   submit = (dialogClose) => {
     const payload =
-      this.state.type === "item"
-        ? lodash.pick(this.state, ["item_number", "copy_jobs"])
-        : lodash.pick(this.state, ["blank_number", "copy_jobs"]);
+      this.state.type === 'item'
+        ? lodash.pick(this.state, ['item_number', 'copy_jobs'])
+        : lodash.pick(this.state, ['blank_number', 'copy_jobs']);
     var type_id =
-      this.state.type === "item" ? payload.item_number : payload.blank_number;
+      this.state.type === 'item' ? payload.item_number : payload.blank_number;
     var eventAction =
-      this.state.type === "item"
-        ? "update-item-jobs-only"
-        : "update-blank-jobs-only";
+      this.state.type === 'item'
+        ? 'update-item-jobs-only'
+        : 'update-blank-jobs-only';
 
     if (type_id === 0) {
       this.setState({
         open_snackbar: true,
-        snackbar_message: "Please select " + this.state.type + " number",
+        snackbar_message: 'Please select ' + this.state.type + ' number',
       });
       return false;
     }
@@ -181,7 +181,7 @@ class AddJobForm extends React.Component {
     }).then((response) => {
       this.setState({
         open_snackbar: true,
-        snackbar_message: "Jobs copied successfully",
+        snackbar_message: 'Jobs copied successfully',
       });
 
       if (type_id === this.props.data.id) {
@@ -196,16 +196,16 @@ class AddJobForm extends React.Component {
   jobField = (job, jobIndex) => {
     const defaultJob =
       job.job_listing_id && job.description
-        ? job.job_listing_id + " - " + job.description
-        : "";
+        ? job.job_listing_id + ' - ' + job.description
+        : '';
 
     return (
       <div key={jobIndex}>
         <AutoComplete
-          floatingLabelText="Type the job number"
+          floatingLabelText='Type the job number'
           filter={AutoComplete.fuzzyFilter}
           dataSource={this.state.jobs}
-          name="job_listing_id"
+          name='job_listing_id'
           maxSearchResults={5}
           onUpdateInput={this.handleJobFieldSelectChange(jobIndex)}
           fullWidth={false}
@@ -213,10 +213,10 @@ class AddJobForm extends React.Component {
         />
         &nbsp;&nbsp;
         <TextField
-          hintText="Hour Per Piece"
-          floatingLabelText="Hour Per Piece"
-          errorText=""
-          name="hour_per_piece"
+          hintText='Hour Per Piece'
+          floatingLabelText='Hour Per Piece'
+          errorText=''
+          name='hour_per_piece'
           onChange={this.handleJobFieldChange(jobIndex)}
           defaultValue={job.hour_per_piece}
         />
@@ -235,11 +235,11 @@ class AddJobForm extends React.Component {
           filter={AutoComplete.fuzzyFilter}
           disabled={true}
           dataSource={
-            this.state.type === "item" ? this.state.items : this.state.blanks
+            this.state.type === 'item' ? this.state.items : this.state.blanks
           }
           maxSearchResults={5}
           onUpdateInput={(item_description) => {
-            if (this.state.type === "item") {
+            if (this.state.type === 'item') {
               const itemNumber =
                 stringHelpers.extractLeadingNumber(item_description);
               const item = this.state.items.find((item) => {
@@ -263,13 +263,13 @@ class AddJobForm extends React.Component {
           }}
           fullWidth={true}
           searchText={
-            this.state.type === "item" ? this.state.item : this.state.blank
+            this.state.type === 'item' ? this.state.item : this.state.blank
           }
         />
         <br />
         <br />
         <AddJobButton
-          label="Add Job"
+          label='Add Job'
           icon={<AddBoxIcon />}
           onTouchTap={this.handleAddNewJob}
           primary

@@ -1,8 +1,8 @@
-import React from 'react';
-import axios from 'axios';
-import {Create, SimpleForm, TextInput, NumberInput, AutocompleteInput} from 'admin-on-rest/lib/mui'
-import AutoComplete from 'material-ui/AutoComplete';
 import { GET_LIST } from 'admin-on-rest';
+import { AutocompleteInput, Create, NumberInput, SimpleForm, TextInput } from 'admin-on-rest/lib/mui';
+import axios from 'axios';
+import AutoComplete from 'material-ui/AutoComplete';
+import React from 'react';
 import restClient from '../../restClient';
 
 export class FinalCalculationCreate extends React.Component {
@@ -36,23 +36,23 @@ export class FinalCalculationCreate extends React.Component {
             <Create {...this.props}>
               <SimpleForm invalid={true} >
                 { this.state.blanks.length > 0 &&
-                <AutocompleteInput source="blank_id" choices={this.state.blanks} filter={AutoComplete.fuzzyFilter} translateChoice={false} />
+                <AutocompleteInput source='blank_id' choices={this.state.blanks} filter={AutoComplete.fuzzyFilter} translateChoice={false} />
                 }
                 <NumberInput source='color_number' label='Color #'/>
                 <TextInput source='color_description' />
 
                 { this.state.raw_materials.length > 0 &&
-                <AutocompleteInput source="raw_material_id" choices={this.state.raw_materials} filter={AutoComplete.fuzzyFilter} translateChoice={false} />
+                <AutocompleteInput source='raw_material_id' choices={this.state.raw_materials} filter={AutoComplete.fuzzyFilter} translateChoice={false} />
                 }
 
                 { this.state.colors.length > 0 &&
-                <AutocompleteInput source="colorant_one" choices={this.state.colors} filter={AutoComplete.fuzzyFilter} translateChoice={false} />
+                <AutocompleteInput source='colorant_one' choices={this.state.colors} filter={AutoComplete.fuzzyFilter} translateChoice={false} />
                 }
                 <TextInput source='number_of_pieces_per_unit_one' />
                 <NumberInput source='percentage_of_colorant_one' />
 
                 { this.state.colors.length > 0 &&
-                <AutocompleteInput source="colorant_two" choices={this.state.colors} filter={AutoComplete.fuzzyFilter} translateChoice={false} />
+                <AutocompleteInput source='colorant_two' choices={this.state.colors} filter={AutoComplete.fuzzyFilter} translateChoice={false} />
                 }
                 <TextInput source='number_of_pieces_per_unit_two' />
                 <NumberInput source='percentage_of_colorant_two' />

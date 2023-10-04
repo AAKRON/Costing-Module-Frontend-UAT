@@ -1,6 +1,6 @@
 import { Card } from '@mui/material'
 import { useLogin, useNotify } from 'react-admin'
-import { FileUpload } from "../components/FileUpload"
+import { FileUpload } from '../components/FileUpload'
 
 export default () => {
   const login = useLogin()
@@ -15,15 +15,15 @@ export default () => {
       .catch(() => notify('Invalid email or password'))
   }
 
-  const isAdmin = localStorage.getItem("role") === "admin"
+  const isAdmin = localStorage.getItem('role') === 'admin'
 
   return (
     <Card style={{ margin: '2rem', padding: '1rem' }}>
       {isAdmin && <FileUpload validatePassword={validatePassword} />}
 
       {!isAdmin && (
-        <h1 style={{ color: "#00bcd4", textAlign: "center", fontSize: '1.7rem' }}>
-          Hello {localStorage.getItem("username")}, You have only{" "}
+        <h1 style={{ color: '#00bcd4', textAlign: 'center', fontSize: '1.7rem' }}>
+          Hello {localStorage.getItem('username')}, You have only{' '}
           <b>Add & View</b> rights in full system
         </h1>
       )}

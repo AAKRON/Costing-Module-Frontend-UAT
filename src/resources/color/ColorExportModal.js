@@ -1,53 +1,52 @@
-import React from "react";
-import axios from "axios";
-// import lodash from "lodash";
-import Dialog from "material-ui/Dialog";
-import FlatButton from "material-ui/FlatButton";
-import RaisedButton from "material-ui/RaisedButton";
-import FileFileDownload from "material-ui/svg-icons/file/file-download";
-import Divider from "material-ui/Divider";
-import AutoComplete from "material-ui/AutoComplete";
+import axios from 'axios';
+import React from 'react';
+// import lodash from 'lodash';
 import {
-  GET_LIST,
-  // UPDATE
-} from "admin-on-rest";
-import Chip from "material-ui/Chip";
-import restClient from "../../restClient";
-import { SERVER_URL } from "../../config";
-import { stringHelpers } from "../../helpers/stringHelpers";
+    GET_LIST,
+} from 'admin-on-rest';
+import AutoComplete from 'material-ui/AutoComplete';
+import Chip from 'material-ui/Chip';
+import Dialog from 'material-ui/Dialog';
+import Divider from 'material-ui/Divider';
+import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
+import FileFileDownload from 'material-ui/svg-icons/file/file-download';
+import { SERVER_URL } from '../../config';
+import { stringHelpers } from '../../helpers/stringHelpers';
+import restClient from '../../restClient';
 
 const styles = {
   RaisedButton: {
     FirstButton: {
-      marginTop: "30px",
-      marginBottom: "10px",
+      marginTop: '30px',
+      marginBottom: '10px',
     },
     SecondButton: {
-      marginLeft: "30px",
-      marginTop: "30px",
-      marginBottom: "10px",
+      marginLeft: '30px',
+      marginTop: '30px',
+      marginBottom: '10px',
     },
   },
   CenterAlgin: {
-    textAlign: "center",
+    textAlign: 'center',
   },
   Blank: {
     margin: 4,
   },
   Wrapper: {
-    display: "flex",
-    flexWrap: "wrap",
-    marginBottom: "10px",
+    display: 'flex',
+    flexWrap: 'wrap',
+    marginBottom: '10px',
   },
 };
 
 class ColorExportModal extends React.Component {
-  state = { open: false, blanks: [], seleted_blanks: [], searchText: "" };
+  state = { open: false, blanks: [], seleted_blanks: [], searchText: '' };
 
   fetchRawMaterials = () =>
-    restClient(GET_LIST, "color-list-only", {
+    restClient(GET_LIST, 'color-list-only', {
       pagination: { page: 1, perPage: -1 },
-      sort: { field: "id", order: "ASC" },
+      sort: { field: 'id', order: 'ASC' },
       // filter: { type_id: 1 },
     });
 
@@ -68,13 +67,13 @@ class ColorExportModal extends React.Component {
   handleBlankPriceCostDownload = (e) => {
     e.preventDefault();
 
-    window.open(`${SERVER_URL}/color-download/listing-color.csv`, "_blank");
+    window.open(`${SERVER_URL}/color-download/listing-color.csv`, '_blank');
   };
 
   handleBlankInventoryCostDownload = (e) => {
     e.preventDefault();
 
-    window.open(`${SERVER_URL}/color-download/listing-color.csv`, "_blank");
+    window.open(`${SERVER_URL}/color-download/listing-color.csv`, '_blank');
   };
 
   handleSeletedBlankPriceCostDownload = (e) => {
@@ -82,7 +81,7 @@ class ColorExportModal extends React.Component {
 
     window.open(
       `${SERVER_URL}/color-download/listing-color.csv?blanks=${this.state.seleted_blanks.toString()}`,
-      "_blank"
+      '_blank'
     );
   };
 
@@ -91,7 +90,7 @@ class ColorExportModal extends React.Component {
 
     window.open(
       `${SERVER_URL}/color-download/listing-color.csv?blanks=${this.state.seleted_blanks.toString()}`,
-      "_blank"
+      '_blank'
     );
   };
 
@@ -121,12 +120,12 @@ class ColorExportModal extends React.Component {
       <span>
         <FlatButton
           primary
-          label="Export Color"
+          label='Export Color'
           onTouchTap={this.handleOpen}
           icon={<FileFileDownload />}
         />
         <Dialog
-          title="Export Color List"
+          title='Export Color List'
           modal={false}
           open={this.state.open}
           onRequestClose={this.handleClose}
@@ -136,7 +135,7 @@ class ColorExportModal extends React.Component {
             <h2>Export All Colors</h2>
             <RaisedButton
               style={styles.RaisedButton.FirstButton}
-              label="Export Color Listing"
+              label='Export Color Listing'
               secondary={true}
               onTouchTap={this.handleOpen}
               icon={<FileFileDownload />}
@@ -145,7 +144,7 @@ class ColorExportModal extends React.Component {
 
             {/* <RaisedButton
               style={styles.RaisedButton.SecondButton}
-              label="Inventory Cost Blanks"
+              label='Inventory Cost Blanks'
               secondary={true}
               onTouchTap={this.handleOpen}
               icon={<FileFileDownload />}
@@ -172,13 +171,13 @@ class ColorExportModal extends React.Component {
 
                 this.setState({
                   seleted_blanks: seleted_blanks,
-                  searchText: "",
+                  searchText: '',
                 });
               }}
               fullWidth={true}
               searchText={this.state.searchText}
             />
-            <h4 style={{ textAlign: "left", margin: "5px 0" }}>
+            <h4 style={{ textAlign: 'left', margin: '5px 0' }}>
               Selected Raw Material:
             </h4>
             <div style={styles.Wrapper}>
@@ -187,7 +186,7 @@ class ColorExportModal extends React.Component {
             {this.state.seleted_blanks.length > 0 && (
               <RaisedButton
                 style={styles.RaisedButton.FirstButton}
-                label="Export Selected Colors"
+                label='Export Selected Colors'
                 primary={true}
                 onTouchTap={this.handleOpen}
                 icon={<FileFileDownload />}
@@ -197,7 +196,7 @@ class ColorExportModal extends React.Component {
             {/* {this.state.seleted_blanks.length > 0 && (
               <RaisedButton
                 style={styles.RaisedButton.SecondButton}
-                label="Inventory Cost Blanks"
+                label='Inventory Cost Blanks'
                 primary={true}
                 onTouchTap={this.handleOpen}
                 icon={<FileFileDownload />}

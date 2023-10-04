@@ -1,10 +1,10 @@
-import React from "react";
-import Dialog from "material-ui/Dialog";
-import FlatButton from "material-ui/FlatButton";
-// import CopyJob from "material-ui/svg-icons/content/content-copy";
-import AddIcon from "material-ui/svg-icons/content/add";
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import React from 'react';
+// import CopyJob from 'material-ui/svg-icons/content/content-copy';
+import AddIcon from 'material-ui/svg-icons/content/add';
 
-import { AddJobForm } from "./AddJobForm";
+import { AddJobForm } from './AddJobForm';
 /*const styles = {
     radioButton: {
         marginTop: 16,
@@ -21,12 +21,12 @@ class AddJobModal extends React.Component {
   render() {
     const actions = [
       <FlatButton
-        label="Cancel"
+        label='Cancel'
         primary={true}
         onTouchTap={this.handleClose}
       />,
       <FlatButton
-        label="Add Over"
+        label='Add Over'
         primary={true}
         keyboardFocused={true}
         onTouchTap={() => {
@@ -39,7 +39,7 @@ class AddJobModal extends React.Component {
       <span>
         <FlatButton
           primary
-          label="Add Job"
+          label='Add Job'
           onTouchTap={this.handleOpen}
           icon={<AddIcon />}
         />
@@ -54,7 +54,7 @@ class AddJobModal extends React.Component {
           <AddJobForm
             data={this.props.data}
             type={this.props.type}
-            ref="copy_job_form"
+            ref='copy_job_form'
           />
         </Dialog>
       </span>

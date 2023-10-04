@@ -1,4 +1,5 @@
 import { Card } from '@mui/material'
+import React from 'react'
 import { ChipField, Datagrid, EditButton, FunctionField, List, TextField } from 'react-admin'
 import { JobFilter } from './JobFilter'
 
@@ -12,14 +13,17 @@ export const JobList = (props) => {
         perPage={25}
         {...props}
       >
-        <Datagrid>
-          {/* <TextField source="id" /> */}
-          <TextField source="job_number" />
-          <TextField source="description" />
+        <Datagrid
+          isRowSelectable={() => false}
+        >
+          {/* <TextField source='id' /> */}
+          <TextField source='job_number' />
+          <TextField source='description' />
           
-          <ChipField source="screen_size" />
+          <ChipField source='screen_size' />
           <FunctionField
-            source="wages_per_hour"
+            source='wages_per_hour'
+            label='Wages/hr ($)'
             render={
               record => {
                 return <span>${record.wages_per_hour}</span>

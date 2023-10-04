@@ -1,8 +1,8 @@
-import React from "react";
-import Dialog from "material-ui/Dialog";
-import FlatButton from "material-ui/FlatButton";
-import CopyJob from "material-ui/svg-icons/content/content-copy";
-import { EditBlankForm } from "./EditBlankForm";
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import CopyJob from 'material-ui/svg-icons/content/content-copy';
+import React from 'react';
+import { EditBlankForm } from './EditBlankForm';
 /*const styles = {
     radioButton: {
         marginTop: 16,
@@ -19,12 +19,12 @@ class EditBlankModal extends React.Component {
   render() {
     const actions = [
       <FlatButton
-        label="Cancel"
+        label='Cancel'
         primary={true}
         onTouchTap={this.handleClose}
       />,
       <FlatButton
-        label="Edit Blanks"
+        label='Edit Blanks'
         primary={true}
         keyboardFocused={true}
         onTouchTap={() => {
@@ -37,7 +37,7 @@ class EditBlankModal extends React.Component {
       <span>
         <FlatButton
           primary
-          label="Edit Blanks"
+          label='Edit Blanks'
           onTouchTap={this.handleOpen}
           icon={<CopyJob />}
         />
@@ -53,7 +53,7 @@ class EditBlankModal extends React.Component {
             data={this.props.data}
             type={this.props.type}
             path={this.props.basePath}
-            ref="copy_blanks_form"
+            ref='copy_blanks_form'
           />
         </Dialog>
       </span>

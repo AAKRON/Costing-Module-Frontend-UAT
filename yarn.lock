@@ -7929,6 +7929,11 @@ query-string@^7.1.1:
     split-on-first "^1.0.0"
     strict-uri-encode "^2.0.0"
 
+querystring-es3@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.npmjs.org/querystring-es3/-/querystring-es3-0.2.1.tgz"
+  integrity sha512-773xhDQnZBMFobEiztv8LIl70ch5MSF/jUQVlhwFyBILqq96anmoctVIYz+ZRp0qbCKATTn6ev02M3r7Ga5vqA==
+
 querystringify@^2.1.1:
   version "2.2.0"
   resolved "https://registry.npmjs.org/querystringify/-/querystringify-2.2.0.tgz"
@@ -7954,14 +7959,6 @@ ra-core@^4.0.0, ra-core@^4.14.4:
     query-string "^7.1.1"
     react-is "^17.0.2"
     react-query "^3.32.1"
-
-ra-data-json-server@^4.14.4:
-  version "4.14.4"
-  resolved "https://registry.npmjs.org/ra-data-json-server/-/ra-data-json-server-4.14.4.tgz"
-  integrity sha512-65+9vn8NjeTMuX7T0Hqji0VmiSu+gLPWGL+0tKLsPc1ZcbaVezgUN72ongAfxSj6EyY9CnmZnhzkhIW6obUjoA==
-  dependencies:
-    query-string "^7.1.1"
-    ra-core "^4.14.4"
 
 ra-i18n-polyglot@^4.14.4:
   version "4.14.4"

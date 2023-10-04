@@ -1,22 +1,22 @@
-import React from "react";
-import { CardActions } from "material-ui/Card";
-import FlatButton from "material-ui/FlatButton";
-import NavigationRefresh from "material-ui/svg-icons/navigation/refresh";
 import {
-  Edit,
-  ListButton,
-  SimpleForm,
-  DisabledInput,
-} from "admin-on-rest/lib/mui";
-import { CopyJobModal } from "../../components/CopyJobModal";
-import { AddJobModal } from "../../components/AddJobModal";
+    DisabledInput,
+    Edit,
+    ListButton,
+    SimpleForm,
+} from 'admin-on-rest/lib/mui';
+import { CardActions } from 'material-ui/Card';
+import FlatButton from 'material-ui/FlatButton';
+import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
+import React from 'react';
+import { AddJobModal } from '../../components/AddJobModal';
+import { CopyJobModal } from '../../components/CopyJobModal';
 
-import JobTable from "../../components/JobTable";
+import JobTable from '../../components/JobTable';
 
 const cardActionStyle = {
   zIndex: 2,
-  display: "inline-block",
-  float: "right",
+  display: 'inline-block',
+  float: 'right',
 };
 
 const PostEditActions = ({ basePath, data, refresh }) => (
@@ -24,25 +24,25 @@ const PostEditActions = ({ basePath, data, refresh }) => (
     <ListButton basePath={basePath} />
     <FlatButton
       primary
-      label="Refresh"
+      label='Refresh'
       onClick={refresh}
       icon={<NavigationRefresh />}
     />
-    {localStorage.getItem("role") === "admin" && (
-      <AddJobModal data={data} type="item" submitForm={() => 1} />
+    {localStorage.getItem('role') === 'admin' && (
+      <AddJobModal data={data} type='item' submitForm={() => 1} />
     )}
-    {localStorage.getItem("role") === "admin" && (
-      <CopyJobModal data={data} type="item" submitForm={() => 1} />
+    {localStorage.getItem('role') === 'admin' && (
+      <CopyJobModal data={data} type='item' submitForm={() => 1} />
     )}
   </CardActions>
 );
 
 export const ItemJobEdit = (props) => (
-  <Edit title="" actions={<PostEditActions />} {...props}>
+  <Edit title='' actions={<PostEditActions />} {...props}>
     <SimpleForm>
-      <DisabledInput source="id" />
-      <DisabledInput source="item_number" label="Item Number" />
-      <DisabledInput source="description" label="Description" />
+      <DisabledInput source='id' />
+      <DisabledInput source='item_number' label='Item Number' />
+      <DisabledInput source='description' label='Description' />
       <JobTable />
     </SimpleForm>
   </Edit>

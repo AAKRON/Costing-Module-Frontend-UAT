@@ -1,16 +1,16 @@
 import {
-  Button,
-  Card,
-  FormControl,
-  FormControlLabel,
-  InputLabel,
-  MenuItem,
-  Modal,
-  Radio,
-  RadioGroup,
-  Select,
-  Snackbar,
-  TextField,
+    Button,
+    Card,
+    FormControl,
+    FormControlLabel,
+    InputLabel,
+    MenuItem,
+    Modal,
+    Radio,
+    RadioGroup,
+    Select,
+    Snackbar,
+    TextField,
 } from '@mui/material'
 import axios from 'axios'
 import React from 'react'
@@ -264,8 +264,8 @@ export class FileUpload extends React.Component {
 
                 <FormControl fullWidth>
                   <TextField
-                    label="Password"
-                    variant="outlined"
+                    label='Password'
+                    variant='outlined'
                     type='password'
                     value={this.state.confirmPassword}
                     onChange={(e) => this.setState({ confirmPassword: e.target.value })}
@@ -286,7 +286,7 @@ export class FileUpload extends React.Component {
         <h2>Please import a spreadsheet with the same name below:</h2>
         <div style={{ marginBottom: 25 }}>
           <input
-            type="file"
+            type='file'
             onChange={this.handleFileChange}
             accept='.xls, .xlsx, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
           />
@@ -298,15 +298,15 @@ export class FileUpload extends React.Component {
             defaultSelected='not_light'
             onChange={(e, value) => this.setState({ document_type: value })}
           >
-            <FormControlLabel value="jobs_and_blanks" control={<Radio />} label="JOB LIST" />
-            <FormControlLabel value="raw_materials" control={<Radio />} label="MATERIALS" />
-            <FormControlLabel value="blanks_listing_item_with_cost" control={<Radio />} label="BLANKS LISTING ITEM WITH COST" />
-            <FormControlLabel value="blanks_listing_by_item" control={<Radio />} label="BLANKS LISTING BY ITEM" />
-            <FormControlLabel value="box_list_for_costing_module" control={<Radio />} label="BOX LIST" />
-            <FormControlLabel value="item_list_for_costing_module" control={<Radio />} label="ITEM LIST" />
-            <FormControlLabel value="screen_cliche_sizes_for_costing_module" control={<Radio />} label="SCREEN-CLICHE SIZES" />
-            <FormControlLabel value="blanks_report" control={<Radio />} label="BLANKS" />
-            <FormControlLabel value="item_listing_with_item_types" control={<Radio />} label="ITEM LIST WITH ITEM TYPES" />
+            <FormControlLabel value='jobs_and_blanks' control={<Radio />} label='JOB LIST' />
+            <FormControlLabel value='raw_materials' control={<Radio />} label='MATERIALS' />
+            <FormControlLabel value='blanks_listing_item_with_cost' control={<Radio />} label='BLANKS LISTING ITEM WITH COST' />
+            <FormControlLabel value='blanks_listing_by_item' control={<Radio />} label='BLANKS LISTING BY ITEM' />
+            <FormControlLabel value='box_list_for_costing_module' control={<Radio />} label='BOX LIST' />
+            <FormControlLabel value='item_list_for_costing_module' control={<Radio />} label='ITEM LIST' />
+            <FormControlLabel value='screen_cliche_sizes_for_costing_module' control={<Radio />} label='SCREEN-CLICHE SIZES' />
+            <FormControlLabel value='blanks_report' control={<Radio />} label='BLANKS' />
+            <FormControlLabel value='item_listing_with_item_types' control={<Radio />} label='ITEM LIST WITH ITEM TYPES' />
           </RadioGroup>
         </FormControl>
 

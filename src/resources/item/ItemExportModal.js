@@ -1,21 +1,20 @@
 /* eslint-disable */
-import React from 'react';
 import axios from 'axios';
-// import lodash from "lodash";
+import React from 'react';
+// import lodash from 'lodash';
+import {
+    GET_LIST,
+} from 'admin-on-rest';
+import AutoComplete from 'material-ui/AutoComplete';
+import Chip from 'material-ui/Chip';
 import Dialog from 'material-ui/Dialog';
+import Divider from 'material-ui/Divider';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import FileFileDownload from 'material-ui/svg-icons/file/file-download';
-import Divider from 'material-ui/Divider';
-import AutoComplete from 'material-ui/AutoComplete';
-import {
-  GET_LIST,
-  //  UPDATE
-} from 'admin-on-rest';
-import Chip from 'material-ui/Chip';
-import restClient from '../../restClient';
 import { SERVER_URL } from '../../config';
 import { stringHelpers } from '../../helpers/stringHelpers';
+import restClient from '../../restClient';
 
 const styles = {
   RaisedButton: {
@@ -129,12 +128,12 @@ class ItemExportModal extends React.Component {
       <span>
         <FlatButton
           primary
-          label="Export Items"
+          label='Export Items'
           onTouchTap={this.handleOpen}
           icon={<FileFileDownload />}
         />
         <Dialog
-          title="Export Item List"
+          title='Export Item List'
           modal={false}
           open={this.state.open}
           onRequestClose={this.handleClose}
@@ -144,7 +143,7 @@ class ItemExportModal extends React.Component {
             <h2>Export All Items</h2>
             <RaisedButton
               style={styles.RaisedButton.FirstButton}
-              label="Price Cost Items"
+              label='Price Cost Items'
               secondary={true}
               onTouchTap={this.handleOpen}
               icon={<FileFileDownload />}
@@ -153,7 +152,7 @@ class ItemExportModal extends React.Component {
 
             <RaisedButton
               style={styles.RaisedButton.SecondButton}
-              label="Inventory Cost Items"
+              label='Inventory Cost Items'
               secondary={true}
               onTouchTap={this.handleOpen}
               icon={<FileFileDownload />}
@@ -195,7 +194,7 @@ class ItemExportModal extends React.Component {
             {this.state.seleted_items.length > 0 && (
               <RaisedButton
                 style={styles.RaisedButton.FirstButton}
-                label="Price Cost Items"
+                label='Price Cost Items'
                 primary={true}
                 onTouchTap={this.handleOpen}
                 icon={<FileFileDownload />}
@@ -205,7 +204,7 @@ class ItemExportModal extends React.Component {
             {this.state.seleted_items.length > 0 && (
               <RaisedButton
                 style={styles.RaisedButton.SecondButton}
-                label="Inventory Cost Items"
+                label='Inventory Cost Items'
                 primary={true}
                 onTouchTap={this.handleOpen}
                 icon={<FileFileDownload />}

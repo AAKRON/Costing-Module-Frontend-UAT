@@ -1,39 +1,37 @@
 /* eslint-disable */
-import React from "react";
 import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn,
-} from "material-ui/Table";
-import SelectField from "material-ui/SelectField";
-import MenuItem from "material-ui/MenuItem";
-import RemoveJobButton from "material-ui/IconButton";
-import DeleteIcon from "material-ui/svg-icons/action/delete-forever";
-import Dialog from "material-ui/Dialog";
+    GET_LIST,
+} from 'admin-on-rest';
+import axios from 'axios';
+import AutoComplete from 'material-ui/AutoComplete';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import RemoveJobButton from 'material-ui/IconButton';
+import MenuItem from 'material-ui/MenuItem';
+import SelectField from 'material-ui/SelectField';
 import {
-  GET_LIST,
-  // UPDATE
-} from "admin-on-rest";
-import restClient from "../restClient";
-import axios from "axios";
-import FlatButton from "material-ui/FlatButton";
-import AutoComplete from "material-ui/AutoComplete";
-import TextField from "material-ui/TextField";
-import ContentCreate from "material-ui/svg-icons/content/create";
-import * as _ from "lodash";
+    Table,
+    TableBody,
+    TableHeader,
+    TableHeaderColumn,
+    TableRow,
+    TableRowColumn,
+} from 'material-ui/Table';
+import TextField from 'material-ui/TextField';
+import DeleteIcon from 'material-ui/svg-icons/action/delete-forever';
+import ContentCreate from 'material-ui/svg-icons/content/create';
+import React from 'react';
+import restClient from '../restClient';
 
 export default class JobTable extends React.Component {
   constructor(props) {
     super(props);
     console.log(props);
     this.state = {
-      value: "pricing",
+      value: 'pricing',
       style: {
-        inventory: { display: "none" },
-        pricing: { display: "" },
+        inventory: { display: 'none' },
+        pricing: { display: '' },
       },
       item_jobs: [],
       tableBodyRenderKey: 0,
@@ -46,15 +44,15 @@ export default class JobTable extends React.Component {
     };
   }
   fetchItems = () =>
-    restClient(GET_LIST, "item-list-only", {
+    restClient(GET_LIST, 'item-list-only', {
       pagination: { page: 1, perPage: -1 },
-      sort: { field: "id", order: "ASC" },
+      sort: { field: 'id', order: 'ASC' },
     });
 
   fetchJobs = () =>
-    restClient(GET_LIST, "job-list-only", {
+    restClient(GET_LIST, 'job-list-only', {
       pagination: { page: 1, perPage: -1 },
-      sort: { field: "id", order: "ASC" },
+      sort: { field: 'id', order: 'ASC' },
     });
   componentDidMount() {
     axios.all([this.fetchItems(), this.fetchJobs()]).then(
@@ -77,7 +75,7 @@ export default class JobTable extends React.Component {
     this.state.deletedJobKey = jobIndex;
 
     if (currentItemJobs.length === 0) {
-      if (typeof this.props.record.jobs === "object")
+      if (typeof this.props.record.jobs === 'object')
         this.props.record.jobs[0].deleted = true;
 
       this.updateItemJobs(currentItemJobs);
@@ -99,17 +97,17 @@ export default class JobTable extends React.Component {
       tableBodyRenderKey: this.state.tableBodyRenderKey + 1,
     });
     //call API to update job
-    // const data = restClient(UPDATE, "update-item-job-data", {
+    // const data = restClient(UPDATE, 'update-item-job-data', {
     //   item_number: 98010,
     //   job_listing_id: 3,
-    //   hour_per_piece: "0.0025",
+    //   hour_per_piece: '0.0025',
     //   item_job_id: 18583,
     // });
 
-    if (this.props.resource === "blank_jobs") {
-      console.log("blank_number", this.props.record.blank_number);
+    if (this.props.resource === 'blank_jobs') {
+      console.log('blank_number', this.props.record.blank_number);
       const newdata = await axios.put(
-        "https://costing-module-api-heroku-20.herokuapp.com/api/v1/update-blank-job-data",
+        'https://costing-module-api-heroku-20.herokuapp.com/api/v1/update-blank-job-data',
         {
           blank_number: this.props.record.blank_number,
           job_listing_id: EditableJob.job_listing_id,
@@ -124,10 +122,10 @@ export default class JobTable extends React.Component {
       );
       this.props.record.jobs = newdata;
     }
-    if (this.props.resource === "item_jobs") {
-      console.log("item_number", this.props.record.item_number);
+    if (this.props.resource === 'item_jobs') {
+      console.log('item_number', this.props.record.item_number);
       const newdata = await axios.put(
-        "https://costing-module-api-heroku-20.herokuapp.com/api/v1/update-item-job-data",
+        'https://costing-module-api-heroku-20.herokuapp.com/api/v1/update-item-job-data',
         {
           item_number: this.props.record.item_number,
           job_listing_id: EditableJob.job_listing_id,
@@ -170,8 +168,8 @@ export default class JobTable extends React.Component {
 
   toggleDisplay = (field) => {
     return {
-      inventory: { display: field === "inventory" ? "" : "none" },
-      pricing: { display: field === "pricing" ? "" : "none" },
+      inventory: { display: field === 'inventory' ? '' : 'none' },
+      pricing: { display: field === 'pricing' ? '' : 'none' },
     };
   };
   toggleDialog = (index, job) => () => {
@@ -185,7 +183,7 @@ export default class JobTable extends React.Component {
   };
 
   hadleAutoComplete = (jobIndex) => (data) => {
-    const vale = data.split(" - ");
+    const vale = data.split(' - ');
     this.setState({
       id: vale[0],
       description: vale[1],
@@ -227,7 +225,7 @@ export default class JobTable extends React.Component {
   jobField = (job, index) => {
     return (
       <TableRow key={index} selected={job.selected}>
-        <TableRowColumn style={{ width: "30%" }}>
+        <TableRowColumn style={{ width: '30%' }}>
           {job.job_number} - {job.description}
         </TableRowColumn>
         <TableRowColumn>${job.wages_per_hour}</TableRowColumn>
@@ -257,16 +255,16 @@ export default class JobTable extends React.Component {
     const { EditableJob } = this.state;
     const defaultJob =
       EditableJob.job_listing_id && EditableJob.description
-        ? EditableJob.job_listing_id + " - " + EditableJob.description
-        : "";
+        ? EditableJob.job_listing_id + ' - ' + EditableJob.description
+        : '';
     const actions = [
       <FlatButton
-        label="Cancel"
+        label='Cancel'
         primary={true}
         onTouchTap={() => this.setState({ open: false })}
       />,
       <FlatButton
-        label="Update"
+        label='Update'
         primary={true}
         keyboardFocused={true}
         onTouchTap={() => {
@@ -276,7 +274,7 @@ export default class JobTable extends React.Component {
     ];
 
     if (
-      typeof this.props.record.jobs === "object" &&
+      typeof this.props.record.jobs === 'object' &&
       this.props.record.jobs.length > 0 &&
       this.state.item_jobs.length === 0
     ) {
@@ -284,22 +282,22 @@ export default class JobTable extends React.Component {
     }
 
     if (
-      typeof this.state.item_jobs === "object" &&
+      typeof this.state.item_jobs === 'object' &&
       this.state.item_jobs.length > 0
     ) {
       return (
         <div>
           <h2>Job</h2>
           <SelectField
-            floatingLabelText="Overhead Cost"
+            floatingLabelText='Overhead Cost'
             value={this.state.value}
             onChange={this.handleChange}
           >
-            <MenuItem value="inventory" primaryText="Inventory" />
-            <MenuItem value="pricing" primaryText="Pricing" />
+            <MenuItem value='inventory' primaryText='Inventory' />
+            <MenuItem value='pricing' primaryText='Pricing' />
           </SelectField>
           <Dialog
-            title="Edit Job"
+            title='Edit Job'
             actions={actions}
             modal={false}
             open={this.state.open}
@@ -307,10 +305,10 @@ export default class JobTable extends React.Component {
             autoScrollBodyContent={true}
           >
             <AutoComplete
-              floatingLabelText="Type the job number"
+              floatingLabelText='Type the job number'
               filter={AutoComplete.fuzzyFilter}
               dataSource={this.state.jobs}
-              name="job_listing_id"
+              name='job_listing_id'
               maxSearchResults={5}
               //onNewRequest={this.handhadleAutoComplete}
               onUpdateInput={this.hadleAutoComplete(this.state.EditIndex)}
@@ -319,10 +317,10 @@ export default class JobTable extends React.Component {
             />
             &nbsp;&nbsp;
             <TextField
-              hintText="Hour Per Piece"
-              floatingLabelText="Hour Per Piece"
-              errorText=""
-              name="hour_per_piece"
+              hintText='Hour Per Piece'
+              floatingLabelText='Hour Per Piece'
+              errorText=''
+              name='hour_per_piece'
               onChange={this.handleJobFieldChange(this.state.EditIndex)}
               defaultValue={this.state.EditableJob.hour_per_piece}
             />
@@ -330,7 +328,7 @@ export default class JobTable extends React.Component {
           <Table multiSelectable={true} onRowSelection={this.onRowSelection}>
             <TableHeader enableSelectAll={false}>
               <TableRow>
-                <TableHeaderColumn style={{ width: "30%" }}>
+                <TableHeaderColumn style={{ width: '30%' }}>
                   Job#
                 </TableHeaderColumn>
                 <TableHeaderColumn>Wages($)/hr</TableHeaderColumn>

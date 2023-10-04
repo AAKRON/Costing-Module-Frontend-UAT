@@ -1,4 +1,4 @@
-import { AUTH_CHECK, AUTH_GET_PERMISSIONS, AUTH_LOGIN, AUTH_LOGOUT } from 'react-admin'
+import { AUTH_CHECK, AUTH_ERROR, AUTH_GET_PERMISSIONS, AUTH_LOGIN, AUTH_LOGOUT } from 'react-admin'
 import { login, logout } from '../actions/authActions'
 
 export default (type, params) => {
@@ -15,6 +15,10 @@ export default (type, params) => {
 				: Promise.reject()
 		}
 		case AUTH_GET_PERMISSIONS:{
+			return Promise.resolve()
+		}
+		case AUTH_ERROR:{
+			console.error('AUTH_ERROR', params)
 			return Promise.resolve()
 		}
 		default:{

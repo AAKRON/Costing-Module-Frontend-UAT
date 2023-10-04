@@ -1,53 +1,52 @@
-import React from "react";
-import axios from "axios";
-// import lodash from "lodash";
-import Dialog from "material-ui/Dialog";
-import FlatButton from "material-ui/FlatButton";
-import RaisedButton from "material-ui/RaisedButton";
-import FileFileDownload from "material-ui/svg-icons/file/file-download";
-import Divider from "material-ui/Divider";
-import AutoComplete from "material-ui/AutoComplete";
+import axios from 'axios';
+import React from 'react';
+// import lodash from 'lodash';
 import {
-  GET_LIST,
-  // UPDATE
-} from "admin-on-rest";
-import Chip from "material-ui/Chip";
-import restClient from "../../restClient";
-import { SERVER_URL } from "../../config";
-import { stringHelpers } from "../../helpers/stringHelpers";
+    GET_LIST,
+} from 'admin-on-rest';
+import AutoComplete from 'material-ui/AutoComplete';
+import Chip from 'material-ui/Chip';
+import Dialog from 'material-ui/Dialog';
+import Divider from 'material-ui/Divider';
+import FlatButton from 'material-ui/FlatButton';
+import RaisedButton from 'material-ui/RaisedButton';
+import FileFileDownload from 'material-ui/svg-icons/file/file-download';
+import { SERVER_URL } from '../../config';
+import { stringHelpers } from '../../helpers/stringHelpers';
+import restClient from '../../restClient';
 
 const styles = {
   RaisedButton: {
     FirstButton: {
-      marginTop: "30px",
-      marginBottom: "10px",
+      marginTop: '30px',
+      marginBottom: '10px',
     },
     SecondButton: {
-      marginLeft: "30px",
-      marginTop: "30px",
-      marginBottom: "10px",
+      marginLeft: '30px',
+      marginTop: '30px',
+      marginBottom: '10px',
     },
   },
   CenterAlgin: {
-    textAlign: "center",
+    textAlign: 'center',
   },
   Blank: {
     margin: 4,
   },
   Wrapper: {
-    display: "flex",
-    flexWrap: "wrap",
-    marginBottom: "10px",
+    display: 'flex',
+    flexWrap: 'wrap',
+    marginBottom: '10px',
   },
 };
 
 class RawMaterialExportModal extends React.Component {
-  state = { open: false, blanks: [], seleted_blanks: [], searchText: "" };
+  state = { open: false, blanks: [], seleted_blanks: [], searchText: '' };
 
   fetchRawMaterials = () =>
-    restClient(GET_LIST, "raw-material-list-only", {
+    restClient(GET_LIST, 'raw-material-list-only', {
       pagination: { page: 1, perPage: -1 },
-      sort: { field: "id", order: "DESC" },
+      sort: { field: 'id', order: 'DESC' },
       // filter: { type_id: 1 },
     });
 
@@ -70,7 +69,7 @@ class RawMaterialExportModal extends React.Component {
 
     window.open(
       `${SERVER_URL}/raw-material-download/listing-raw-material.csv`,
-      "_blank"
+      '_blank'
     );
   };
 
@@ -79,7 +78,7 @@ class RawMaterialExportModal extends React.Component {
 
     window.open(
       `${SERVER_URL}/raw-material-download/listing-raw-material.csv`,
-      "_blank"
+      '_blank'
     );
   };
 
@@ -88,7 +87,7 @@ class RawMaterialExportModal extends React.Component {
 
     window.open(
       `${SERVER_URL}/raw-material-download/listing-raw-material.csv?blanks=${this.state.seleted_blanks.toString()}`,
-      "_blank"
+      '_blank'
     );
   };
 
@@ -97,7 +96,7 @@ class RawMaterialExportModal extends React.Component {
 
     window.open(
       `${SERVER_URL}/raw-material-download/listing-raw-material.csv?blanks=${this.state.seleted_blanks.toString()}`,
-      "_blank"
+      '_blank'
     );
   };
 
@@ -127,12 +126,12 @@ class RawMaterialExportModal extends React.Component {
       <span>
         <FlatButton
           primary
-          label="Export Raw Material"
+          label='Export Raw Material'
           onTouchTap={this.handleOpen}
           icon={<FileFileDownload />}
         />
         <Dialog
-          title="Export Raw Material List"
+          title='Export Raw Material List'
           modal={false}
           open={this.state.open}
           onRequestClose={this.handleClose}
@@ -142,7 +141,7 @@ class RawMaterialExportModal extends React.Component {
             <h2>Export All Raw Material</h2>
             <RaisedButton
               style={styles.RaisedButton.FirstButton}
-              label="Raw Material Listing"
+              label='Raw Material Listing'
               secondary={true}
               onTouchTap={this.handleOpen}
               icon={<FileFileDownload />}
@@ -151,7 +150,7 @@ class RawMaterialExportModal extends React.Component {
 
             {/* <RaisedButton
               style={styles.RaisedButton.SecondButton}
-              label="Inventory Cost Blanks"
+              label='Inventory Cost Blanks'
               secondary={true}
               onTouchTap={this.handleOpen}
               icon={<FileFileDownload />}
@@ -178,13 +177,13 @@ class RawMaterialExportModal extends React.Component {
 
                 this.setState({
                   seleted_blanks: seleted_blanks,
-                  searchText: "",
+                  searchText: '',
                 });
               }}
               fullWidth={true}
               searchText={this.state.searchText}
             />
-            <h4 style={{ textAlign: "left", margin: "5px 0" }}>
+            <h4 style={{ textAlign: 'left', margin: '5px 0' }}>
               Selected Raw Material:
             </h4>
             <div style={styles.Wrapper}>
@@ -193,7 +192,7 @@ class RawMaterialExportModal extends React.Component {
             {this.state.seleted_blanks.length > 0 && (
               <RaisedButton
                 style={styles.RaisedButton.FirstButton}
-                label="Export Selected Raw Materials"
+                label='Export Selected Raw Materials'
                 primary={true}
                 onTouchTap={this.handleOpen}
                 icon={<FileFileDownload />}
@@ -203,7 +202,7 @@ class RawMaterialExportModal extends React.Component {
             {/* {this.state.seleted_blanks.length > 0 && (
               <RaisedButton
                 style={styles.RaisedButton.SecondButton}
-                label="Inventory Cost Blanks"
+                label='Inventory Cost Blanks'
                 primary={true}
                 onTouchTap={this.handleOpen}
                 icon={<FileFileDownload />}

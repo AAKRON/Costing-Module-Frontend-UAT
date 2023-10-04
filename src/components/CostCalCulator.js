@@ -1,55 +1,55 @@
 /* eslint-disable valid-typeof, eqeqeq, operator-assignment */
 
-import React from "react";
-import AutoComplete from "material-ui/AutoComplete";
-import axios from "axios";
-import lodash from "lodash";
-import TextField from "material-ui/TextField";
-import Paper from "material-ui/Paper";
+import { GET_LIST, UPDATE } from 'admin-on-rest';
+import axios from 'axios';
+import lodash from 'lodash';
+import AutoComplete from 'material-ui/AutoComplete';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import IconButton from 'material-ui/IconButton';
+import Paper from 'material-ui/Paper';
+import RaisedButton from 'material-ui/RaisedButton';
 import {
-  Table,
-  TableBody,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn,
-} from "material-ui/Table";
-import IconButton from "material-ui/IconButton";
-import DeleteIcon from "material-ui/svg-icons/action/delete-forever";
-import AddIcon from "material-ui/svg-icons/content/add";
-import FlatButton from "material-ui/FlatButton";
-import Dialog from "material-ui/Dialog";
-import ContentSave from "material-ui/svg-icons/content/save";
-import RaisedButton from "material-ui/RaisedButton";
-import ContentCreate from "material-ui/svg-icons/content/create";
-import { stringHelpers } from "../helpers/stringHelpers";
-import { GET_LIST, UPDATE } from "admin-on-rest";
-import FileFileDownload from "material-ui/svg-icons/file/file-download";
-import restClient from "../restClient";
-import { SERVER_URL } from "../config";
+    Table,
+    TableBody,
+    TableHeader,
+    TableHeaderColumn,
+    TableRow,
+    TableRowColumn,
+} from 'material-ui/Table';
+import TextField from 'material-ui/TextField';
+import DeleteIcon from 'material-ui/svg-icons/action/delete-forever';
+import AddIcon from 'material-ui/svg-icons/content/add';
+import ContentCreate from 'material-ui/svg-icons/content/create';
+import ContentSave from 'material-ui/svg-icons/content/save';
+import FileFileDownload from 'material-ui/svg-icons/file/file-download';
+import React from 'react';
+import { SERVER_URL } from '../config';
+import { stringHelpers } from '../helpers/stringHelpers';
+import restClient from '../restClient';
 
 const downloadPath = `${SERVER_URL}/cost-pdf-download`;
 
 const style = {
-  textAlign: "center",
-  display: "inline-block",
-  marginTop: "20px",
+  textAlign: 'center',
+  display: 'inline-block',
+  marginTop: '20px',
 };
 const textCenterAlign = {
-  textAlign: "center",
-  textOverflow: "inherit",
+  textAlign: 'center',
+  textOverflow: 'inherit',
 };
 const textRightAlign = {
-  textAlign: "right",
-  textOverflow: "inherit",
+  textAlign: 'right',
+  textOverflow: 'inherit',
 };
 const rightColumnBorder = {
-  borderRight: "1px solid #ccc",
-  textOverflow: "inherit",
+  borderRight: '1px solid #ccc',
+  textOverflow: 'inherit',
 };
 
 const buttonStyle = {};
-const requiredMessage = "This field is required.";
+const requiredMessage = 'This field is required.';
 
 export default class CostCalCulator extends React.Component {
   constructor(props) {
@@ -58,25 +58,25 @@ export default class CostCalCulator extends React.Component {
     this.state = {
       blank_dialog_open: false,
       job_dialog_open: false,
-      item_name: "",
+      item_name: '',
       blank: [],
       blanks: [],
-      error_blank: [{ name: "", cost: "" }],
+      error_blank: [{ name: '', cost: '' }],
       job: [],
       jobs: [],
-      error_job: [{ job_listing_id: "", hour_per_piece: "" }],
+      error_job: [{ job_listing_id: '', hour_per_piece: '' }],
       selected_jobs: [],
       screens: [],
-      box: [{ name: "", cost: 0.0 }],
-      ink_cost: "",
-      total_cost: "",
+      box: [{ name: '', cost: 0.0 }],
+      ink_cost: '',
+      total_cost: '',
     };
   }
 
   fetchJobs = () =>
-    restClient(GET_LIST, "job-list-only", {
+    restClient(GET_LIST, 'job-list-only', {
       pagination: { page: 1, perPage: -1 },
-      sort: { field: "id", order: "ASC" },
+      sort: { field: 'id', order: 'ASC' },
     });
 
   componentDidMount() {
@@ -107,8 +107,8 @@ export default class CostCalCulator extends React.Component {
       var blanks = this.state.blanks;
       // eslint-disable-next-line
       if (
-        typeof this.state.blank.blankIndex !== "undefined" &&
-        typeof this.state.blank.blankIndex !== ""
+        typeof this.state.blank.blankIndex !== 'undefined' &&
+        typeof this.state.blank.blankIndex !== ''
       ) {
         blanks[this.state.blank.blankIndex] = this.state.blank;
       } else {
@@ -116,15 +116,15 @@ export default class CostCalCulator extends React.Component {
       }
       this.setState({ blanks: blanks });
 
-      this.setState({ blank: {}, error_blank: { name: "", cost: "" } });
+      this.setState({ blank: {}, error_blank: { name: '', cost: '' } });
 
-      this.handleTotalCost("blank", blanks);
+      this.handleTotalCost('blank', blanks);
       this.handleBlankDialogClose();
     }
   };
 
   handleAddBlank = () => {
-    this.setState({ blank: {}, error_blank: { name: "", cost: "" } });
+    this.setState({ blank: {}, error_blank: { name: '', cost: '' } });
     this.handleBlankDialogOpen();
   };
 
@@ -143,7 +143,7 @@ export default class CostCalCulator extends React.Component {
       blanks: blanks,
     });
 
-    this.handleTotalCost("blank", blanks);
+    this.handleTotalCost('blank', blanks);
   };
 
   handleBlankTextFieldChange = (event, value) => {
@@ -151,7 +151,7 @@ export default class CostCalCulator extends React.Component {
     this.setState({
       error_blank: {
         ...this.state.error_blank,
-        [event.target.name]: value == "" ? requiredMessage : "",
+        [event.target.name]: value == '' ? requiredMessage : '',
       },
     });
     this.setState({
@@ -161,24 +161,24 @@ export default class CostCalCulator extends React.Component {
 
   validateBlank = () => {
     if (
-      typeof this.state.blank.name === "undefined" &&
-      typeof this.state.blank.cost === "undefined"
+      typeof this.state.blank.name === 'undefined' &&
+      typeof this.state.blank.cost === 'undefined'
     ) {
       this.setState({
         error_blank: { name: requiredMessage, cost: requiredMessage },
       });
       return false;
     } else if (
-      typeof this.state.blank.name === "undefined" ||
-      this.state.blank.name === ""
+      typeof this.state.blank.name === 'undefined' ||
+      this.state.blank.name === ''
     ) {
       this.setState({
         error_blank: { ...this.state.error_blank, name: requiredMessage },
       });
       return false;
     } else if (
-      typeof this.state.blank.cost === "undefined" ||
-      this.state.blank.cost === ""
+      typeof this.state.blank.cost === 'undefined' ||
+      this.state.blank.cost === ''
     ) {
       this.setState({
         error_blank: { ...this.state.error_blank, cost: requiredMessage },
@@ -194,7 +194,7 @@ export default class CostCalCulator extends React.Component {
   handleAddJob = () => {
     this.setState({
       job: {},
-      error_job: { job_listing_id: "", hour_per_piece: "" },
+      error_job: { job_listing_id: '', hour_per_piece: '' },
     });
     this.handleJobDialogOpen();
   };
@@ -224,7 +224,7 @@ export default class CostCalCulator extends React.Component {
     this.setState({
       error_job: {
         ...this.state.error_job,
-        [event.target.name]: value == "" ? requiredMessage : "",
+        [event.target.name]: value == '' ? requiredMessage : '',
       },
     });
     this.setState({ job: { ...this.state.job, [event.target.name]: value } });
@@ -235,13 +235,13 @@ export default class CostCalCulator extends React.Component {
 
     if (value > 0) {
     } else {
-      value = "";
+      value = '';
     }
     // eslint-disable-next-line
     this.setState({
       error_job: {
         ...this.state.error_job,
-        job_listing_id: value == "" ? requiredMessage : "",
+        job_listing_id: value == '' ? requiredMessage : '',
       },
     });
     this.setState({ job: { ...this.state.job, job_listing_id: value } });
@@ -249,15 +249,15 @@ export default class CostCalCulator extends React.Component {
 
   handleSaveJob = () => {
     if (this.validateJob()) {
-      restClient(UPDATE, "job-cost-calculate", {
+      restClient(UPDATE, 'job-cost-calculate', {
         id: this.state.job.job_listing_id,
         data: this.state.job,
       }).then((response) => {
         var selected_jobs = this.state.selected_jobs;
 
         if (
-          typeof this.state.job.jobIndex !== "undefined" &&
-          typeof this.state.job.jobIndex !== ""
+          typeof this.state.job.jobIndex !== 'undefined' &&
+          typeof this.state.job.jobIndex !== ''
         ) {
           selected_jobs[this.state.job.jobIndex] = response.data;
         } else {
@@ -270,11 +270,11 @@ export default class CostCalCulator extends React.Component {
 
         this.setState({ selected_jobs: selected_jobs, screens: screens });
 
-        this.handleTotalCost("job", selected_jobs);
-        this.handleTotalCost("screen", screens);
+        this.handleTotalCost('job', selected_jobs);
+        this.handleTotalCost('screen', screens);
         this.setState({
           job: {},
-          error_job: { job_listing_id: "", hour_per_piece: "" },
+          error_job: { job_listing_id: '', hour_per_piece: '' },
         });
         this.handleJobDialogClose();
       });
@@ -283,8 +283,8 @@ export default class CostCalCulator extends React.Component {
 
   validateJob = () => {
     if (
-      typeof this.state.job.job_listing_id === "undefined" &&
-      typeof this.state.job.hour_per_piece === "undefined"
+      typeof this.state.job.job_listing_id === 'undefined' &&
+      typeof this.state.job.hour_per_piece === 'undefined'
     ) {
       this.setState({
         error_job: {
@@ -294,16 +294,16 @@ export default class CostCalCulator extends React.Component {
       });
       return false;
     } else if (
-      typeof this.state.job.job_listing_id === "undefined" ||
-      this.state.job.job_listing_id === ""
+      typeof this.state.job.job_listing_id === 'undefined' ||
+      this.state.job.job_listing_id === ''
     ) {
       this.setState({
         error_job: { ...this.state.error_job, job_listing_id: requiredMessage },
       });
       return false;
     } else if (
-      typeof this.state.job.hour_per_piece === "undefined" ||
-      this.state.job.hour_per_piece === ""
+      typeof this.state.job.hour_per_piece === 'undefined' ||
+      this.state.job.hour_per_piece === ''
     ) {
       this.setState({
         error_job: { ...this.state.error_job, hour_per_piece: requiredMessage },
@@ -317,47 +317,47 @@ export default class CostCalCulator extends React.Component {
 
   handleBoxTextFieldChange = (event, value) => {
     var box = this.state.box;
-    if (event.target.name == "name") {
+    if (event.target.name == 'name') {
       box[0].name = value;
     } else {
       box[0].cost = value;
     }
     this.setState({ box: box });
-    this.handleTotalCost("box", value);
+    this.handleTotalCost('box', value);
   };
 
   handleInkTextFieldChange = (event, value) => {
     this.setState({ ink_cost: value });
-    this.handleTotalCost("ink", value);
+    this.handleTotalCost('ink', value);
   };
 
   handleDownloadInvoice = () => {
     axios
       .post(downloadPath, {
         data: lodash.pick(this.state, [
-          "item_name",
-          "blanks",
-          "selected_jobs",
-          "screens",
-          "box",
-          "ink_cost",
-          "total_cost",
+          'item_name',
+          'blanks',
+          'selected_jobs',
+          'screens',
+          'box',
+          'ink_cost',
+          'total_cost',
         ]),
       })
       .then((response) => {
-        window.open(`${SERVER_URL}/download/item_cost_invoice`, "_blank");
+        window.open(`${SERVER_URL}/download/item_cost_invoice`, '_blank');
       });
   };
 
   handleTotalCost = (cost_factor, factor) => {
     var total_cost = 0.0;
 
-    var blanks = cost_factor === "blank" ? factor : this.state.blanks;
+    var blanks = cost_factor === 'blank' ? factor : this.state.blanks;
     var selected_jobs =
-      cost_factor === "job" ? factor : this.state.selected_jobs;
-    var screens = cost_factor === "screen" ? factor : this.state.screens;
-    var box_cost = cost_factor === "box" ? factor : this.state.box[0].cost;
-    var ink_cost = cost_factor === "ink" ? factor : this.state.ink_cost;
+      cost_factor === 'job' ? factor : this.state.selected_jobs;
+    var screens = cost_factor === 'screen' ? factor : this.state.screens;
+    var box_cost = cost_factor === 'box' ? factor : this.state.box[0].cost;
+    var ink_cost = cost_factor === 'ink' ? factor : this.state.ink_cost;
 
     blanks.forEach(function (blank) {
       total_cost = total_cost + Number(blank.cost);
@@ -465,11 +465,11 @@ export default class CostCalCulator extends React.Component {
 
   render() {
     return (
-      <div style={{ marginTop: "40px" }}>
+      <div style={{ marginTop: '40px' }}>
         <TextField
-          hintText="Item Name"
-          name="name"
-          defaultValue=""
+          hintText='Item Name'
+          name='name'
+          defaultValue=''
           onChange={this.handleItemNameFieldChange}
         />
 
@@ -503,7 +503,7 @@ export default class CostCalCulator extends React.Component {
               <TableRow>
                 <TableRowColumn colSpan={9}>
                   <FlatButton
-                    label="Add Blank"
+                    label='Add Blank'
                     secondary={true}
                     icon={<AddIcon />}
                     onTouchTap={this.handleAddBlank}
@@ -536,14 +536,14 @@ export default class CostCalCulator extends React.Component {
               <TableRow>
                 <TableRowColumn colSpan={9}>
                   <FlatButton
-                    label="Add Job"
+                    label='Add Job'
                     secondary={true}
                     icon={<AddIcon />}
                     onTouchTap={this.handleAddJob}
                   />
                 </TableRowColumn>
               </TableRow>
-              {typeof this.state.screens === "object" &&
+              {typeof this.state.screens === 'object' &&
                 this.state.screens.length > 0 && (
                   <TableRow>
                     <TableRowColumn
@@ -558,7 +558,7 @@ export default class CostCalCulator extends React.Component {
                     </TableHeaderColumn>
                   </TableRow>
                 )}
-              {typeof this.state.screens === "object" &&
+              {typeof this.state.screens === 'object' &&
                 this.state.screens.length > 0 &&
                 this.state.screens.map(this.screenField)}
               <TableRow>
@@ -573,8 +573,8 @@ export default class CostCalCulator extends React.Component {
               <TableRow>
                 <TableRowColumn colSpan={6}>
                   <TextField
-                    hintText="Box Name"
-                    name="name"
+                    hintText='Box Name'
+                    name='name'
                     defaultValue={this.state.box[0].name}
                     fullWidth={true}
                     onChange={this.handleBoxTextFieldChange}
@@ -582,9 +582,9 @@ export default class CostCalCulator extends React.Component {
                 </TableRowColumn>
                 <TableRowColumn colSpan={2} style={textCenterAlign}>
                   <TextField
-                    hintText="Box Cost"
-                    name="cost"
-                    type="number"
+                    hintText='Box Cost'
+                    name='cost'
+                    type='number'
                     defaultValue={this.state.box[0].cost}
                     onChange={this.handleBoxTextFieldChange}
                   />
@@ -601,15 +601,15 @@ export default class CostCalCulator extends React.Component {
                 </TableRowColumn>
                 <TableRowColumn colSpan={2} style={textCenterAlign}>
                   <TextField
-                    hintText="Ink Cost"
-                    name="cost"
-                    type="number"
+                    hintText='Ink Cost'
+                    name='cost'
+                    type='number'
                     defaultValue={this.state.ink_cost}
                     onChange={this.handleInkTextFieldChange}
                   />
                 </TableRowColumn>
                 <TableRowColumn colSpan={7} style={textRightAlign}>
-                  {this.state.ink_cost !== "" && <b>${this.state.ink_cost}</b>}
+                  {this.state.ink_cost !== '' && <b>${this.state.ink_cost}</b>}
                 </TableRowColumn>
               </TableRow>
               <TableRow>
@@ -617,7 +617,7 @@ export default class CostCalCulator extends React.Component {
                   <b>Total Price Cost($)</b>
                 </TableRowColumn>
                 <TableRowColumn style={textRightAlign}>
-                  {this.state.total_cost !== "" && (
+                  {this.state.total_cost !== '' && (
                     <b>${this.state.total_cost}</b>
                   )}
                 </TableRowColumn>
@@ -626,40 +626,40 @@ export default class CostCalCulator extends React.Component {
           </Table>
 
           <RaisedButton
-            type="submit"
-            label="Download Invoice"
+            type='submit'
+            label='Download Invoice'
             icon={<FileFileDownload />}
             onClick={this.handleDownloadInvoice}
             primary={true}
             style={{
-              margin: "10px 24px",
-              position: "relative",
-              float: "right",
+              margin: '10px 24px',
+              position: 'relative',
+              float: 'right',
             }}
           />
         </Paper>
 
         <Dialog
           title={`${
-            typeof this.state.blank.blankIndex !== "undefined" ? "Edit" : "Add"
+            typeof this.state.blank.blankIndex !== 'undefined' ? 'Edit' : 'Add'
           } Blank Detail`}
           modal={false}
           open={this.state.blank_dialog_open}
           onRequestClose={this.handleBlankDialogClose}
           autoScrollBodyContent={true}
         >
-          <Table selectable={false} style={{ marginTop: "10px" }}>
+          <Table selectable={false} style={{ marginTop: '10px' }}>
             <TableBody displayRowCheckbox={false}>
               <TableRow>
                 <TableRowColumn>
                   <TextField
-                    hintText="Blank Name"
-                    floatingLabelText="Blank Name"
-                    name="name"
+                    hintText='Blank Name'
+                    floatingLabelText='Blank Name'
+                    name='name'
                     defaultValue={
-                      typeof this.state.blank.name !== "undefined"
+                      typeof this.state.blank.name !== 'undefined'
                         ? this.state.blank.name
-                        : ""
+                        : ''
                     }
                     errorText={this.state.error_blank.name}
                     onChange={this.handleBlankTextFieldChange}
@@ -667,14 +667,14 @@ export default class CostCalCulator extends React.Component {
                 </TableRowColumn>
                 <TableRowColumn>
                   <TextField
-                    hintText="Blank Price Cost($)"
-                    floatingLabelText="Blank Price Cost($)"
-                    name="cost"
-                    type="number"
+                    hintText='Blank Price Cost($)'
+                    floatingLabelText='Blank Price Cost($)'
+                    name='cost'
+                    type='number'
                     defaultValue={
-                      typeof this.state.blank.cost !== "undefined"
+                      typeof this.state.blank.cost !== 'undefined'
                         ? this.state.blank.cost
-                        : ""
+                        : ''
                     }
                     errorText={this.state.error_blank.cost}
                     onChange={this.handleBlankTextFieldChange}
@@ -684,62 +684,62 @@ export default class CostCalCulator extends React.Component {
             </TableBody>
           </Table>
           <RaisedButton
-            type="submit"
-            label="Save"
+            type='submit'
+            label='Save'
             icon={<ContentSave />}
             onClick={this.handleSaveBlank}
             primary={true}
             style={{
-              margin: "10px 24px",
-              position: "relative",
+              margin: '10px 24px',
+              position: 'relative',
             }}
           />
         </Dialog>
 
         <Dialog
           title={`${
-            typeof this.state.job.jobIndex !== "undefined" ? "Edit" : "Add"
+            typeof this.state.job.jobIndex !== 'undefined' ? 'Edit' : 'Add'
           } Job Detail`}
           modal={false}
           open={this.state.job_dialog_open}
           onRequestClose={this.handleJobDialogClose}
           autoScrollBodyContent={true}
         >
-          <Table selectable={false} style={{ marginTop: "10px" }}>
+          <Table selectable={false} style={{ marginTop: '10px' }}>
             <TableBody displayRowCheckbox={false}>
               <TableRow>
                 <TableRowColumn>
                   <AutoComplete
-                    floatingLabelText="Type the job number"
+                    floatingLabelText='Type the job number'
                     errorText={this.state.error_job.job_listing_id}
                     filter={AutoComplete.fuzzyFilter}
                     dataSource={this.state.jobs}
-                    name="job_listing_id"
+                    name='job_listing_id'
                     maxSearchResults={5}
                     onUpdateInput={this.handleJobFieldSelectChange}
                     fullWidth={false}
                     searchText={
-                      typeof this.state.job.job_listing_id !== "undefined" &&
-                      typeof this.state.job.description !== "undefined"
+                      typeof this.state.job.job_listing_id !== 'undefined' &&
+                      typeof this.state.job.description !== 'undefined'
                         ? this.state.job.job_listing_id +
-                          " - " +
+                          ' - ' +
                           this.state.job.description
-                        : ""
+                        : ''
                     }
                   />
                 </TableRowColumn>
                 <TableRowColumn>
                   <TextField
-                    hintText="Hour Per Piece"
-                    floatingLabelText="Hour Per Piece"
+                    hintText='Hour Per Piece'
+                    floatingLabelText='Hour Per Piece'
                     errorText={this.state.error_job.hour_per_piece}
-                    name="hour_per_piece"
-                    type="number"
+                    name='hour_per_piece'
+                    type='number'
                     onChange={this.handleJobFieldChange}
                     defaultValue={
-                      typeof this.state.job.hour_per_piece !== "undefined"
+                      typeof this.state.job.hour_per_piece !== 'undefined'
                         ? this.state.job.hour_per_piece
-                        : ""
+                        : ''
                     }
                   />
                 </TableRowColumn>
@@ -747,14 +747,14 @@ export default class CostCalCulator extends React.Component {
             </TableBody>
           </Table>
           <RaisedButton
-            type="submit"
-            label="Save"
+            type='submit'
+            label='Save'
             icon={<ContentSave />}
             onClick={this.handleSaveJob}
             primary={true}
             style={{
-              margin: "10px 24px",
-              position: "relative",
+              margin: '10px 24px',
+              position: 'relative',
             }}
           />
         </Dialog>

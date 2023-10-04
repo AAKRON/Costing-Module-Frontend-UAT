@@ -1,4 +1,3 @@
-import React from "react";
 import Paper from 'material-ui/Paper';
 import {
     Table,
@@ -8,6 +7,7 @@ import {
     TableRow,
     TableRowColumn,
 } from 'material-ui/Table';
+import React from 'react';
 import { Link } from 'react-router';
 
 const style = {
@@ -35,12 +35,12 @@ export default class ItemCostView extends React.Component {
           <TableRowColumn colSpan={2}>{blank.blank_type}</TableRowColumn>
           { this.props.type === 'price' &&
               <TableRowColumn style={textRightAlign}>
-                <Link to={`blanks/${blank.blank_number}`} style={{ textDecoration : "none", color : "#00bcd4"}}>${blank.total_blank_cost_for_price}</Link>
+                <Link to={`blanks/${blank.blank_number}`} style={{ textDecoration : 'none', color : '#00bcd4'}}>${blank.total_blank_cost_for_price}</Link>
               </TableRowColumn>
           }
           { this.props.type === 'inventory' &&
               <TableRowColumn style={textRightAlign}>
-                <Link to={`blanks/${blank.blank_number}`} style={{ textDecoration : "none", color : "#00bcd4"}}>${blank.total_blank_cost_for_inventory}</Link>
+                <Link to={`blanks/${blank.blank_number}`} style={{ textDecoration : 'none', color : '#00bcd4'}}>${blank.total_blank_cost_for_inventory}</Link>
               </TableRowColumn>
           }
           <TableRowColumn style={textCenterAlign}>{blank.multiplication}</TableRowColumn>

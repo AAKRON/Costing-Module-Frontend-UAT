@@ -1,19 +1,19 @@
-import React from "react";
 import {
-  Edit,
-  DisabledInput,
-  AutocompleteInput,
-  SimpleForm,
-  TextInput,
-  NumberInput,
-} from "admin-on-rest/lib/mui";
+    AutocompleteInput,
+    DisabledInput,
+    Edit,
+    NumberInput,
+    SimpleForm,
+    TextInput,
+} from 'admin-on-rest/lib/mui';
+import React from 'react';
 // import {SERVER_URL} from '../../config';
-import axios from "axios";
-import { GET_LIST } from "admin-on-rest";
-import restClient from "../../restClient";
+import { GET_LIST } from 'admin-on-rest';
+import axios from 'axios';
+import restClient from '../../restClient';
 
 const Title = ({ record }) => {
-  return <span>Raw Material #{record ? `${record.name}` : ""}</span>;
+  return <span>Raw Material #{record ? `${record.name}` : ''}</span>;
 };
 export class RawMaterialEdit extends React.Component {
   constructor(props) {
@@ -33,24 +33,24 @@ export class RawMaterialEdit extends React.Component {
     fetchRawMaterialTypes = () => axios.get(SERVER_URL + '/raw-material-type-list-only');*/
 
   fetchUnitsOfMeasure = () =>
-    restClient(GET_LIST, "units-of-measure-list-only", {
+    restClient(GET_LIST, 'units-of-measure-list-only', {
       pagination: { page: 1, perPage: -1 },
-      sort: { field: "id", order: "ASC" },
+      sort: { field: 'id', order: 'ASC' },
     });
   fetchColors = () =>
-    restClient(GET_LIST, "color-list-only", {
+    restClient(GET_LIST, 'color-list-only', {
       pagination: { page: 1, perPage: -1 },
-      sort: { field: "id", order: "ASC" },
+      sort: { field: 'id', order: 'ASC' },
     });
   fetchVendors = () =>
-    restClient(GET_LIST, "vendor-list-only", {
+    restClient(GET_LIST, 'vendor-list-only', {
       pagination: { page: 1, perPage: -1 },
-      sort: { field: "id", order: "ASC" },
+      sort: { field: 'id', order: 'ASC' },
     });
   fetchRawMaterialTypes = () =>
-    restClient(GET_LIST, "raw-material-type-list-only", {
+    restClient(GET_LIST, 'raw-material-type-list-only', {
       pagination: { page: 1, perPage: -1 },
-      sort: { field: "id", order: "ASC" },
+      sort: { field: 'id', order: 'ASC' },
     });
 
   async fetchApiCall() {
@@ -107,18 +107,18 @@ export class RawMaterialEdit extends React.Component {
     return (
       <Edit title={<Title />} {...this.props}>
         <SimpleForm>
-          <DisabledInput source="id" />
-          <TextInput source="name" />
-          <NumberInput source="cost" label="Cost ($)" />
+          <DisabledInput source='id' />
+          <TextInput source='name' />
+          <NumberInput source='cost' label='Cost ($)' />
           <AutocompleteInput
-            source="units_of_measure_id"
+            source='units_of_measure_id'
             choices={this.state.units_of_measures}
           />
-          <AutocompleteInput source="color_id" choices={this.state.colors} />
-          <AutocompleteInput source="vendor_id" choices={this.state.vendors} />
+          <AutocompleteInput source='color_id' choices={this.state.colors} />
+          <AutocompleteInput source='vendor_id' choices={this.state.vendors} />
           <AutocompleteInput
-            source="rawmaterialtype_id"
-            label="Raw Material Type"
+            source='rawmaterialtype_id'
+            label='Raw Material Type'
             choices={this.state.raw_material_types}
           />
         </SimpleForm>

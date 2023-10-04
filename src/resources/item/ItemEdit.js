@@ -1,10 +1,10 @@
-import React from 'react';
-import axios from 'axios';
-import { Edit, DisabledInput, SimpleForm, LongTextInput, NumberInput, AutocompleteInput } from 'admin-on-rest/lib/mui';
-import AutoComplete from 'material-ui/AutoComplete';
 import { GET_LIST } from 'admin-on-rest';
-import ItemCostView from './ItemCostView';
+import { AutocompleteInput, DisabledInput, Edit, LongTextInput, NumberInput, SimpleForm } from 'admin-on-rest/lib/mui';
+import axios from 'axios';
+import AutoComplete from 'material-ui/AutoComplete';
+import React from 'react';
 import restClient from '../../restClient';
+import ItemCostView from './ItemCostView';
 
 const ItemTitle = ({record}) => {
 	return <span>Item #{ record ? `${record.item_number}`: '' }</span>;
@@ -47,12 +47,12 @@ export class  ItemEdit extends React.Component {
 		            <DisabledInput source='id' />
 		            <NumberInput source='item_number' />
 		            <LongTextInput source='description' />
-								<AutocompleteInput source="box_id" choices={this.state.boxes} filter={AutoComplete.fuzzyFilter} translateChoice={false} />
-								<AutocompleteInput source="item_type_id" choices={this.state.item_types} filter={AutoComplete.fuzzyFilter} translateChoice={false} />
-								<NumberInput source='ink_cost' label="Ink Cost($)" />
-								<NumberInput source='number_of_pcs_per_box' label="Number Of PCS/Box" />
-								<ItemCostView type="price"/>
-								<ItemCostView type="inventory"/>
+								<AutocompleteInput source='box_id' choices={this.state.boxes} filter={AutoComplete.fuzzyFilter} translateChoice={false} />
+								<AutocompleteInput source='item_type_id' choices={this.state.item_types} filter={AutoComplete.fuzzyFilter} translateChoice={false} />
+								<NumberInput source='ink_cost' label='Ink Cost($)' />
+								<NumberInput source='number_of_pcs_per_box' label='Number Of PCS/Box' />
+								<ItemCostView type='price'/>
+								<ItemCostView type='inventory'/>
 
 						</SimpleForm>
 				</Edit>
