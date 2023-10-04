@@ -1,0 +1,40 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+#root > div > div:nth-child(1) {
+    background-color: #CD4353 !important;
+}
+
+.menu{
+  background-color: white;
+  min-height: 100vh;
+  box-shadow: 5px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+.popover li{
+  margin: 0;
+  padding: 0;
+}
+
+.popover a{
+  color: black;
+  padding: 12px 24px;
+}
+
+.menu .link a{
+  width: 100%;
+  text-transform: capitalize;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 48px;
+  color: black;
+}
+
+.menu .link span{
+  margin-left: 0px;
+  padding: 0px 16px 0px 24px;
+}
