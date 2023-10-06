@@ -1,8 +1,17 @@
 import React from 'react'
-import { Create, NumberInput, ReferenceInput, SelectInput, SimpleForm, TextInput, required } from 'react-admin'
+import { Create, ListButton, NumberInput, ReferenceInput, SelectInput, SimpleForm, TextInput, TopToolbar, required } from 'react-admin'
+
+const Actions = () => (
+  <TopToolbar>
+      <ListButton />
+  </TopToolbar>
+)
 
 export const BlankCreate = (props) => (
-  <Create {...props}>
+  <Create
+    {...props}
+    actions={<Actions />}
+  >
     <SimpleForm>
       <NumberInput source='blank_number' validate={required()}/>
       <TextInput multiline source='description' validate={required()}/>

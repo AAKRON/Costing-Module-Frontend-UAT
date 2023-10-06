@@ -4,10 +4,16 @@ import Dashboard from './layout/Dashboard'
 import Menu from './layout/Menu'
 import authClient from './providers/authClient'
 import restClient from './providers/restClient'
+import { BlankTypeCreate, BlankTypeEdit } from './resources/blank_type'
+import { BlankTypeListing } from './resources/blank_type/BlankTypeListing'
 import { BlankCreate, BlankEdit, BlankList } from './resources/blanks'
 import { BlankJobEdit, BlanksJobList } from './resources/blanks_job'
+import { GlobalVariableEdit } from './resources/global_variable'
+import { GlobalVariableCreate } from './resources/global_variable/GlobalVariableCreate'
+import { GlobalVariableListing } from './resources/global_variable/GlobalVariableListing'
 import { JobCreate, JobEdit, JobList } from './resources/job'
 import { ScreenCreate, ScreenEdit, ScreenListing } from './resources/screen'
+import { UserCreate, UserEdit, UserListing } from './resources/user'
 
 const App = () => (
   <Admin
@@ -40,6 +46,28 @@ const App = () => (
       name='blank_jobs'
       list={BlanksJobList}
       edit={BlankJobEdit}
+    />
+    <Resource
+      name='blank_types'
+      list={BlankTypeListing}
+      edit={BlankTypeEdit}
+      create={BlankTypeCreate}
+    />
+
+
+
+    <Resource
+      name='users'
+      list={UserListing}
+      edit={UserEdit}
+      create={UserCreate}
+    />
+
+    <Resource
+      name='app_constants'
+      list={GlobalVariableListing}
+      edit={GlobalVariableEdit}
+      create={GlobalVariableCreate}
     />
   </Admin>
 )

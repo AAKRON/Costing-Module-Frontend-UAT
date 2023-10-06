@@ -1,15 +1,21 @@
-import React from 'react';
-import { Edit, DisabledInput, LongTextInput, SimpleForm, NumberInput} from 'admin-on-rest/lib/mui';
+import React from 'react'
+import { Edit, ListButton, NumberInput, SimpleForm, TextInput, TopToolbar, required } from 'react-admin'
 
-const Title = ({record}) => {
-	return <span>Blank Type #{ record ? `${record.type_number}`: '' }</span>;
-};
+const Actions = () => (
+  <TopToolbar>
+      <ListButton />
+  </TopToolbar>
+)
+
 export const BlankTypeEdit = (props) => (
-    <Edit title={<Title />} {...props}>
-        <SimpleForm>
-            <DisabledInput source='id' />
-            <NumberInput source='type_number' />
-            <LongTextInput source='description' />
-				</SimpleForm>
-    </Edit>
-);
+  <Edit
+    actions={<Actions />}
+    {...props}
+  >
+    <SimpleForm>
+      <TextInput disabled source='id' validate={required()}/>
+      <NumberInput source='type_number' validate={required()}/>
+      <TextInput multiline source='description' validate={required()}/>
+    </SimpleForm>
+  </Edit>
+)

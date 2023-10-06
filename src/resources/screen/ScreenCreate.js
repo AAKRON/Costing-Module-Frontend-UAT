@@ -1,8 +1,17 @@
 import React from 'react'
-import { Create, NumberInput, SimpleForm, TextInput, required } from 'react-admin'
+import { Create, ListButton, NumberInput, SimpleForm, TextInput, TopToolbar, required } from 'react-admin'
+
+const Actions = () => (
+  <TopToolbar>
+      <ListButton />
+  </TopToolbar>
+)
 
 export const ScreenCreate = (props) => (
-  <Create {...props}>
+  <Create
+    {...props}
+    actions={<Actions />}
+  >
     <SimpleForm>
       <TextInput source='screen_size' validate={required()}/>
       <NumberInput source='cost' label='Cost ($)' validate={required()}/>

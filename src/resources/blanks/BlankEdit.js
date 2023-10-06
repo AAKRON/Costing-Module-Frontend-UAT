@@ -1,9 +1,18 @@
 import React from 'react'
-import { Edit, NumberInput, ReferenceInput, SelectInput, SimpleForm, TextInput, required } from 'react-admin'
+import { Edit, ListButton, NumberInput, ReferenceInput, SelectInput, SimpleForm, TextInput, TopToolbar, required } from 'react-admin'
 import BlankCostView from './BlankCostView'
 
+const Actions = () => (
+  <TopToolbar>
+      <ListButton />
+  </TopToolbar>
+)
+
 export const BlankEdit = (props) => (
-  <Edit {...props}>
+  <Edit
+    actions={<Actions />}
+    {...props}
+  >
     <SimpleForm>
       <TextInput disabled source='id' validate={required()}/>
       <NumberInput source='blank_number' validate={required()}/>

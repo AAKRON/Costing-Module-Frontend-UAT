@@ -28,7 +28,9 @@ export const BlanksJobList = (props) => (
       perPage={100}
       {...props}
     >
-      <Datagrid>
+      <Datagrid
+        isRowSelectable={() => false}
+      >
         {/* <TextField source='id' /> */}
         <TextField source='blank_number' />
         <TextField source='description' />

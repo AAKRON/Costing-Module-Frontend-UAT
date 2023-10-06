@@ -1,30 +1,7 @@
-// import {
-//     ChipField,
-//     CreateButton,
-//     Datagrid,
-//     EditButton,
-//     Filter,
-//     List,
-//     ReferenceInput,
-//     SelectInput,
-//     TextField,
-//     TextInput,
-// } from 'admin-on-rest/lib/mui';
-// import { NumberInput } from 'admin-on-rest/lib/mui/input';
-// import { CardActions } from 'material-ui/Card';
-// import FlatButton from 'material-ui/FlatButton';
-// import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
-// import React from 'react';
-// import PriceField from '../../components/PriceField';
-// import { BlankExportModal } from './BlankExportModal';
-// const cardActionStyle = {
-//   zIndex: 2,
-//   display: 'inline-block',
-//   float: 'right',
-// };
 import { Card } from '@mui/material'
 import React from 'react'
-import { ChipField, Datagrid, EditButton, Filter, FunctionField, List, NumberInput, ReferenceInput, SelectInput, TextField, TextInput } from 'react-admin'
+import { ChipField, CreateButton, Datagrid, EditButton, Filter, FunctionField, List, NumberInput, ReferenceInput, SelectInput, TextField, TextInput, TopToolbar } from 'react-admin'
+import { BlankExportModal } from './BlankExportModal'
 
 const BlankFilter = (props) => (
   <Filter {...props}>
@@ -55,40 +32,34 @@ const BlankFilter = (props) => (
   </Filter>
 )
 
-// const BlankListActions = ({
-//   resource,
-//   filters,
-//   displayedFilters,
-//   filterValues,
-//   basePath,
-//   showFilter,
-//   refresh,
-// }) => (
-//   <CardActions style={cardActionStyle}>
-//     {filters &&
-//       React.cloneElement(filters, {
-//         resource,
-//         showFilter,
-//         displayedFilters,
-//         filterValues,
-//         context: 'button',
-//       })}
-//     <CreateButton basePath={basePath} />
-//     <FlatButton
-//       primary
-//       label='Refresh'
-//       onClick={refresh}
-//       icon={<NavigationRefresh />}
-//     />
-//     <BlankExportModal submitForm={() => 1} />
-//   </CardActions>
-// );
+const BlankActions = ({
+  filters,
+  displayedFilters,
+  filterValues,
+  resource,
+  showFilter,
+}) => (
+  <TopToolbar>
+    {filters &&
+      React.cloneElement(filters, {
+        resource,
+        showFilter,
+        displayedFilters,
+        filterValues,
+        context: 'button',
+      })}
+
+    <CreateButton />
+
+    <BlankExportModal submitForm={() => 1} />
+  </TopToolbar>
+)
 
 export const BlankList = (props) => (
   <Card style={{ margin: '2rem', padding: '1rem' }}>
     <List
       title='All blanks'
-      // actions={<BlankListActions />}
+      actions={<BlankActions />}
       sort={{ field: 'blank_number', order: 'ASC' }}
       filters={<BlankFilter />}
       perPage={100}

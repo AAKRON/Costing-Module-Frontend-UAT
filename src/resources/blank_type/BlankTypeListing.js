@@ -1,13 +1,5 @@
-import {
-    Datagrid,
-    EditButton,
-    Filter,
-    List,
-    TextField,
-    TextInput,
-} from 'admin-on-rest/lib/mui';
-import { NumberInput } from 'admin-on-rest/lib/mui/input';
-import React from 'react';
+import { Card } from '@mui/material'
+import { Datagrid, EditButton, Filter, List, NumberInput, TextField, TextInput } from 'react-admin'
 
 const BlankTypeFilter = (props) => (
   <Filter {...props}>
@@ -18,20 +10,25 @@ const BlankTypeFilter = (props) => (
       alwaysOn
     />
   </Filter>
-);
+)
 
 export const BlankTypeListing = (props) => (
-  <List
-    title='Blank Types Listing'
-    sort={{ field: 'id', order: 'ASC' }}
-    filters={<BlankTypeFilter />}
-    {...props}
-  >
-    <Datagrid>
-      {/* <TextField source='id' /> */}
-      <TextField source='type_number' />
-      <TextField source='description' />
-      <EditButton />
-    </Datagrid>
-  </List>
-);
+  <Card style={{ margin: '2rem', padding: '1rem' }}>
+    <List
+      title='Blank Types Listing'
+      sort={{ field: 'id', order: 'ASC' }}
+      filters={<BlankTypeFilter />}
+      exporter={false}
+      {...props}
+    >
+      <Datagrid
+        isRowSelectable={() => false}
+      >
+        {/* <TextField source='id' /> */}
+        <TextField source='type_number' />
+        <TextField source='description' />
+        <EditButton />
+      </Datagrid>
+    </List>
+  </Card>
+)

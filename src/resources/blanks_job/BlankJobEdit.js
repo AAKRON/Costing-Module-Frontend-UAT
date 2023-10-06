@@ -1,13 +1,5 @@
-import { CardActions } from '@mui/material'
-import { Edit, ListButton, SimpleForm, TextInput, required } from 'react-admin'
+import { Edit, ListButton, SimpleForm, TextInput, TopToolbar, required } from 'react-admin'
 
-// import {
-//     DisabledInput,
-//     Edit,
-//     ListButton,
-//     SimpleForm,
-//     TextInput,
-// } from 'admin-on-rest/lib/mui';
 // import { AddJobModal } from '../../components/AddJobModal';
 // import { CopyJobModal } from '../../components/CopyJobModal';
 // import JobTable from '../../components/JobTable';
@@ -18,22 +10,22 @@ const cardActionStyle = {
   right: '2rem',
 }
 
-const PostEditActions = ({ basePath, data, refresh }) => (
-  <CardActions style={cardActionStyle}>
-    <ListButton basePath={basePath} />
+const Actions = () => (
+  <TopToolbar>
+    <ListButton />
     {/* {localStorage.getItem('role') === 'admin' && (
       <AddJobModal data={data} type='blank' submitForm={() => 1} />
     )}
     {localStorage.getItem('role') === 'admin' && (
       <CopyJobModal data={data} type='blank' submitForm={() => 1} />
     )} */}
-  </CardActions>
+  </TopToolbar>
 )
 
 export const BlankJobEdit = (props) => {
   return (
     <Edit
-      actions={<PostEditActions />}
+      actions={<Actions />}
       {...props}
     >
       <SimpleForm>

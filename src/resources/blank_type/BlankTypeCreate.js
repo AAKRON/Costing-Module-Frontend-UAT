@@ -1,11 +1,20 @@
-import React from 'react';
-import {Create, SimpleForm, NumberInput, LongTextInput} from 'admin-on-rest/lib/mui'
+import React from 'react'
+import { Create, ListButton, NumberInput, SimpleForm, TextInput, TopToolbar, required } from 'react-admin'
+
+const Actions = () => (
+  <TopToolbar>
+      <ListButton />
+  </TopToolbar>
+)
 
 export const BlankTypeCreate = (props) => (
-    <Create {...props}>
-        <SimpleForm invalid={true}>
-            <NumberInput source='type_number'/>
-            <LongTextInput source='description'/>
-        </SimpleForm>
-    </Create>
-);
+  <Create
+    actions={<Actions />}
+    {...props}
+  >
+    <SimpleForm>
+      <NumberInput source='type_number' validate={required()}/>
+      <TextInput multiline source='description' validate={required()}/>
+    </SimpleForm>
+  </Create>
+)

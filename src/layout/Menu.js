@@ -2,6 +2,7 @@ import ArrowRight from '@mui/icons-material/ArrowRight'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import JobIcon from '@mui/icons-material/Gavel'
 import BlankIcon from '@mui/icons-material/Loyalty'
+import AdminIcon from '@mui/icons-material/Settings'
 import { Divider, MenuItem, Popover } from '@mui/material'
 import { useState } from 'react'
 import { Link } from 'react-admin'
@@ -9,6 +10,7 @@ import { Link } from 'react-admin'
 export default () => {
   const [menuJobs, setMenuJobs] = useState(null)
   const [menuBlanks, setMenuBlanks] = useState(null)
+  const [menuAdmin, setMenuAdmin] = useState(null)
 
   return (
     <div className='menu'>
@@ -105,6 +107,49 @@ export default () => {
       </Popover>
   
       <Divider style={{ margin: '0' }} />
+
+      { localStorage.getItem('role') === 'admin' &&
+        <>
+          <MenuItem
+            className='link'
+            aria-describedby={Boolean(menuAdmin) ? 'menu-blanks' : undefined}
+            onClick={(e) => setMenuAdmin(e.currentTarget)}
+          >
+            <Link>
+              <AdminIcon />
+              <span>Admin</span>
+              <ArrowRight style={{ marginLeft: 'auto' }}/>
+            </Link>
+          </MenuItem>
+          <Popover
+            className='popover'
+            id={Boolean(menuAdmin) ? 'menu-blanks' : undefined}
+            open={Boolean(menuAdmin)}
+            anchorEl={menuAdmin}
+            onClose={() => setMenuAdmin(null)}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'left',
+            }}
+          >
+            <MenuItem className='link'>
+              <Link to='users'>
+                Users
+              </Link>
+            </MenuItem>
+            <MenuItem className='link'>
+              <Link to='app_constants'>
+                Global
+              </Link>
+            </MenuItem>
+          </Popover>
+          <Divider style={{ margin: '0' }} />
+        </>
+      }
     </div>
   )
 }

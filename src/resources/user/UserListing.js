@@ -1,14 +1,20 @@
-import { Datagrid, EditButton, List, TextField } from 'admin-on-rest/lib/mui';
-import React from 'react';
-import { UserFilter } from './UserFilter';
+
+import { Card } from '@mui/material'
+import React from 'react'
+import { Datagrid, EditButton, List, TextField } from 'react-admin'
+import { UserFilter } from './UserFilter'
 
 export const UserListing = (props) => (
-    <List title='All users' filters={<UserFilter />} {...props}>
-        <Datagrid>
-            <TextField source='id' />
-            <TextField source='username' />
-            <TextField source='role' />
-            <EditButton />
-        </Datagrid>
+  <Card style={{ margin: '2rem', padding: '1rem' }}>
+    <List title='All users' filters={<UserFilter />} {...props}  exporter={false}>
+      <Datagrid
+        isRowSelectable={() => false}
+      >
+        <TextField source='id' />
+        <TextField source='username' />
+        <TextField source='role' />
+        <EditButton />
+      </Datagrid>
     </List>
-);
+  </Card>
+)

@@ -11,7 +11,7 @@ export default {
       _sort: field,
       _order: order,
       _start: (page - 1) * perPage,
-      _end: page * perPage - 1,
+      _end: page * perPage,
       ...params.filter,
     }
     const url = `${SERVER_URL}/${resource}?${stringify(query)}`

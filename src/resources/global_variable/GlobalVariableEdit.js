@@ -1,16 +1,29 @@
-import { DisabledInput, Edit, SimpleForm, TextInput } from 'admin-on-rest/lib/mui';
-import React from 'react';
+import React from 'react'
+import { Edit, ListButton, SaveButton, SimpleForm, TextInput, Toolbar, TopToolbar, required } from 'react-admin'
 
-const GlobalVariableTitle = ({record}) => {
-	return <span>Global Variable  #{ record ? `${record.id}`: '' }</span>;
-};
+const Actions = () => (
+  <TopToolbar>
+      <ListButton />
+  </TopToolbar>
+)
+
+const EditToolbar = (props) => (
+  <Toolbar {...props} >
+    <SaveButton />
+  </Toolbar>
+)
 
 export const GlobalVariableEdit = (props) => (
-    <Edit title={<GlobalVariableTitle />} {...props}>
-        <SimpleForm>
-            <DisabledInput source='id' />
-            <DisabledInput source='name' />
-            <TextInput source='value' />
-        </SimpleForm>
-    </Edit>
-);
+  <Edit
+    {...props}
+    actions={<Actions />}
+  >
+    <SimpleForm
+      toolbar={<EditToolbar />}
+    >
+      <TextInput disabled source='id' validate={required()}/>
+      <TextInput disabled source='name' validate={required()}/>
+      <TextInput source='value' validate={required()}/>
+    </SimpleForm>
+  </Edit>
+)
