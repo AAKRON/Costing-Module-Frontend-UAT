@@ -1,14 +1,14 @@
-import Paper from 'material-ui/Paper';
+import Paper from 'material-ui/Paper'
 import {
-    Table,
-    TableBody,
-    TableHeader,
-    TableHeaderColumn,
-    TableRow,
-    TableRowColumn,
-} from 'material-ui/Table';
-import React from 'react';
-import { Link } from 'react-router';
+  Table,
+  TableBody,
+  TableHeader,
+  TableHeaderColumn,
+  TableRow,
+  TableRowColumn,
+} from 'material-ui/Table'
+import React from 'react'
+import { Link } from 'react-router'
 
 const style = {
   textAlign: 'center',

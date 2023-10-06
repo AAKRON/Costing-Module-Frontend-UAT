@@ -19,7 +19,7 @@ export const UserEdit = (props) => (
           { id: 'admin', name: 'Admin' },
           { id: 'user', name: 'User' },
       ]} />
-      <TextInput source='password' />
+      <TextInput source='password' type='password' />
     </SimpleForm>
   </Edit>
 )

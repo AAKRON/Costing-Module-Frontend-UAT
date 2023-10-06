@@ -1,14 +1,8 @@
-import { Edit, ListButton, SimpleForm, TextInput, TopToolbar, required } from 'react-admin'
+import { Edit, ListButton, SaveButton, SimpleForm, TextInput, Toolbar, TopToolbar, required } from 'react-admin'
+import JobTable from '../../components/JobTable'
 
 // import { AddJobModal } from '../../components/AddJobModal';
 // import { CopyJobModal } from '../../components/CopyJobModal';
-// import JobTable from '../../components/JobTable';
-
-const cardActionStyle = {
-  zIndex: 2,
-  position: 'absolute',
-  right: '2rem',
-}
 
 const Actions = () => (
   <TopToolbar>
@@ -22,17 +16,25 @@ const Actions = () => (
   </TopToolbar>
 )
 
+const CustomToolbar = (props) => (
+  <Toolbar {...props} >
+    <SaveButton alwaysEnable/>
+  </Toolbar>
+)
+
 export const BlankJobEdit = (props) => {
   return (
     <Edit
       actions={<Actions />}
       {...props}
     >
-      <SimpleForm>
+      <SimpleForm
+        toolbar={<CustomToolbar />}
+      >
         <TextInput disabled source='id' validate={required()}/>
         <TextInput source='blank_number' label='Blank Number' validate={required()}/>
         <TextInput source='description' label='Description' validate={required()}/>
-        {/* <JobTable /> */}
+        <JobTable />
       </SimpleForm>
     </Edit>
   )
