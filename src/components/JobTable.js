@@ -17,11 +17,9 @@ import {
   TextField,
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import { useEditController } from 'react-admin'
 import restClient from '../providers/restClient'
 
-const JobTable = () => {
-  const blankJob = useEditController()
+const JobTable = ({jobsInitial, onUpdate}) => {
   const [itemsJobs, setItemsJobs] = useState([])
   const [items, setItems] = useState([])
   const [jobs, setJobs] = useState([])
@@ -48,18 +46,19 @@ const JobTable = () => {
   }
 
   const handleRemoveJob = (job) => {
-    const currentItemJobs = itemsJobs.filter((j) => j.job_pk_id !== job.job_pk_id)
+    const currentItemJobs = itemsJobs.map((j) => {
+      if(j.job_pk_id === job.job_pk_id){
+        return {
+          ...j,
+          deleted: true
+        }
+      }else{
+        return j
+      }
+    })
   
-    const jobDeleted = blankJob?.record?.jobs.find((j) => j.job_pk_id === job.job_pk_id)
-
-    if(jobDeleted){
-      jobDeleted.deleted = true
-    }
-
     setItemsJobs(currentItemJobs)
-
-    console.log('currentItemJobs', currentItemJobs)
-    console.log('currentItemJobs', blankJob.record.jobs)
+    onUpdate(currentItemJobs)
   }
 
   // handleEditJob = async () => {
@@ -80,7 +79,7 @@ const JobTable = () => {
   //   //   item_job_id: 18583,
   //   // });
 
-  //   if (this.props.resource === 'blank_jobs') {
+  //   if (this.props.resource === 'blank_jobs') {  
   //     console.log('blank_number', this.props.record.blank_number);
   //     const newdata = await axios.put(
   //       'https://costing-module-api-heroku-20.herokuapp.com/api/v1/update-blank-job-data',
@@ -118,7 +117,7 @@ const JobTable = () => {
   //   }
 
   //   // console.log(this.props.record);
-  // };
+  // }; 
 
   const toggleDisplay = (field) => {
     return {
@@ -197,10 +196,10 @@ const JobTable = () => {
     })
   }, [])
 
+
   useEffect(() => {
-    console.log('blankJob', blankJob.record)
-    setItemsJobs(blankJob?.record?.jobs || [])
-  }, [blankJob.record])
+    setItemsJobs(jobsInitial)
+  }, [jobsInitial])
 
   const jobField = (job, index) => {
     return (
@@ -233,107 +232,111 @@ const JobTable = () => {
     )
   }
 
-  if(itemsJobs?.length > 0){
-    return (
-      <div style={{ width: '100%'}}>
-        <h2>Job</h2>
-
-        <FormControl style={{ width: '100%', maxWidth: '300px'}}>
-          <InputLabel
-            id='titleOverheadCost'
-          >
-            Overhead Cost
-          </InputLabel>
-          <Select
-            labelId='titleOverheadCost'
-            value={overheadCost}
-            onChange={handleOverheadCost}
-          >
-            <MenuItem value={'inventory'}>Inventory</MenuItem>
-            <MenuItem value={'pricing'}>Pricing</MenuItem>
-          </Select>
-        </FormControl>
-
-        <Table style={{ marginTop: '1rem', fontSize: '0.9rem' }}>
-          <thead style={{ color: '#b7b7b7' }}>
-            <TableRow>
-              <th style={{ width: '30%' }}>
-                Job#
-              </th>
-              <th>Wages($)/hr</th>
-              <th>Hr/pcs</th>
-              <th>Direct Labor ($)</th>
-              <th style={style.pricing}>
-                Pricing ($)
-              </th>
-              <th style={style.inventory}>
-                Inventory ($)
-              </th>
-              <th></th>
-            </TableRow>
-          </thead>
-
-          <TableBody>
-            {itemsJobs?.map((job, index) => jobField(job, index))}
-          </TableBody>
-        </Table>
-
-        <Modal
-          open={openModal}
-          onClose={() => setOpenModal(false)}
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Card style={{ padding: '1rem', width: '100%', maxWidth: '500px' }}>
-            <h2 style={{ borderBottom: '1px solid #cdcdcd', padding: '0.5rem'}}>
-              Edit Job
-            </h2>
-
-            <Autocomplete
-              options={jobs}
-              value={jobEdit?.job_number + ' - ' + jobEdit?.description}
-              onChange={selectJobNumerEdit}
-              renderInput={(params) =>
-                <TextField {...params} label='Type the job number' />
-              }
-            />
-
-            <TextField
-              fullWidth
-              type='number'
-              label='Hour Per Piece'
-              name='hour_per_piece'
-              value={jobEdit?.hour_per_piece}
-              onChange={(e) => setJobEdit({ ...jobEdit, hour_per_piece: e.target.value })}
-            />
-
-            <Box>
-              <Button
-                onClick={() => setOpenModal(false)}
-              >
-                Cancel
-              </Button>
-
-              <Button
-                // onClick={handleEditJob}
-              >
-                Update
-              </Button>
-            </Box>
-          </Card>
-        </Modal>
-      </div>
-    )
-  }
-  
   return (
-    <div>
-      No job(s)
-    </div>
+    <>
+      {itemsJobs?.length > 0
+        ?
+          <div style={{ width: '100%'}}>
+            <h2>Job</h2>
+
+            <FormControl style={{ width: '100%', maxWidth: '300px'}}>
+              <InputLabel
+                id='titleOverheadCost'
+              >
+                Overhead Cost
+              </InputLabel>
+              <Select
+                labelId='titleOverheadCost'
+                value={overheadCost}
+                onChange={handleOverheadCost}
+              >
+                <MenuItem value={'inventory'}>Inventory</MenuItem>
+                <MenuItem value={'pricing'}>Pricing</MenuItem>
+              </Select>
+            </FormControl>
+
+            <Table style={{ marginTop: '1rem', fontSize: '0.9rem' }}>
+              <thead style={{ color: '#b7b7b7' }}>
+                <TableRow>
+                  <th style={{ width: '30%' }}>
+                    Job#
+                  </th>
+                  <th>Wages($)/hr</th>
+                  <th>Hr/pcs</th>
+                  <th>Direct Labor ($)</th>
+                  <th style={style.pricing}>
+                    Pricing ($)
+                  </th>
+                  <th style={style.inventory}>
+                    Inventory ($)
+                  </th>
+                  <th></th>
+                </TableRow>
+              </thead>
+
+              <TableBody>
+                {itemsJobs?.map((job, index) => {
+                  if(!job.deleted) return jobField(job, index)
+                })}
+              </TableBody>
+            </Table>
+
+            <Modal
+              open={openModal}
+              onClose={() => setOpenModal(false)}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Card style={{ padding: '1rem', width: '100%', maxWidth: '500px' }}>
+                <h2 style={{ borderBottom: '1px solid #cdcdcd', padding: '0.5rem'}}>
+                  Edit Job
+                </h2>
+
+                <Autocomplete
+                  options={jobs}
+                  value={jobEdit?.job_number + ' - ' + jobEdit?.description}
+                  onChange={selectJobNumerEdit}
+                  renderInput={(params) =>
+                    <TextField {...params} label='Type the job number' />
+                  }
+                />
+
+                <TextField
+                  fullWidth
+                  type='number'
+                  label='Hour Per Piece'
+                  name='hour_per_piece'
+                  value={jobEdit?.hour_per_piece}
+                  onChange={(e) => setJobEdit({ ...jobEdit, hour_per_piece: e.target.value })}
+                />
+
+                <Box>
+                  <Button
+                    onClick={() => setOpenModal(false)}
+                  >
+                    Cancel
+                  </Button>
+
+                  <Button
+                    // onClick={handleEditJob}
+                  >
+                    Update
+                  </Button>
+                </Box>
+              </Card>
+            </Modal>
+          </div>
+        : 
+          <div>
+            No job(s)
+          </div>
+      }
+    </>
   )
+  
 }
 
 export default JobTable
