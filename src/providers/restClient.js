@@ -16,22 +16,27 @@ export default {
     }
     const url = `${SERVER_URL}/${resource}?${stringify(query)}`
 
-    return setAuthorizationToken(url).then(({ headers, json }) => ({
-      data: json,
-      total: parseInt(headers.get('x-total-count') || 0)
-    }))
+    return setAuthorizationToken(url)
+      .then(({ headers, json }) => ({
+        data: json,
+        total: parseInt(headers.get('x-total-count') || 0)
+      }))
+      .catch(error => console.log(error))
   },
 
   getOne: (resource, params) => {
     return setAuthorizationToken(`${SERVER_URL}/${resource}/${params.id}`)
       .then(({ json }) => ({ data: json }))
+      .catch(error => console.log(error))
   },
   getMany: (resource, params) => {
     const query = {
       id: params.ids,
     }
     const url = `${SERVER_URL}/${resource}?${stringify(query)}`
-    return setAuthorizationToken(url).then(({ json }) => ({ data: json }))
+    return setAuthorizationToken(url)
+      .then(({ json }) => ({ data: json }))
+      .catch(error => console.log(error))
   },
 
   getManyReference: (resource, params) => {
@@ -51,14 +56,14 @@ export default {
     return setAuthorizationToken(url).then(({ headers, json }) => ({
       data: json,
       total: parseInt(headers.get('x-total-count') || 0)
-    }))
+    })).catch(error => console.log(error))
   },
 
   update: (resource, params) => {
     return setAuthorizationToken(`${SERVER_URL}/${resource}/${params.id}`, {
       method: 'PUT',
       body: JSON.stringify(params.data),
-    }).then(({ json }) => ({ data: json }))
+    }).then(({ json }) => ({ data: json })).catch(error => console.log(error))
   },
 
   updateMany: (resource, params) => {
@@ -68,7 +73,7 @@ export default {
     return setAuthorizationToken(`${SERVER_URL}/${resource}?${stringify(query)}`, {
       method: 'PUT',
       body: JSON.stringify(params.data),
-    }).then(({ json }) => ({ data: json }))
+    }).then(({ json }) => ({ data: json })).catch(error => console.log(error))
   },
 
   create: (resource, params) =>
@@ -77,13 +82,15 @@ export default {
       body: JSON.stringify(params.data),
     }).then(({ json }) => ({
       data: { ...params.data, id: json.id },
-    })),
+    })).catch(error => console.log(error)),
 
   delete: (resource, params) =>
     setAuthorizationToken(`${SERVER_URL}/${resource}/${params.id}`, {
       method: 'DELETE',
       ...(params.data ? { body: JSON.stringify(params.data) } : {}),
-    }).catch(error => console.log(error)),
+    })
+    .then(({ json }) => ({ data: json }))
+    .catch(error => console.log(error)),
 
   deleteMany: (resource, params) => {
     const query = {

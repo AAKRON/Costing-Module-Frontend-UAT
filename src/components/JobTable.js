@@ -71,20 +71,25 @@ const JobTable = ({ jobsInitial, resource, docNumber }) => {
       const transformedJobs = jobs.map((j) => {
         return {
           deleted: j.deleted,
-          blank_numer: docNumber,
+          blank_number: docNumber,
           job_listing_id: j.job_listing_id,
           hour_per_piece: j.hour_per_piece,
         }
       })
 
-      await restClient.delete('blank_jobs', {
-        id: jobEdit.job_pk_id,
+      const response = await restClient.delete('blank_jobs', {
+        id: docNumber,
         data: {
           jobs: transformedJobs,
         },
       })
 
-      notify('Job(s) removed successfully')
+      if(response){
+        notify('Job(s) removed successfully')
+      }else{
+        notify('Error removing job(s)')
+      }
+
       refresh()
     }
 
@@ -102,7 +107,7 @@ const JobTable = ({ jobsInitial, resource, docNumber }) => {
 
   const handleEditJob = async() => {
     if(resource === 'blank_jobs'){
-      await restClient.update('blank_jobs', {
+      const response = await restClient.update('blank_jobs', {
         id: jobEdit.job_pk_id,
         data: {
           job_listing_id: jobEdit.job_listing_id,
@@ -110,7 +115,12 @@ const JobTable = ({ jobsInitial, resource, docNumber }) => {
         },
       })
 
-      notify('Job updated successfully')
+      if(response){
+        notify('Job updated successfully')
+      }else{
+        notify('Error updating job')
+      }
+  
       refresh()
     }
 
