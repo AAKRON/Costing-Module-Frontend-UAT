@@ -16,10 +16,11 @@ import {
   TableRow,
   TextField,
 } from '@mui/material'
+import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import restClient from '../providers/restClient'
 
-const JobTable = ({jobsInitial, onUpdate}) => {
+const JobTable = ({ jobsInitial, onUpdate, resource, number }) => {
   const [itemsJobs, setItemsJobs] = useState([])
   const [items, setItems] = useState([])
   const [jobs, setJobs] = useState([])
@@ -27,8 +28,8 @@ const JobTable = ({jobsInitial, onUpdate}) => {
   const [overheadCost, setOverheadCost] = useState('pricing')
   const [openModal, setOpenModal] = useState(false)
   const [style, setStyle] = useState({
-    inventory: { display: 'none' },
-    pricing: { display: '' }
+    inventory: { display: 'none', },
+    pricing: { display: '' },
   })
 
   const fetchItems = () => {
@@ -61,63 +62,100 @@ const JobTable = ({jobsInitial, onUpdate}) => {
     onUpdate(currentItemJobs)
   }
 
-  // handleEditJob = async () => {
-  //   const { EditIndex, EditableJob } = this.state;
+  const handleEditJob = async() => {
+    if(resource === 'blank_jobs'){
+      const response = await axios.put(
+        'https://costing-module-api-heroku-20.herokuapp.com/api/v1/update-blank-job-data',
+        {
+          blank_number: number,
+          job_listing_id: jobEdit.job_listing_id,
+          hour_per_piece: jobEdit.hour_per_piece,
+          blank_job_id: jobEdit.job_pk_id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer 6539a1e806bbc2c09436b39c62615425`,
+          },
+        }
+      )
 
-  //   const tempJob = this.state.item_jobs;
-  //   tempJob[EditIndex] = { ...EditableJob, selected: false };
-  //   this.setState({
-  //     item_jobs: tempJob,
-  //     open: false,
-  //     tableBodyRenderKey: this.state.tableBodyRenderKey + 1,
-  //   });
-  //   //call API to update job
-  //   // const data = restClient(UPDATE, 'update-item-job-data', {
-  //   //   item_number: 98010,
-  //   //   job_listing_id: 3,
-  //   //   hour_per_piece: '0.0025',
-  //   //   item_job_id: 18583,
-  //   // });
+      const newItemsJobs = itemsJobs.map((j) => {
+        const jobUpdated = response.data.find((job) => job.id === j.job_pk_id)
 
-  //   if (this.props.resource === 'blank_jobs') {  
-  //     console.log('blank_number', this.props.record.blank_number);
-  //     const newdata = await axios.put(
-  //       'https://costing-module-api-heroku-20.herokuapp.com/api/v1/update-blank-job-data',
-  //       {
-  //         blank_number: this.props.record.blank_number,
-  //         job_listing_id: EditableJob.job_listing_id,
-  //         hour_per_piece: EditableJob.hour_per_piece,
-  //         blank_job_id: EditableJob.job_pk_id,
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer 6539a1e806bbc2c09436b39c62615425`,
-  //         },
-  //       }
-  //     );
-  //     this.props.record.jobs = newdata;
-  //   }
-  //   if (this.props.resource === 'item_jobs') {
-  //     console.log('item_number', this.props.record.item_number);
-  //     const newdata = await axios.put(
-  //       'https://costing-module-api-heroku-20.herokuapp.com/api/v1/update-item-job-data',
-  //       {
-  //         item_number: this.props.record.item_number,
-  //         job_listing_id: EditableJob.job_listing_id,
-  //         hour_per_piece: EditableJob.hour_per_piece,
-  //         item_job_id: EditableJob.job_pk_id,
-  //       },
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer 6539a1e806bbc2c09436b39c62615425`,
-  //         },
-  //       }
-  //     );
-  //     this.props.record.jobs = newdata;
-  //   }
+        if(!jobUpdated){
+          return j
+        }
 
-  //   // console.log(this.props.record);
-  // }; 
+        const job = jobs.find((job) => {
+          const jobNumber = job.split(' - ')[0]
+          return Number(jobNumber) === jobUpdated.job_listing_id
+        })
+
+        if(!job){
+          return j
+        }
+
+        return {
+          ...j,
+          hour_per_piece: jobUpdated.hour_per_piece,
+          job_listing_id: jobUpdated.job_listing_id,
+          job_number: jobUpdated.job_listing_id,
+          description: job.split(' - ')[1],
+        }
+      })
+
+      setItemsJobs(newItemsJobs)
+      onUpdate(newItemsJobs)
+    }
+
+    if(resource === 'item_jobs'){
+      // FALTA REVISAR
+      const response = await axios.put(
+        'https://costing-module-api-heroku-20.herokuapp.com/api/v1/update-item-job-data',
+        {
+          blank_number: number,
+          job_listing_id: jobEdit.job_listing_id,
+          hour_per_piece: jobEdit.hour_per_piece,
+          blank_job_id: jobEdit.job_pk_id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer 6539a1e806bbc2c09436b39c62615425`,
+          },
+        }
+      )
+
+      const newItemsJobs = itemsJobs.map((j) => {
+        const jobUpdated = response.data.find((job) => job.id === j.job_pk_id)
+
+        if(!jobUpdated){
+          return j
+        }
+
+        const job = jobs.find((job) => {
+          const jobNumber = job.split(' - ')[0]
+          return Number(jobNumber) === jobUpdated.job_listing_id
+        })
+
+        if(!job){
+          return j
+        }
+
+        return {
+          ...j,
+          hour_per_piece: jobUpdated.hour_per_piece,
+          job_listing_id: jobUpdated.job_listing_id,
+          job_number: jobUpdated.job_listing_id,
+          description: job.split(' - ')[1],
+        }
+      })
+
+      setItemsJobs(newItemsJobs)
+      onUpdate(newItemsJobs)
+    }
+
+    setOpenModal(false)
+  }
 
   const toggleDisplay = (field) => {
     return {
@@ -147,38 +185,11 @@ const JobTable = ({jobsInitial, onUpdate}) => {
 
     setJobEdit({
       ...jobEdit,
-      job_listing_id: value[0],
+      job_listing_id: Number(value[0]),
       job_number: value[0],
       description: value[1],
     })
   }
-
-  // COMMENT
-  //   handleJobFieldSelectChange = (jobIndex) => (value) => {
-  //     const newJob = this.state.copy_jobs.map((job, index) => {
-  //       if (jobIndex !== index) return job;
-  //       value = stringHelpers.extractLeadingNumber(value);
-  //       job.job_listing_id = value;
-  //       return { ...job, value };
-  //     });
-
-  //     this.setState({ copy_jobs: newJob });
-  //   };
-  // COMMENT
-
-  // handleJobFieldChange = (jobIndex) => (event, value) => {
-  //   const { id, description } = this.state;
-
-  //   this.setState({
-  //     EditableJob: {
-  //       ...this.state.EditableJob,
-  //       job_listing_id: Number(id),
-  //       job_number: Number(id),
-  //       description,
-  //       [event.target.name]: value,
-  //     },
-  //   });
-  // };
 
   useEffect(() => {
     fetchItems().then(({ data }) => {
@@ -196,24 +207,29 @@ const JobTable = ({jobsInitial, onUpdate}) => {
     })
   }, [])
 
-
   useEffect(() => {
     setItemsJobs(jobsInitial)
   }, [jobsInitial])
 
   const jobField = (job, index) => {
     return (
-      <TableRow key={index} style={{ borderTop: '1px solid #cdcdcd'}}>
-        <th style={{ width: '30%', textAlign: 'left' }}>
+      <TableRow key={index} style={{ borderTop: '1px solid #cdcdcd' }}>
+        <th style={{ width: '30%', textAlign: 'left', fontWeight: 400 }}>
           <span>{job.job_number} - {job.description}</span>
         </th>
-        <th>${job.wages_per_hour}</th>
-        <th>{job.hour_per_piece}</th>
-        <th>${job.direct_labor_cost}</th>
-        <th style={style.pricing}>
+        <th style={{ fontWeight: 400 }}>
+          ${job.wages_per_hour}
+        </th>
+        <th style={{ fontWeight: 400 }}>
+          {job.hour_per_piece}
+        </th>
+        <th style={{ fontWeight: 400 }}>
+          ${job.direct_labor_cost}
+        </th>
+        <th style={{...style.pricing, fontWeight: 400}}>
           ${job.overhead_pricing_cost}
         </th>
-        <th style={style.inventory}>
+        <th style={{...style.inventory, fontWeight: 400}}>
           ${job.overhead_inventory_cost}
         </th>
         <th>
@@ -321,7 +337,7 @@ const JobTable = ({jobsInitial, onUpdate}) => {
                   </Button>
 
                   <Button
-                    // onClick={handleEditJob}
+                    onClick={handleEditJob}
                   >
                     Update
                   </Button>

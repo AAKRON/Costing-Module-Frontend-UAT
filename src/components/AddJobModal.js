@@ -1,65 +1,59 @@
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
-import React from 'react';
-// import CopyJob from 'material-ui/svg-icons/content/content-copy';
-import AddIcon from 'material-ui/svg-icons/content/add';
+import AddIcon from '@mui/icons-material/Add'
+import {
+  Button,
+  Card,
+  Divider,
+  Modal
+} from '@mui/material'
+import React, { useState } from 'react'
+import AddJobForm from './AddJobForm'
 
-import { AddJobForm } from './AddJobForm';
-/*const styles = {
-    radioButton: {
-        marginTop: 16,
-    },
-};*/
+const AddJobModal = ({ data, type }) => {
+  const [openDialog, setOpenDialog] = useState(false)
 
-class AddJobModal extends React.Component {
-  state = { open: false };
+  const handleOpen = () => setOpenDialog(true)
+  const handleClose = () => setOpenDialog(false)
 
-  handleOpen = () => this.setState({ open: true });
-
-  handleClose = () => this.setState({ open: false });
-
-  render() {
-    const actions = [
-      <FlatButton
-        label='Cancel'
-        primary={true}
-        onTouchTap={this.handleClose}
-      />,
-      <FlatButton
-        label='Add Over'
-        primary={true}
-        keyboardFocused={true}
-        onTouchTap={() => {
-          this.refs.copy_job_form.submit(this.handleClose);
+  return (
+    <span>
+      <Button
+        onClick={handleOpen}
+        sx={{
+          fontSize: '0.7rem',
         }}
-      />,
-    ];
+      >
+        <AddIcon />
+        Add Job
+      </Button>
+  
+      <Modal
+        open={openDialog}
+        onClose={handleClose}
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Card style={{ width: '100%', maxWidth: '600px' }}>
+          <h1
+            style={{ padding: '1rem', fontSize: '1.3rem' }}
+          >
+            Add jobs to {type}
+          </h1>
 
-    return (
-      <span>
-        <FlatButton
-          primary
-          label='Add Job'
-          onTouchTap={this.handleOpen}
-          icon={<AddIcon />}
-        />
-        <Dialog
-          title={`Add jobs to ${this.props.type}`}
-          actions={actions}
-          modal={false}
-          open={this.state.open}
-          onRequestClose={this.handleClose}
-          autoScrollBodyContent={true}
-        >
+          <Divider />
+
           <AddJobForm
-            data={this.props.data}
-            type={this.props.type}
-            ref='copy_job_form'
+            data={data}
+            type={type}
+            callback={handleClose}
           />
-        </Dialog>
-      </span>
-    );
-  }
+        </Card>
+      </Modal>
+    </span>
+  )
 }
 
-export { AddJobModal };
+export default AddJobModal
+

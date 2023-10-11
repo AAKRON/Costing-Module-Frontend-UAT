@@ -5,7 +5,7 @@ import BlankIcon from '@mui/icons-material/Loyalty'
 import AdminIcon from '@mui/icons-material/Settings'
 import { Divider, MenuItem, Popover } from '@mui/material'
 import { useState } from 'react'
-import { Link } from 'react-admin'
+import { Link, Menu } from 'react-admin'
 
 export default () => {
   const [menuJobs, setMenuJobs] = useState(null)
@@ -13,7 +13,7 @@ export default () => {
   const [menuAdmin, setMenuAdmin] = useState(null)
 
   return (
-    <div className='menu'>
+    <Menu className='menu'>
       <MenuItem className='link'>
         <Link to='/'>
           <DashboardIcon />
@@ -94,11 +94,11 @@ export default () => {
             Listing
           </Link>
         </MenuItem>
-        <MenuItem className='link'>
+        {/* <MenuItem className='link'>
           <Link to='blank_jobs'>
             Jobs
           </Link>
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem className='link'>
           <Link to='blank_types'>
             Types
@@ -109,7 +109,7 @@ export default () => {
       <Divider style={{ margin: '0' }} />
 
       { localStorage.getItem('role') === 'admin' &&
-        <>
+        <div>
           <MenuItem
             className='link'
             aria-describedby={Boolean(menuAdmin) ? 'menu-blanks' : undefined}
@@ -148,8 +148,8 @@ export default () => {
             </MenuItem>
           </Popover>
           <Divider style={{ margin: '0' }} />
-        </>
+        </div>
       }
-    </div>
+    </Menu>
   )
 }

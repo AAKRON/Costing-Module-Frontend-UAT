@@ -1,19 +1,19 @@
-import axios from 'axios';
-import React from 'react';
+import axios from 'axios'
+import React from 'react'
 // import lodash from 'lodash';
 import {
-    GET_LIST,
-} from 'admin-on-rest';
-import AutoComplete from 'material-ui/AutoComplete';
-import Chip from 'material-ui/Chip';
-import Dialog from 'material-ui/Dialog';
-import Divider from 'material-ui/Divider';
-import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import FileFileDownload from 'material-ui/svg-icons/file/file-download';
-import { SERVER_URL } from '../../config';
-import { stringHelpers } from '../../helpers/stringHelpers';
-import restClient from '../../restClient';
+  GET_LIST,
+} from 'admin-on-rest'
+import AutoComplete from 'material-ui/AutoComplete'
+import Chip from 'material-ui/Chip'
+import Dialog from 'material-ui/Dialog'
+import Divider from 'material-ui/Divider'
+import FlatButton from 'material-ui/FlatButton'
+import RaisedButton from 'material-ui/RaisedButton'
+import FileFileDownload from 'material-ui/svg-icons/file/file-download'
+import { SERVER_URL } from '../../config'
+import { stringHelpers } from '../../helpers/stringHelpers'
+import restClient from '../../restClient'
 
 const styles = {
   RaisedButton: {
@@ -210,4 +210,5 @@ class ColorExportModal extends React.Component {
   }
 }
 
-export { ColorExportModal };
+export { ColorExportModal }
+

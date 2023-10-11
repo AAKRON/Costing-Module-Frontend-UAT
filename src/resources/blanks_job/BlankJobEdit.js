@@ -1,25 +1,31 @@
-import { Edit, ListButton, SaveButton, SimpleForm, TextInput, Toolbar, TopToolbar, required, useEditController } from 'react-admin'
+import {
+  Edit,
+  ListButton,
+  SimpleForm,
+  TextInput,
+  TopToolbar,
+  required,
+  useEditController
+} from 'react-admin'
+import AddJobModal from '../../components/AddJobModal'
 import JobTable from '../../components/JobTable'
-
-// import { AddJobModal } from '../../components/AddJobModal';
 // import { CopyJobModal } from '../../components/CopyJobModal';
 
-const Actions = () => (
-  <TopToolbar>
+const Actions = ({ data }) => (
+  <TopToolbar sx={{
+    display: 'flex',
+    alignItems: 'center',
+  }}>
     <ListButton />
-    {/* {localStorage.getItem('role') === 'admin' && (
-      <AddJobModal data={data} type='blank' submitForm={() => 1} />
-    )}
+
     {localStorage.getItem('role') === 'admin' && (
+      <AddJobModal data={data} type='blank' />
+    )}
+
+    {/* {localStorage.getItem('role') === 'admin' && (
       <CopyJobModal data={data} type='blank' submitForm={() => 1} />
     )} */}
   </TopToolbar>
-)
-
-const CustomToolbar = (props) => (
-  <Toolbar {...props} >
-    <SaveButton alwaysEnable/>
-  </Toolbar>
 )
 
 export const BlankJobEdit = (props) => {
@@ -31,17 +37,19 @@ export const BlankJobEdit = (props) => {
 
   return (
     <Edit
-      actions={<Actions />}
+      actions={<Actions data={record} />}
       {...props}
     >
       <SimpleForm
-        toolbar={<CustomToolbar />}
+        toolbar={false}
       >
         <TextInput disabled source='id' validate={required()}/>
-        <TextInput source='blank_number' label='Blank Number' validate={required()}/>
-        <TextInput source='description' label='Description' validate={required()}/>
+        <TextInput disabled source='blank_number' label='Blank Number' validate={required()}/>
+        <TextInput disabled source='description' label='Description' validate={required()}/>
         <JobTable
           jobsInitial={record.jobs}
+          number={record.blank_number}
+          resource='blank_jobs'
           onUpdate={(updatedJobs) => {
             record.jobs = updatedJobs
           }}
