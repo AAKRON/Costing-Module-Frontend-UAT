@@ -16,11 +16,13 @@ import {
   TableRow,
   TextField,
 } from '@mui/material'
-import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import { useNotify, useRefresh } from 'react-admin'
 import restClient from '../providers/restClient'
 
-const JobTable = ({ jobsInitial, onUpdate, resource, number }) => {
+const JobTable = ({ jobsInitial, resource, docNumber }) => {
+  const refresh = useRefresh()
+  const notify = useNotify()
   const [itemsJobs, setItemsJobs] = useState([])
   const [items, setItems] = useState([])
   const [jobs, setJobs] = useState([])
@@ -46,7 +48,7 @@ const JobTable = ({ jobsInitial, onUpdate, resource, number }) => {
     })
   }
 
-  const handleRemoveJob = (job) => {
+  const removeJob = (job) => {
     const currentItemJobs = itemsJobs.map((j) => {
       if(j.job_pk_id === job.job_pk_id){
         return {
@@ -59,99 +61,63 @@ const JobTable = ({ jobsInitial, onUpdate, resource, number }) => {
     })
   
     setItemsJobs(currentItemJobs)
-    onUpdate(currentItemJobs)
   }
 
-  const handleEditJob = async() => {
+  const handleRemoveJob = async() => {
     if(resource === 'blank_jobs'){
-      const response = await axios.put(
-        'https://costing-module-api-heroku-20.herokuapp.com/api/v1/update-blank-job-data',
-        {
-          blank_number: number,
-          job_listing_id: jobEdit.job_listing_id,
-          hour_per_piece: jobEdit.hour_per_piece,
-          blank_job_id: jobEdit.job_pk_id,
-        },
-        {
-          headers: {
-            Authorization: `Bearer 6539a1e806bbc2c09436b39c62615425`,
-          },
-        }
-      )
+      const jobs = itemsJobs.filter((j) => j.deleted)
+      if(jobs.length === 0) return
 
-      const newItemsJobs = itemsJobs.map((j) => {
-        const jobUpdated = response.data.find((job) => job.id === j.job_pk_id)
-
-        if(!jobUpdated){
-          return j
-        }
-
-        const job = jobs.find((job) => {
-          const jobNumber = job.split(' - ')[0]
-          return Number(jobNumber) === jobUpdated.job_listing_id
-        })
-
-        if(!job){
-          return j
-        }
-
+      const transformedJobs = jobs.map((j) => {
         return {
-          ...j,
-          hour_per_piece: jobUpdated.hour_per_piece,
-          job_listing_id: jobUpdated.job_listing_id,
-          job_number: jobUpdated.job_listing_id,
-          description: job.split(' - ')[1],
+          deleted: j.deleted,
+          blank_numer: docNumber,
+          job_listing_id: j.job_listing_id,
+          hour_per_piece: j.hour_per_piece,
         }
       })
 
-      setItemsJobs(newItemsJobs)
-      onUpdate(newItemsJobs)
+      await restClient.delete('blank_jobs', {
+        id: jobEdit.job_pk_id,
+        data: {
+          jobs: transformedJobs,
+        },
+      })
+
+      notify('Job(s) removed successfully')
+      refresh()
     }
 
     if(resource === 'item_jobs'){
       // FALTA REVISAR
-      const response = await axios.put(
-        'https://costing-module-api-heroku-20.herokuapp.com/api/v1/update-item-job-data',
-        {
-          blank_number: number,
+      
+      refresh()
+    }
+  }
+
+  const editJob = (job) => {
+    setOpenModal(true)
+    setJobEdit(job)
+  }
+
+  const handleEditJob = async() => {
+    if(resource === 'blank_jobs'){
+      await restClient.update('blank_jobs', {
+        id: jobEdit.job_pk_id,
+        data: {
           job_listing_id: jobEdit.job_listing_id,
           hour_per_piece: jobEdit.hour_per_piece,
-          blank_job_id: jobEdit.job_pk_id,
         },
-        {
-          headers: {
-            Authorization: `Bearer 6539a1e806bbc2c09436b39c62615425`,
-          },
-        }
-      )
-
-      const newItemsJobs = itemsJobs.map((j) => {
-        const jobUpdated = response.data.find((job) => job.id === j.job_pk_id)
-
-        if(!jobUpdated){
-          return j
-        }
-
-        const job = jobs.find((job) => {
-          const jobNumber = job.split(' - ')[0]
-          return Number(jobNumber) === jobUpdated.job_listing_id
-        })
-
-        if(!job){
-          return j
-        }
-
-        return {
-          ...j,
-          hour_per_piece: jobUpdated.hour_per_piece,
-          job_listing_id: jobUpdated.job_listing_id,
-          job_number: jobUpdated.job_listing_id,
-          description: job.split(' - ')[1],
-        }
       })
 
-      setItemsJobs(newItemsJobs)
-      onUpdate(newItemsJobs)
+      notify('Job updated successfully')
+      refresh()
+    }
+
+    if(resource === 'item_jobs'){
+      // FALTA REVISAR
+      
+      refresh()
     }
 
     setOpenModal(false)
@@ -171,12 +137,7 @@ const JobTable = ({ jobsInitial, onUpdate, resource, number }) => {
     setOverheadCost(value)
   }
 
-  const editJob = (job) => {
-    setOpenModal(true)
-    setJobEdit(job)
-  }
-
-  const selectJobNumerEdit = (event, data) => {
+  const selectJobNumberEdit = (event, data) => {
     if(!data){
       return
     }
@@ -239,7 +200,7 @@ const JobTable = ({ jobsInitial, onUpdate, resource, number }) => {
             <ContentCreate />
           </IconButton>
           <IconButton
-            onClick={() => handleRemoveJob(job)}
+            onClick={() => removeJob(job)}
           >
             <DeleteIcon />
           </IconButton>
@@ -297,6 +258,14 @@ const JobTable = ({ jobsInitial, onUpdate, resource, number }) => {
               </TableBody>
             </Table>
 
+            <Button
+              color='primary'
+              variant='contained'
+              onClick={handleRemoveJob}
+            >
+              Save
+            </Button>
+
             <Modal
               open={openModal}
               onClose={() => setOpenModal(false)}
@@ -314,7 +283,7 @@ const JobTable = ({ jobsInitial, onUpdate, resource, number }) => {
                 <Autocomplete
                   options={jobs}
                   value={jobEdit?.job_number + ' - ' + jobEdit?.description}
-                  onChange={selectJobNumerEdit}
+                  onChange={selectJobNumberEdit}
                   renderInput={(params) =>
                     <TextField {...params} label='Type the job number' />
                   }

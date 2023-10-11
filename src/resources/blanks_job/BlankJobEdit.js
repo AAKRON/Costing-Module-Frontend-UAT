@@ -48,11 +48,8 @@ export const BlankJobEdit = (props) => {
         <TextInput disabled source='description' label='Description' validate={required()}/>
         <JobTable
           jobsInitial={record.jobs}
-          number={record.blank_number}
+          docNumber={record.blank_number}
           resource='blank_jobs'
-          onUpdate={(updatedJobs) => {
-            record.jobs = updatedJobs
-          }}
         />
       </SimpleForm>
     </Edit>

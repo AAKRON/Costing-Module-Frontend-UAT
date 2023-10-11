@@ -1,16 +1,16 @@
 import {
-    Button,
-    Card,
-    FormControl,
-    FormControlLabel,
-    InputLabel,
-    MenuItem,
-    Modal,
-    Radio,
-    RadioGroup,
-    Select,
-    Snackbar,
-    TextField,
+  Button,
+  Card,
+  FormControl,
+  FormControlLabel,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Radio,
+  RadioGroup,
+  Select,
+  Snackbar,
+  TextField,
 } from '@mui/material'
 import axios from 'axios'
 import React from 'react'
@@ -178,7 +178,7 @@ export class FileUpload extends React.Component {
 
     const callback = () => {
       const db = this.state.selectedDatabase
-      localStorage.setItem('db', db)
+      localStorage.setItem('db', btoa(db))
       this.setState({ open_login: false })
       this.setState({ confirmPassword: '' })
     }
@@ -218,7 +218,7 @@ export class FileUpload extends React.Component {
       <div>
         <div>
           <h2 style={{ margin: '0'}}>
-            Current Database: {localStorage.getItem('db') || '2023'}
+            Current Database: {localStorage.getItem('db') ? atob(localStorage.getItem('db')) : '2023'}
           </h2>
 
           <FormControl style={{ width: '100%', maxWidth: '500px'}}>

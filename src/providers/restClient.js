@@ -82,6 +82,7 @@ export default {
   delete: (resource, params) =>
     setAuthorizationToken(`${SERVER_URL}/${resource}/${params.id}`, {
       method: 'DELETE',
+      ...(params.data ? { body: JSON.stringify(params.data) } : {}),
     }).catch(error => console.log(error)),
 
   deleteMany: (resource, params) => {

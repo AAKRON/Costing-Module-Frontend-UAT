@@ -94,11 +94,11 @@ export default () => {
             Listing
           </Link>
         </MenuItem>
-        {/* <MenuItem className='link'>
+        <MenuItem className='link'>
           <Link to='blank_jobs'>
             Jobs
           </Link>
-        </MenuItem> */}
+        </MenuItem>
         <MenuItem className='link'>
           <Link to='blank_types'>
             Types
