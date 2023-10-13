@@ -1,266 +1,196 @@
-/* eslint-disable */
-import axios from 'axios';
-import lodash from 'lodash';
-import AutoComplete from 'material-ui/AutoComplete';
-import TextField from 'material-ui/TextField';
-import React from 'react';
-// import RemoveJobButton from 'material-ui/IconButton';
-// import DeleteIcon from 'material-ui/svg-icons/action/delete-forever';
-// import AddBoxIcon from 'material-ui/svg-icons/content/add-box';
-// import AddJobButton from 'material-ui/FlatButton';
-import { GET_LIST, UPDATE } from 'admin-on-rest';
-import Snackbar from 'material-ui/Snackbar';
-import { stringHelpers } from '../helpers/stringHelpers';
-import restClient from '../restClient';
+import {
+  Autocomplete,
+  Box,
+  Button,
+  Divider,
+  TextField,
+} from '@mui/material'
+import { Fragment, useEffect, useLayoutEffect, useState } from 'react'
+import { useNotify, useRefresh } from 'react-admin'
+import { stringHelpers } from '../helpers/stringHelpers'
+import restClient from '../providers/restClient'
 
-class CopyJobForm extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      item_number: 0,
-      blank_number: 0,
-      copy_jobs: [],
-      done: false,
-      errors: {},
-      loading: false,
-      items: [],
-      jobs: [],
-      open_snackbar: false,
-      snackbar_message: '',
-      type: props.type,
-      blanks: [],
-    };
-  }
+const CopyJobForm = ({ data, docNumber, type, callback }) => {
+  const notify = useNotify()
+  const refresh = useRefresh()
+  const [blanks, setBlanks] = useState([])
+  const [items, setItems] = useState([])
+  // const [jobs, setJobs] = useState([])
+  const [copyJobs, setCopyJobs] = useState([])
+  const [selectOption, setSelectOption] = useState(null)
 
-  fetchItems = () =>
-    restClient(GET_LIST, 'item-list-only', {
+  const fetchBlanks = () => {
+    return restClient.getList('blank-list-only', {
       pagination: { page: 1, perPage: -1 },
       sort: { field: 'id', order: 'ASC' },
-    });
-
-  fetchBlanks = () =>
-    restClient(GET_LIST, 'blank-list-only', {
-      pagination: { page: 1, perPage: -1 },
-      sort: { field: 'id', order: 'ASC' },
-    });
-
-  fetchJobs = () =>
-    restClient(GET_LIST, 'job-list-only', {
-      pagination: { page: 1, perPage: -1 },
-      sort: { field: 'id', order: 'ASC' },
-    });
-
-  handleSnackbarClose = () =>
-    this.setState({ open_snackbar: false, snackbar_message: '' });
-  componentDidMount() {
-    if (this.state.type === 'item') {
-      axios.all([this.fetchItems(), this.fetchJobs()]).then(
-        axios.spread((item, job) => {
-          const items = item.data.map(
-            (item) => `${item.item_number} - ${item.description}`
-          );
-          const jobs = job.data.map(
-            (job) => `${job.job_number} - ${job.description}`
-          );
-          this.setState({ items, jobs });
-        })
-      );
-    } else {
-      axios.all([this.fetchBlanks(), this.fetchJobs()]).then(
-        axios.spread((blank, job) => {
-          const blanks = blank.data.map(
-            (blank) => `${blank.blank_number} - ${blank.description}`
-          );
-          const jobs = job.data.map(
-            (job) => `${job.job_number} - ${job.description}`
-          );
-          this.setState({ blanks, jobs });
-        })
-      );
-    }
+    })
   }
 
-  componentWillMount() {
-    let { copy_jobs, jobs } = this.props.data;
-    const fieldsToPick = ['job_listing_id', 'hour_per_piece', 'description'];
-    if (typeof jobs === 'object') {
-      copy_jobs = jobs
-        .filter((obj) => obj.selected)
-        .map((obj) => lodash.pick(obj, fieldsToPick));
-      this.setState({ copy_jobs });
-    }
+  const fetchItems = () => {
+    return restClient.getList('item-list-only', {
+      pagination: { page: 1, perPage: -1 },
+      sort: { field: 'id', order: 'ASC' },
+    })
   }
 
-  handleAddNewJob = () => {
-    this.setState({
-      copy_jobs: this.state.copy_jobs.concat([
-        { job_listing_id: '', hour_per_piece: '' },
-      ]),
-    });
-  };
+  // const fetchJobs = () => {
+  //   return restClient.getList('job-list-only', {
+  //     pagination: { page: 1, perPage: -1 },
+  //     sort: { field: 'id', order: 'ASC' },
+  //   })
+  // }
 
-  handleRemoveJob = (jobIndex) => () => {
-    this.setState({
-      copy_jobs: this.state.copy_jobs.filter(
-        (job, index) => jobIndex !== index
-      ),
-    });
-  };
+  const submitForm = async(e) => {
+    e.preventDefault()
 
-  handleJobFieldChange = (jobIndex) => (event, value) => {
-    const newJob = this.state.copy_jobs.map((job, index) => {
-      if (jobIndex !== index) return job;
-      return { ...job, [event.target.name]: value };
-    });
-
-    this.setState({ copy_jobs: newJob });
-  };
-
-  handleJobFieldSelectChange = (jobIndex) => (value) => {
-    const newJob = this.state.copy_jobs.map((job, index) => {
-      if (jobIndex !== index) return job;
-      value = stringHelpers.extractLeadingNumber(value);
-      job.job_listing_id = value;
-      return { ...job, value };
-    });
-
-    this.setState({ copy_jobs: newJob });
-  };
-
-  submit = (dialogClose) => {
-    // console.log(lodash.pick(this.state, ['blank_number', 'copy_jobs']));
-    const payload =
-      this.state.type === 'item'
-        ? lodash.pick(this.state, ['item_number', 'copy_jobs'])
-        : lodash.pick(this.state, ['blank_number', 'copy_jobs']);
-    var type_id =
-      this.state.type === 'item' ? payload.item_number : payload.blank_number;
-    var eventAction =
-      this.state.type === 'item'
-        ? 'update-item-jobs-only'
-        : 'update-blank-jobs-only';
-    // console.log(type_id);
-    if (type_id === 0) {
-      this.setState({
-        open_snackbar: true,
-        snackbar_message: 'Please select ' + this.state.type + ' number',
-      });
-      return false;
+    if(!selectOption){
+      notify('Please select ' + type + ' number')
     }
+  
+    const id = stringHelpers.extractLeadingNumber(selectOption)
 
-    restClient(UPDATE, eventAction, {
-      id: type_id,
-      data: payload,
-    }).then((response) => {
-      this.setState({
-        open_snackbar: true,
-        snackbar_message: 'Jobs copied successfully',
-      });
+    if(type === 'blank'){
+      const response = await restClient.update('update-blank-jobs-only', {
+        id: id,
+        data: {
+          blank_number: id,
+          copy_jobs: copyJobs,
+        },
+      })
 
-      if (type_id === this.props.data.id) {
-        window.location.reload();
+      if(response){
+        notify('Job(s) copied successfully')
+        callback()
+        refresh()
+      }else{
+        notify('Job(s) failed to copy')
       }
-      setTimeout(() => {
-        dialogClose();
-      }, 700);
-    });
-  };
+    }
 
-  jobField = (job, jobIndex) => {
-    const defaultJob =
-      job.job_listing_id && job.description
-        ? job.job_listing_id + ' - ' + job.description
-        : '';
+    if(type === 'item'){
+      const response = await restClient.update('update-item-jobs-only', {
+        id: id,
+        data: {
+          item_number: id,
+          copy_jobs: copyJobs,
+        },
+      })
 
+      if(response){
+        notify('Job(s) copied successfully')
+        callback()
+        refresh()
+      }else{
+        notify('Job(s) failed to copy')
+      }
+    }
+  }
+
+  const jobField = (job) => {
     return (
-      <div key={jobIndex}>
-        <AutoComplete
-          floatingLabelText='Type the job number'
-          filter={AutoComplete.fuzzyFilter}
-          dataSource={this.state.jobs}
-          name='job_listing_id'
-          maxSearchResults={5}
-          onUpdateInput={this.handleJobFieldSelectChange(jobIndex)}
-          fullWidth={false}
-          disabled={true}
-          searchText={defaultJob}
-        />
-        &nbsp;&nbsp;
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: '1rem',
+        }}
+      >
         <TextField
-          hintText='Hour Per Piece'
-          floatingLabelText='Hour Per Piece'
-          errorText=''
+          label='Job Number'
+          value={job.job_listing_id + ' - ' + job.description}
           disabled={true}
-          name='hour_per_piece'
-          onChange={this.handleJobFieldChange(jobIndex)}
-          defaultValue={job.hour_per_piece}
         />
-        {/* <RemoveJobButton onClick={this.handleRemoveJob(jobIndex)}>
-          <DeleteIcon />
-        </RemoveJobButton> */}
-      </div>
-    );
-  };
 
-  render() {
-    const copy_jobs = this.props.data.jobs.map((job, index) => ({
+        <TextField
+          label='Hour Per Piece'
+          value={job.hour_per_piece}
+          disabled={true}
+        />
+      </div>
+    )
+  }
+
+  useEffect(() => {
+    // fetchJobs().then(({ data }) => {
+    //   setJobs(data)
+    // })
+
+    if (type === 'item') {
+      fetchItems().then(({ data }) => {
+        setItems(data)
+      })
+    }else{
+      fetchBlanks().then(({ data }) => {
+        setBlanks(data)
+      })
+    }
+  }, [])
+
+
+  useLayoutEffect(() => {
+    const formatedJobs = data.jobs.map((job) => ({
       description: job.description,
       job_listing_id: job.job_listing_id,
       hour_per_piece: job.hour_per_piece,
       value: job.job_listing_id,
-    }));
+    }))
 
-    this.state.copy_jobs = copy_jobs;
+    setCopyJobs(formatedJobs)
+  }, [])
 
-    const form = (
-      <form onSubmit={this.submitForm}>
-        <AutoComplete
-          floatingLabelText={`Type the ${this.state.type} number`}
-          filter={AutoComplete.defaultFilter}
-          dataSource={
-            this.state.type === 'item'
-              ? stringHelpers.sortByLeadingNumber(this.state.items)
-              : this.state.blanks
+  return (
+    <form
+      onSubmit={submitForm}
+    >
+      <Box sx={{
+        padding: '1rem',
+      }}>
+        <Autocomplete
+          options={
+            type === 'item'
+            ? items.filter((i) => i.item_number != docNumber)
+                .sort((a, b) => a.item_number - b.item_number)
+                .map((item) => `${item.item_number} - ${item.description}`)
+            : blanks.filter((b) => b.blank_number != docNumber)
+                .sort((a, b) => a.blank_number - b.blank_number)
+                .map((blank) => `${blank.blank_number} - ${blank.description}`)
           }
-          maxSearchResults={5}
-          onUpdateInput={(item_description) => {
-            if (this.state.type === 'item') {
-              this.setState({
-                item_number:
-                  stringHelpers.extractLeadingNumber(item_description),
-              });
-            } else {
-              this.setState({
-                blank_number:
-                  stringHelpers.extractLeadingNumber(item_description),
-              });
-            }
-          }}
-          fullWidth={true}
+          onChange={(e, data) => setSelectOption(data)}
+          value={selectOption}
+          renderInput={(params) =>
+            <TextField {...params} label={`Type the ${type} number`} />
+          }
         />
-        <br />
-        <br />
-        {/* <AddJobButton
-          label='Add Job'
-          icon={<AddBoxIcon />}
-          onTouchTap={this.handleAddNewJob}
-          primary
-        /> */}
-        <br />
-        <br />
-        {this.state.copy_jobs.map(this.jobField)}
 
-        <Snackbar
-          open={this.state.open_snackbar}
-          message={this.state.snackbar_message}
-          autoHideDuration={4000}
-          onRequestClose={this.handleSnackbarClose}
-        />
-      </form>
-    );
+        {copyJobs.map((job, index) => (
+          <Fragment key={index}>
+            {jobField(job)}
+          </Fragment>
+        ))}
+      </Box>
 
-    return <div> {form} </div>;
-  }
+      <Divider />
+
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'flex-end',
+        padding: '1rem',
+      }}>
+        <Button
+          onClick={callback}
+        >
+          Cancel
+        </Button>
+        {selectOption &&
+          <Button
+            type='submit'
+          >
+            Add Over
+          </Button>
+        }
+      </Box>
+    </form>
+  )
 }
 
-export { CopyJobForm };
+export default CopyJobForm

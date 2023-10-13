@@ -6,7 +6,6 @@ import {
   Button,
   Divider,
   IconButton,
-  Snackbar,
   TextField
 } from '@mui/material'
 import { Fragment, useEffect, useState } from 'react'
@@ -23,15 +22,6 @@ const AddJobForm = ({
   const refresh =useRefresh()
   const [newJobs, setNewJobs] = useState([])
   const [jobs, setJobs] = useState([])
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: '',
-  })
-
-  const handleSnackbarClose = () => setSnackbar({
-    open: false,
-    message: '',
-  })
 
   const removeJob = (job) => {
     const jobsTemp = [...newJobs]
@@ -110,18 +100,14 @@ const AddJobForm = ({
     e.preventDefault()
 
     if(newJobs.length === 0){
-      notify('No jobs to add')
-      callback()
+      notify('Please add at least one job')
       return
     }
 
     if(!newJobs.every((newJob) =>
       newJob.job_listing_id && newJob.hour_per_piece
     )){
-      setSnackbar({
-        open: true,
-        message: 'Please fill all the fields',
-      })
+      notify('Please fill all the fields')
       return
     }
 
@@ -194,14 +180,6 @@ const AddJobForm = ({
             </Fragment>
           ))}
         </div>
-
-        <Snackbar
-          open={snackbar.open}
-          message={snackbar.message}
-          autoHideDuration={4000}
-          onClose={handleSnackbarClose}
-          onClick={handleSnackbarClose}
-        />
       </Box>
 
       <Divider />
@@ -216,11 +194,13 @@ const AddJobForm = ({
         >
           Cancel
         </Button>
-        <Button
-          type='submit'
-        >
-          Add Over
-        </Button>
+        {newJobs.length > 0 &&
+          <Button
+            type='submit'
+          >
+            Add Over
+          </Button>
+        }
       </Box>
     </form>
   )

@@ -8,8 +8,8 @@ import {
   useEditController
 } from 'react-admin'
 import AddJobModal from '../../components/AddJobModal'
+import CopyJobModal from '../../components/CopyJobModal'
 import JobTable from '../../components/JobTable'
-// import { CopyJobModal } from '../../components/CopyJobModal';
 
 const Actions = ({ data, docNumber }) => (
   <TopToolbar sx={{
@@ -22,9 +22,9 @@ const Actions = ({ data, docNumber }) => (
       <AddJobModal data={data} docNumber={docNumber} type='blank' />
     )}
 
-    {/* {localStorage.getItem('role') === 'admin' && (
-      <CopyJobModal data={data} type='blank' submitForm={() => 1} />
-    )} */}
+    {localStorage.getItem('role') === 'admin' && (
+      <CopyJobModal data={data} docNumber={docNumber} type='blank' />
+    )}
   </TopToolbar>
 )
 

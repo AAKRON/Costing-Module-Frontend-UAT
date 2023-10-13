@@ -1,64 +1,59 @@
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
-import CopyJob from 'material-ui/svg-icons/content/content-copy';
-import React from 'react';
-import { CopyJobForm } from './CopyJobForm';
-/*const styles = {
-    radioButton: {
-        marginTop: 16,
-    },
-};*/
+import CopyIcon from '@mui/icons-material/ContentCopy'
+import {
+  Button,
+  Card,
+  Divider,
+  Modal
+} from '@mui/material'
+import React, { useState } from 'react'
+import CopyJobForm from './CopyJobForm'
 
-class CopyJobModal extends React.Component {
-  state = { open: false };
+const CopyJobModal = ({ data, docNumber, type }) => {
+  const [openDialog, setOpenDialog] = useState(false)
 
-  handleOpen = () => this.setState({ open: true });
+  const handleOpen = () => setOpenDialog(true)
+  const handleClose = () => setOpenDialog(false)
 
-  handleClose = () => this.setState({ open: false });
-
-  render() {
-    console.log(this.props.data);
-    const actions = [
-      <FlatButton
-        label='Cancel'
-        primary={true}
-        onTouchTap={this.handleClose}
-      />,
-      <FlatButton
-        label='Copy Over'
-        primary={true}
-        keyboardFocused={true}
-        onTouchTap={() => {
-          this.refs.copy_job_form.submit(this.handleClose);
+  return (
+    <span>
+      <Button
+        onClick={handleOpen}
+        sx={{
+          fontSize: '0.7rem',
         }}
-      />,
-    ];
+      >
+        <CopyIcon style={{ fontSize: '1.2rem'}} />
+        Copy Job
+      </Button>
+  
+      <Modal
+        open={openDialog}
+        onClose={handleClose}
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Card style={{ width: '100%', maxWidth: '800px' }}>
+          <h1
+            style={{ padding: '1rem', fontSize: '1.3rem' }}
+          >
+            Copy jobs to {type}
+          </h1>
 
-    return (
-      <span>
-        <FlatButton
-          primary
-          label='Copy Job'
-          onTouchTap={this.handleOpen}
-          icon={<CopyJob />}
-        />
-        <Dialog
-          title={`Copy jobs to ${this.props.type}`}
-          actions={actions}
-          modal={false}
-          open={this.state.open}
-          onRequestClose={this.handleClose}
-          autoScrollBodyContent={true}
-        >
+          <Divider />
+
           <CopyJobForm
-            data={this.props.data}
-            type={this.props.type}
-            ref='copy_job_form'
+            data={data}
+            type={type}
+            docNumber={docNumber}
+            callback={handleClose}
           />
-        </Dialog>
-      </span>
-    );
-  }
+        </Card>
+      </Modal>
+    </span>
+  )
 }
 
-export { CopyJobModal };
+export default CopyJobModal
