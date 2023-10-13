@@ -1,5 +1,6 @@
 import ArrowRight from '@mui/icons-material/ArrowRight'
 import DashboardIcon from '@mui/icons-material/Dashboard'
+import FileDownloadRounded from '@mui/icons-material/FileDownloadRounded'
 import JobIcon from '@mui/icons-material/Gavel'
 import BlankIcon from '@mui/icons-material/Loyalty'
 import AdminIcon from '@mui/icons-material/Settings'
@@ -23,6 +24,15 @@ export default () => {
 
       <Divider style={{ margin: '0' }} />
     
+      <MenuItem className='link'>
+        <Link to='/spreadsheet'>
+          <FileDownloadRounded />
+          <span>Spreadsheet</span>
+        </Link>
+      </MenuItem>
+
+      <Divider style={{ margin: '0' }} />
+
       <MenuItem
         className='link'
         aria-describedby={Boolean(menuJobs) ? 'menu-jobs' : undefined}

@@ -302,6 +302,7 @@ const JobTable = ({ jobsInitial, resource, docNumber }) => {
                 <TextField
                   fullWidth
                   type='number'
+                  step='0.0001'
                   label='Hour Per Piece'
                   name='hour_per_piece'
                   value={jobEdit?.hour_per_piece}

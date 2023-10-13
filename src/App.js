@@ -13,6 +13,7 @@ import { GlobalVariableCreate } from './resources/global_variable/GlobalVariable
 import { GlobalVariableListing } from './resources/global_variable/GlobalVariableListing'
 import { JobCreate, JobEdit, JobList } from './resources/job'
 import { ScreenCreate, ScreenEdit, ScreenListing } from './resources/screen'
+import Spreadsheet from './resources/spreadsheet'
 import { UserCreate, UserEdit, UserListing } from './resources/user'
 
 const App = () => (
@@ -23,6 +24,11 @@ const App = () => (
     dashboard={Dashboard}
     menu={Menu}
   >
+    <Resource
+      name='spreadsheet'
+      list={Spreadsheet}
+    />
+
     <Resource
       name='job_listings'
       list={JobList}

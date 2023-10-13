@@ -8,7 +8,7 @@ import {
 import React, { useState } from 'react'
 import AddJobForm from './AddJobForm'
 
-const AddJobModal = ({ data, type }) => {
+const AddJobModal = ({ data, docNumber, type }) => {
   const [openDialog, setOpenDialog] = useState(false)
 
   const handleOpen = () => setOpenDialog(true)
@@ -35,7 +35,7 @@ const AddJobModal = ({ data, type }) => {
           justifyContent: 'center',
         }}
       >
-        <Card style={{ width: '100%', maxWidth: '600px' }}>
+        <Card style={{ width: '100%', maxWidth: '800px' }}>
           <h1
             style={{ padding: '1rem', fontSize: '1.3rem' }}
           >
@@ -47,6 +47,7 @@ const AddJobModal = ({ data, type }) => {
           <AddJobForm
             data={data}
             type={type}
+            docNumber={docNumber}
             callback={handleClose}
           />
         </Card>

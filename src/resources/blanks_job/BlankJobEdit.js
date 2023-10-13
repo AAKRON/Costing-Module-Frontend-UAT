@@ -11,7 +11,7 @@ import AddJobModal from '../../components/AddJobModal'
 import JobTable from '../../components/JobTable'
 // import { CopyJobModal } from '../../components/CopyJobModal';
 
-const Actions = ({ data }) => (
+const Actions = ({ data, docNumber }) => (
   <TopToolbar sx={{
     display: 'flex',
     alignItems: 'center',
@@ -19,7 +19,7 @@ const Actions = ({ data }) => (
     <ListButton />
 
     {localStorage.getItem('role') === 'admin' && (
-      <AddJobModal data={data} type='blank' />
+      <AddJobModal data={data} docNumber={docNumber} type='blank' />
     )}
 
     {/* {localStorage.getItem('role') === 'admin' && (
@@ -37,7 +37,7 @@ export const BlankJobEdit = (props) => {
 
   return (
     <Edit
-      actions={<Actions data={record} />}
+      actions={<Actions data={record} docNumber={record.blank_number} />}
       {...props}
     >
       <SimpleForm

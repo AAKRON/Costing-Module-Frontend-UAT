@@ -1,16 +1,10 @@
 import {
   Button,
-  Card,
   FormControl,
   FormControlLabel,
-  InputLabel,
-  MenuItem,
-  Modal,
   Radio,
   RadioGroup,
-  Select,
-  Snackbar,
-  TextField,
+  Snackbar
 } from '@mui/material'
 import axios from 'axios'
 import React from 'react'
@@ -49,17 +43,12 @@ export class FileUpload extends React.Component {
     super(props)
     this.state = {
       file: null,
-      open_login: false,
       open_snackbar: false,
       snackbar_message: '',
       document_type: '',
       loading: false,
-      selectedDatabase: '',
-      confirmPassword: '',
     }
   }
-
-  handleDatabaseChange = (e) => this.setState({ selectedDatabase: e.target.value })
 
   handleFileChange = (e) => this.setState({ file: e.target.files[0] })
 
@@ -168,26 +157,6 @@ export class FileUpload extends React.Component {
     }
   };
 
-  handleConfirmDatabase = (e) => {
-    e.preventDefault()
-    this.setState({ open_login: true })
-  }
-
-  handleConfirmAuth = (e) => {
-    e.preventDefault()
-
-    const callback = () => {
-      const db = this.state.selectedDatabase
-      localStorage.setItem('db', btoa(db))
-      this.setState({ open_login: false })
-      this.setState({ confirmPassword: '' })
-    }
-  
-    this.props.validatePassword(this.state.confirmPassword, callback)
-  }
-  
-  handleDialogClose = () => this.setState({ open_login: false })
-
   componentDidMount() {
     const style = document.createElement('style');
     style.type = 'text/css';
@@ -216,75 +185,10 @@ export class FileUpload extends React.Component {
 
     return (
       <div>
-        <div>
-          <h2 style={{ margin: '0'}}>
-            Current Database: {localStorage.getItem('db') ? atob(localStorage.getItem('db')) : '2023'}
-          </h2>
-
-          <FormControl style={{ width: '100%', maxWidth: '500px'}}>
-            <InputLabel
-              id='titleDb'
-            >
-              Select Database
-            </InputLabel>
-            <Select
-              labelId='titleDb'
-              value={this.state.selectedDatabase}
-              onChange={this.handleDatabaseChange}
-            >
-              <MenuItem value={'2020'}>2020</MenuItem>
-              <MenuItem value={'2021'}>2021</MenuItem>
-              <MenuItem value={'2022'}>2022</MenuItem>
-              <MenuItem value={'2023'}>2023</MenuItem>
-            </Select>
-
-            {this.state.selectedDatabase !== '' && (
-              <Button
-                variant='contained'
-                onClick={this.handleConfirmDatabase}
-                style={{ marginTop: '1rem' }}
-              >
-                Confirm Database
-              </Button>
-            )}
-
-            <Modal
-              open={this.state.open_login}
-              onClose={this.handleDialogClose}
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <Card style={{ padding: '1rem' }}>
-                <h3>
-                  Confirm Authentication for Database: {this.state.selectedDatabase}
-                </h3>
-
-                <FormControl fullWidth>
-                  <TextField
-                    label='Password'
-                    variant='outlined'
-                    type='password'
-                    value={this.state.confirmPassword}
-                    onChange={(e) => this.setState({ confirmPassword: e.target.value })}
-                  />
-                  <Button
-                    variant='contained'
-                    onClick={this.handleConfirmAuth}
-                    color='success'
-                  >
-                    Confirm
-                  </Button>
-                </FormControl>
-              </Card>
-            </Modal>
-          </FormControl>
-        </div>
-
-        <h2>Please import a spreadsheet with the same name below:</h2>
-        <div style={{ marginBottom: 25 }}>
+        <h2 style={{ margin: '0' }}>
+          Please import a spreadsheet with the same name below:
+        </h2>
+        <div style={{ margin: '25px 0' }}>
           <input
             type='file'
             onChange={this.handleFileChange}
@@ -333,7 +237,7 @@ export class FileUpload extends React.Component {
           open={this.state.open_snackbar}
           message={this.state.snackbar_message}
           autoHideDuration={4000}
-          onRequestClose={this.handleSnackbarClose}
+          onClose={this.handleSnackbarClose}
           onClick={this.handleSnackbarClose}
         />
       </div> 
