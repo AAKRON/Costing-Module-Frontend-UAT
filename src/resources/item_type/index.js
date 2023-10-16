@@ -1,3 +1,4 @@
-export { ItemTypeListing } from './ItemTypeListing';
-export { ItemTypeEdit } from './ItemTypeEdit';
-export { ItemTypeCreate } from './ItemTypeCreate';
+export { ItemTypeCreate } from './ItemTypeCreate'
+export { ItemTypeEdit } from './ItemTypeEdit'
+export { ItemTypeListing } from './ItemTypeListing'
+

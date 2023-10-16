@@ -1,6 +1,5 @@
 import React from 'react'
 import { Admin, Resource } from 'react-admin'
-import { isModifyPermission } from './helpers/functions'
 import Dashboard from './layout/Dashboard'
 import Menu from './layout/Menu'
 import authClient from './providers/authClient'
@@ -9,10 +8,12 @@ import { BlankTypeCreate, BlankTypeEdit } from './resources/blank_type'
 import { BlankTypeListing } from './resources/blank_type/BlankTypeListing'
 import { BlankCreate, BlankEdit, BlankList } from './resources/blanks'
 import { BlankJobEdit, BlanksJobList } from './resources/blanks_job'
+import { BoxCreate, BoxEdit, BoxListing } from './resources/box'
 import { GlobalVariableEdit } from './resources/global_variable'
 import { GlobalVariableCreate } from './resources/global_variable/GlobalVariableCreate'
 import { GlobalVariableListing } from './resources/global_variable/GlobalVariableListing'
 import { ItemCreate, ItemList } from './resources/item'
+import { ItemTypeCreate, ItemTypeEdit, ItemTypeListing } from './resources/item_type'
 import { JobCreate, JobEdit, JobList } from './resources/job'
 import { ScreenCreate, ScreenEdit, ScreenListing } from './resources/screen'
 import Spreadsheet from './resources/spreadsheet'
@@ -35,20 +36,20 @@ const App = () => (
       name='job_listings'
       list={JobList}
       edit={JobEdit}
-      create={isModifyPermission() && JobCreate}
+      create={JobCreate}
     />
     <Resource
       name='screens'
       list={ScreenListing}
       edit={ScreenEdit}
-      create={isModifyPermission() && ScreenCreate}
+      create={ScreenCreate}
     />
 
     <Resource
       name='blanks'
       list={BlankList}
       edit={BlankEdit}
-      create={isModifyPermission() && BlankCreate}
+      create={BlankCreate}
     />
     <Resource
       name='blank_jobs'
@@ -59,14 +60,27 @@ const App = () => (
       name='blank_types'
       list={BlankTypeListing}
       edit={BlankTypeEdit}
-      create={isModifyPermission() && BlankTypeCreate}
+      create={BlankTypeCreate}
     />
 
     <Resource
       name='items'
       list={ItemList}
       // edit={ItemEdit}
-      create={isModifyPermission() && ItemCreate}
+      create={ItemCreate}
+    />
+    <Resource
+      name='boxes'
+      list={BoxListing}
+      edit={BoxEdit}
+      create={BoxCreate}
+
+    />
+    <Resource
+      name='item_types'
+      list={ItemTypeListing}
+      edit={ItemTypeEdit}
+      create={ItemTypeCreate}
     />
 
     <Resource
@@ -85,4 +99,4 @@ const App = () => (
   </Admin>
 )
 
-export default App;
+export default App

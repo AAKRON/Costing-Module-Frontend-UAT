@@ -1,6 +1,5 @@
-import { Filter, TextInput } from 'admin-on-rest/lib/mui';
-import { NumberInput } from 'admin-on-rest/lib/mui/input';
-import React from 'react';
+import React from 'react'
+import { Filter, NumberInput, TextInput } from 'react-admin'
 
 export const BoxFilter = (props) => (
   <Filter {...props}>
@@ -8,4 +7,4 @@ export const BoxFilter = (props) => (
     <TextInput label='Search by box name' source='box_name' alwaysOn />
     <NumberInput label='Search by box ID' source='id' alwaysOn />
   </Filter>
-);
+)

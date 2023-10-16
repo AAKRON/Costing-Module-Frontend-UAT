@@ -1,20 +1,27 @@
 import React from 'react'
 import { Create, ListButton, SimpleForm, TextInput, TopToolbar, required } from 'react-admin'
+import { isModifyPermission } from '../../helpers/functions'
 
-const Actions = () => (
-  <TopToolbar>
-      <ListButton />
-  </TopToolbar>
-)
+export const GlobalVariableCreate = (props) => {
+  if(!isModifyPermission()){
+    return null
+  }
 
-export const GlobalVariableCreate = (props) => (
-  <Create
-    actions={<Actions />}
-    {...props}
-  >
-    <SimpleForm>
-      <TextInput source='name' validate={required()} />
-      <TextInput source='value' validate={required()}/>
-    </SimpleForm>
-  </Create>
-)
+  const Actions = () => (
+    <TopToolbar>
+        <ListButton />
+    </TopToolbar>
+  )
+
+  return (
+    <Create
+      actions={<Actions />}
+      {...props}
+    >
+      <SimpleForm>
+        <TextInput source='name' validate={required()} />
+        <TextInput source='value' validate={required()}/>
+      </SimpleForm>
+    </Create>
+  )
+}

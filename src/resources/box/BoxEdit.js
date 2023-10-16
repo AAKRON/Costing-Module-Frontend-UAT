@@ -1,15 +1,35 @@
-import React from 'react';
-import { Edit, DisabledInput, SimpleForm, TextInput } from 'admin-on-rest/lib/mui';
+import React from 'react'
+import { DeleteButton, Edit, ListButton, NumberInput, SaveButton, SimpleForm, TextInput, Toolbar, TopToolbar, required } from 'react-admin'
+import { isModifyPermission } from '../../helpers/functions'
 
-const BoxTitle = ({record}) => {
-    return <span>Box { record ? `${record.name}`: '' }</span>;
-};
+const Actions = () => (
+  <TopToolbar>
+      <ListButton />
+  </TopToolbar>
+)
+
+const ToolbarForm = (props) => {
+  if(!isModifyPermission()) return false
+
+  return (
+    <Toolbar {...props}>
+      <SaveButton />
+      <DeleteButton mutationMode="pessimistic" />
+    </Toolbar>
+  )
+}
+
 export const BoxEdit = (props) => (
-    <Edit title={<BoxTitle />} {...props}>
-        <SimpleForm>
-            <DisabledInput source='id' />
-            <TextInput source='name' />
-            <TextInput source='cost_per_box' label='Cost per box($)'/>
-        </SimpleForm>
-    </Edit>
-);
+  <Edit
+    actions={<Actions />}
+    {...props}
+  >
+    <SimpleForm
+      toolbar={<ToolbarForm />}
+    >
+      <TextInput source='id' disabled validate={required()}/>
+      <TextInput source='name' validate={required()}/>
+      <NumberInput source='cost_per_box' label='Cost per box($)' validate={required()}/>
+    </SimpleForm>
+  </Edit>
+)

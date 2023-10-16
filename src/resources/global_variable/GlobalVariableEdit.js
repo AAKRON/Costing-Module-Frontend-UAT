@@ -1,5 +1,6 @@
 import React from 'react'
 import { Edit, ListButton, SaveButton, SimpleForm, TextInput, Toolbar, TopToolbar, required } from 'react-admin'
+import { isModifyPermission } from '../../helpers/functions'
 
 const Actions = () => (
   <TopToolbar>
@@ -7,11 +8,15 @@ const Actions = () => (
   </TopToolbar>
 )
 
-const ToolbarForm = (props) => (
-  <Toolbar {...props} >
-    <SaveButton />
-  </Toolbar>
-)
+const ToolbarForm = (props) => {
+  if(!isModifyPermission()) return false
+
+  return(
+    <Toolbar {...props} >
+      <SaveButton />
+    </Toolbar>
+  )
+}
 
 export const GlobalVariableEdit = (props) => (
   <Edit

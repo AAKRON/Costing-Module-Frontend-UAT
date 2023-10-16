@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { AutocompleteInput, Create, ListButton, NumberInput, SimpleForm, TextInput, TopToolbar, required } from 'react-admin'
+import { isModifyPermission } from '../../helpers/functions'
 import restClient from '../../providers/restClient'
 
 const ItemCreate = (props) => {
+	if(!isModifyPermission()){
+    return null
+  }
+
 	const [boxes, setBoxes] = useState([])
 	const [itemsType, setItemsType] = useState([])
 
