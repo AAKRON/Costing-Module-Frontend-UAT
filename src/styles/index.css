@@ -10,10 +10,16 @@ body {
 
 .menu{
   background-color: white;
-  min-height: calc(100vh - 48px);
   padding: 0 !important;
   margin: 0 !important;
   box-shadow: 5px 0px 10px rgba(0, 0, 0, 0.5);
+  min-height: 100vh;
+}
+
+@media screen and (min-width: 600px){
+  .menu{
+    min-height: calc(100vh - 48px);
+  }
 }
 
 .popover li{
@@ -32,7 +38,7 @@ body {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  height: 48px;
+  height: 36px;
   color: black;
 }
 

@@ -1,52 +1,46 @@
-import { GET_LIST } from 'admin-on-rest';
-import { AutocompleteInput, Create, NumberInput, SimpleForm, TextInput } from 'admin-on-rest/lib/mui';
-import axios from 'axios';
-import AutoComplete from 'material-ui/AutoComplete';
-import React from 'react';
-import restClient from '../../restClient';
+import React, { useEffect, useState } from 'react'
+import { AutocompleteInput, Create, ListButton, NumberInput, SimpleForm, TextInput, TopToolbar, required } from 'react-admin'
+import restClient from '../../providers/restClient'
 
-const validateCreate = (fields) => {
-    const errors = {};
-    for (const field of ['item_number', 'description']) {
-        if (!fields[field]) {
-            let field_name = field.split('_').join(' ');
-            errors[field] = [`${field_name} cannot be blank!`];
-        }
-    }
-    return errors;
-};
+const ItemCreate = (props) => {
+	const [boxes, setBoxes] = useState([])
+	const [itemsType, setItemsType] = useState([])
 
-export class  ItemCreate extends React.Component {
-	constructor(props) {
-			super(props);
-			this.state = {
-					boxes: [],
-					item_types: [],
-			};
-	}
+	const fetchBoxes = () => restClient.getList('box-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }})
 
-	fetchBoxes = () => restClient(GET_LIST, 'box-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }});
-	fetchItemTypes = () => restClient(GET_LIST, 'item-type-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }});
+	const fetchItemTypes = () => restClient.getList('item-type-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }})
 
-	componentDidMount() {
-		axios.all([this.fetchBoxes(), this.fetchItemTypes()])
-				.then(axios.spread((box, item_type) => {
-						const boxes = box.data.map(box => ({id: box.id, name: box.name}));
-						const item_types = item_type.data.map(box => ({id: box.type_number, name: box.description}));
-						this.setState({boxes, item_types});
-				}));
-	}
+	useEffect(() => {
+		fetchBoxes().then(({data}) => {
+			const boxes = data.map(box => ({id: box.id, name: box.name}));
+			setBoxes(boxes)
+		})
 
-	render () {
-			return(
-				<Create invalid={true} validation={validateCreate} {...this.props}>
-		        <SimpleForm>
-                <NumberInput source='item_number'/>
-                <TextInput source='description'/>
-								<AutocompleteInput source='box_id' choices={this.state.boxes} filter={AutoComplete.fuzzyFilter} translateChoice={false} />
-								<AutocompleteInput source='item_type_id' choices={this.state.item_types} filter={AutoComplete.fuzzyFilter} translateChoice={false} />
-						</SimpleForm>
-				</Create>
-			)
-	}
+		fetchItemTypes().then(({data}) => {
+			const item_types = data.map(box => ({id: box.type_number, name: box.description}));
+			setItemsType(item_types)
+		})
+	}, [])
+
+	const Actions = () => (
+		<TopToolbar>
+				<ListButton />
+		</TopToolbar>
+	)
+	
+	return(
+		<Create
+			actions={<Actions />}
+			{...props}
+		>
+			<SimpleForm>
+				<NumberInput source='item_number' validate={required()}/>
+				<TextInput source='description' validate={required()}/>
+				<AutocompleteInput source='box_id' choices={boxes}/>
+				<AutocompleteInput source='item_type_id' choices={itemsType} />
+			</SimpleForm>
+		</Create>
+	)
 }
+
+export default ItemCreate

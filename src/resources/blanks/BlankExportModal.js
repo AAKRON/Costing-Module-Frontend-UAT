@@ -28,14 +28,6 @@ const styles = {
     textAlign: 'center',
     padding: '0 2rem 2rem',
   },
-  Blank: {
-    margin: 4,
-  },
-  Wrapper: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    marginBottom: '10px',
-  },
 }
 
 class BlankExportModal extends React.Component {
@@ -57,7 +49,13 @@ class BlankExportModal extends React.Component {
         (blank) => `${blank.blank_number} - ${blank.description}`
       )
       // Función de comparación personalizada para ordenar por número
+      function customCompare(a, b) {
+        const numA = parseInt(a.split(' - ')[0])
+        const numB = parseInt(b.split(' - ')[0])
+        return numA - numB
+      }
 
+      blanks.sort(customCompare)
       // console.log(blanks)
       this.setState({ blanks })
     })
@@ -65,13 +63,11 @@ class BlankExportModal extends React.Component {
 
   handleBlankPriceCostDownload = (e) => {
     e.preventDefault()
-
     window.open(`${SERVER_URL}/blank-download/blank-price-cost.csv`, '_blank')
   }
 
   handleBlankInventoryCostDownload = (e) => {
     e.preventDefault()
-
     window.open(
       `${SERVER_URL}/blank-download/blank-inventory-cost.csv`,
       '_blank'
@@ -112,7 +108,7 @@ class BlankExportModal extends React.Component {
           onClick={this.handleOpen}
         >
           <FileFileDownload  style={{ fontSize: '1rem' }}/>
-          Export Blank
+          Export Blanks
         </Button>
 
         <Dialog
@@ -149,39 +145,40 @@ class BlankExportModal extends React.Component {
             <Divider />
 
             <h2 style={{ marginBottom: 0 }}>Export Selected Blanks</h2>
-              <Autocomplete
-                multiple
-                options={this.state.blanks}
-                value={this.state.seleted_blanks}
-                onChange={(e, value) => {
-                  this.setState({ seleted_blanks: value })
-                }}
-                renderInput={(params) =>
-                  <TextField {...params} label='Type the manufactured blank number' />
-                }
-              />
+            <Autocomplete
+              multiple
+              options={this.state.blanks}
+              value={this.state.seleted_blanks}
+              onChange={(e, value) => {
+                this.setState({ seleted_blanks: value })
+              }}
+              renderInput={(params) =>
+                <TextField {...params} label='Type the manufactured blank number' />
+              }
+            />
 
             {this.state.seleted_blanks.length > 0 && (
-              <Button
-                variant='contained'
-                color='info'
-                style={styles.RaisedButton.FirstButton}
-                onClick={this.handleSeletedBlankPriceCostDownload}
-              >
-                <FileFileDownload />
-                Price Cost Blanks
-              </Button>
-            )}
-            {this.state.seleted_blanks.length > 0 && (
-              <Button
-                variant='contained'
-                color='info'
-                style={styles.RaisedButton.SecondButton}
-                onClick={this.handleSeletedBlankInventoryCostDownload}
-              >
-                <FileFileDownload />
-                Inventory Cost Blanks
-              </Button>
+              <>
+                <Button
+                  variant='contained'
+                  color='info'
+                  style={styles.RaisedButton.FirstButton}
+                  onClick={this.handleSeletedBlankPriceCostDownload}
+                >
+                  <FileFileDownload />
+                  Price Cost Blanks
+                </Button>
+
+                <Button
+                  variant='contained'
+                  color='info'
+                  style={styles.RaisedButton.SecondButton}
+                  onClick={this.handleSeletedBlankInventoryCostDownload}
+                >
+                  <FileFileDownload />
+                  Inventory Cost Blanks
+                </Button>
+              </>
             )}
           </div>
         </Dialog>

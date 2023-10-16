@@ -73,22 +73,6 @@ const App = () => (
     dashboard={Dashboard}
     menu={Menu}
   >
-    {/* <Resource
-      name='job_listings'
-      list={JobList}
-      icon={JobIcon}
-      edit={JobEdit}
-      create={JobCreate}
-      remove={Delete}
-    />
-
-    <Resource
-      name='screens'
-      list={ScreenListing}
-      create={ScreenCreate}
-      edit={ScreenEdit}
-      remove={Delete}
-    /> */}
 
     <Resource
       name='items'
@@ -121,6 +105,8 @@ const App = () => (
       create={ItemTypeCreate}
       remove={Delete}
     />
+
+    {/* ===== */}
 
     <Resource
       name='blanks'

@@ -12,6 +12,7 @@ import { BlankJobEdit, BlanksJobList } from './resources/blanks_job'
 import { GlobalVariableEdit } from './resources/global_variable'
 import { GlobalVariableCreate } from './resources/global_variable/GlobalVariableCreate'
 import { GlobalVariableListing } from './resources/global_variable/GlobalVariableListing'
+import { ItemCreate, ItemList } from './resources/item'
 import { JobCreate, JobEdit, JobList } from './resources/job'
 import { ScreenCreate, ScreenEdit, ScreenListing } from './resources/screen'
 import Spreadsheet from './resources/spreadsheet'
@@ -61,7 +62,12 @@ const App = () => (
       create={isModifyPermission() && BlankTypeCreate}
     />
 
-
+    <Resource
+      name='items'
+      list={ItemList}
+      // edit={ItemEdit}
+      create={isModifyPermission() && ItemCreate}
+    />
 
     <Resource
       name='users'

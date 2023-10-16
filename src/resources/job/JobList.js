@@ -34,7 +34,7 @@ export const JobList = (props) => {
         title='All Jobs'
         sort={{ field: 'id', order: 'ASC' }}
         filters={<JobFilter />}
-        perPage={25}
+        perPage={50}
         actions={<Actions />}
         {...props}
       >

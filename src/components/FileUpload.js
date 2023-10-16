@@ -202,7 +202,6 @@ export class FileUpload extends React.Component {
         <FormControl fullWidth>
           <RadioGroup
             name='shipSpeed'
-            defaultSelected='not_light'
             onChange={(e, value) => this.setState({ document_type: value })}
           >
             <FormControlLabel value='jobs_and_blanks' control={<Radio />} label='JOB LIST' />

@@ -4,6 +4,7 @@ import FileDownloadRounded from '@mui/icons-material/FileDownloadRounded'
 import JobIcon from '@mui/icons-material/Gavel'
 import BlankIcon from '@mui/icons-material/Loyalty'
 import AdminIcon from '@mui/icons-material/Settings'
+import ItemIcon from '@mui/icons-material/ViewStream'
 import { Divider, MenuItem, Popover } from '@mui/material'
 import { useState } from 'react'
 import { Link, Menu } from 'react-admin'
@@ -11,6 +12,7 @@ import { Link, Menu } from 'react-admin'
 export default () => {
   const [menuJobs, setMenuJobs] = useState(null)
   const [menuBlanks, setMenuBlanks] = useState(null)
+  const [menuItems, setMenuItems] = useState(null)
   const [menuAdmin, setMenuAdmin] = useState(null)
 
   return (
@@ -118,6 +120,56 @@ export default () => {
   
       <Divider style={{ margin: '0' }} />
 
+      <MenuItem
+        className='link'
+        aria-describedby={Boolean(menuItems) ? 'menu-items' : undefined}
+        onClick={(e) => setMenuItems(e.currentTarget)}
+      >
+        <Link>
+          <ItemIcon />
+          <span>Items</span>
+          <ArrowRight style={{ marginLeft: 'auto' }}/>
+        </Link>
+      </MenuItem>
+      <Popover
+        className='popover'
+        id={Boolean(menuItems) ? 'menu-items' : undefined}
+        open={Boolean(menuItems)}
+        anchorEl={menuItems}
+        onClose={() => setMenuItems(null)}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
+        }}
+      >
+        <MenuItem className='link'>
+          <Link to='items'>
+            Listing
+          </Link>
+        </MenuItem>
+        <MenuItem className='link'>
+          <Link to='item_jobs'>
+            Jobs
+          </Link>
+        </MenuItem>
+        <MenuItem className='link'>
+          <Link to='boxes'>
+            Boxes
+          </Link>
+        </MenuItem>
+        <MenuItem className='link'>
+          <Link to='item_types'>
+            Types
+          </Link>
+        </MenuItem>
+      </Popover>
+  
+      <Divider style={{ margin: '0' }} />
+
       { localStorage.getItem('role') === 'admin' &&
         <div>
           <MenuItem
@@ -157,7 +209,6 @@ export default () => {
               </Link>
             </MenuItem>
           </Popover>
-          <Divider style={{ margin: '0' }} />
         </div>
       }
     </Menu>

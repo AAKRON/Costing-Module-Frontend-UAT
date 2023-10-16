@@ -42,18 +42,18 @@ export const ScreenListing = (props) => (
         <TextField source='id' />
         <TextField source='screen_size' />
         <FunctionField
-            source='cost'
-            label='cost ($)'
-            render={
-              record => {
-                return <span>${record.cost}</span>
-            }}
-          />
+          source='cost'
+          label='cost ($)'
+          render={
+            record => {
+              return <span>${record.cost}</span>
+          }}
+        />
 
-          <EditButton
-            label={isModifyPermission() ? 'Edit' : 'View'}
-            icon={isModifyPermission() ? <EditIcon /> : <ShowIcon />}
-          />
+        <EditButton
+          label={isModifyPermission() ? 'Edit' : 'View'}
+          icon={isModifyPermission() ? <EditIcon /> : <ShowIcon />}
+        />
       </Datagrid>
     </List>
   </Card>

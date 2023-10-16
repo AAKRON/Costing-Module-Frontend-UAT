@@ -1,4 +1,3 @@
-mport React from 'react';
 import Divider from 'material-ui/Divider'
 import MenuItem from 'material-ui/MenuItem'
 import FinalCalcIcon from 'material-ui/svg-icons/action/account-balance-wallet'
@@ -11,6 +10,7 @@ import BlankIcon from 'material-ui/svg-icons/action/loyalty'
 import AdminIcon from 'material-ui/svg-icons/action/settings'
 import ItemIcon from 'material-ui/svg-icons/action/view-stream'
 import ArrowDropRight from 'material-ui/svg-icons/navigation-arrow-drop-right'
+import React from 'react'
 import { Link } from 'react-router'
 
 export default ({ resources, onMenuTap, logout }) => (
