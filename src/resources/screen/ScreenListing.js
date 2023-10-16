@@ -1,6 +1,31 @@
+import EditIcon from '@mui/icons-material/Edit'
+import ShowIcon from '@mui/icons-material/Visibility'
 import { Card } from '@mui/material'
-import { Datagrid, EditButton, FunctionField, List, TextField } from 'react-admin'
+import React from 'react'
+import { CreateButton, Datagrid, EditButton, FunctionField, List, TextField, TopToolbar } from 'react-admin'
+import { isModifyPermission } from '../../helpers/functions'
 import { ScreenFilter } from './ScreenFilter'
+
+const Actions = ({
+  filters,
+  displayedFilters,
+  filterValues,
+  resource,
+  showFilter,
+}) => (
+  <TopToolbar>
+  {filters &&
+    React.cloneElement(filters, {
+      resource,
+      showFilter,
+      displayedFilters,
+      filterValues,
+      context: 'button',
+    })}
+  
+    {isModifyPermission() && <CreateButton />}
+  </TopToolbar>
+)
 
 export const ScreenListing = (props) => (
   <Card style={{ margin: '2rem', padding: '1rem' }}>
@@ -8,7 +33,7 @@ export const ScreenListing = (props) => (
       title='All screens'
       sort={{ field: 'id', order: 'ASC' }} 
       filters={<ScreenFilter />}
-      exporter={false}
+      actions={<Actions />}
       {...props}
     >
       <Datagrid
@@ -24,7 +49,11 @@ export const ScreenListing = (props) => (
                 return <span>${record.cost}</span>
             }}
           />
-        <EditButton />
+
+          <EditButton
+            label={isModifyPermission() ? 'Edit' : 'View'}
+            icon={isModifyPermission() ? <EditIcon /> : <ShowIcon />}
+          />
       </Datagrid>
     </List>
   </Card>

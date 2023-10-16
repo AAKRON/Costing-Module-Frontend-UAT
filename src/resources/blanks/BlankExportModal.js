@@ -111,7 +111,7 @@ class BlankExportModal extends React.Component {
           style={{ fontSize: '0.8rem' }}
           onClick={this.handleOpen}
         >
-          <FileFileDownload />
+          <FileFileDownload  style={{ fontSize: '1rem' }}/>
           Export Blank
         </Button>
 

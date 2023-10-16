@@ -7,7 +7,7 @@ const Actions = () => (
   </TopToolbar>
 )
 
-const CustomToolbar = (props) => (
+const ToolbarForm = (props) => (
   <Toolbar {...props} >
     <SaveButton />
   </Toolbar>
@@ -19,7 +19,7 @@ export const GlobalVariableEdit = (props) => (
     actions={<Actions />}
   >
     <SimpleForm
-      toolbar={<CustomToolbar />}
+      toolbar={<ToolbarForm />}
     >
       <TextInput disabled source='id' validate={required()}/>
       <TextInput disabled source='name' validate={required()}/>

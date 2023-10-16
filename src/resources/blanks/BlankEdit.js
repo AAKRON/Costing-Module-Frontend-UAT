@@ -1,5 +1,6 @@
 import React from 'react'
-import { Edit, ListButton, NumberInput, ReferenceInput, SelectInput, SimpleForm, TextInput, TopToolbar, required } from 'react-admin'
+import { DeleteButton, Edit, ListButton, NumberInput, ReferenceInput, SaveButton, SelectInput, SimpleForm, TextInput, Toolbar, TopToolbar, required } from 'react-admin'
+import { isModifyPermission } from '../../helpers/functions'
 import BlankCostView from './BlankCostView'
 
 const Actions = () => (
@@ -8,12 +9,25 @@ const Actions = () => (
   </TopToolbar>
 )
 
+const ToolbarForm = (props) => {
+  if(!isModifyPermission()) return false
+
+  return (
+    <Toolbar {...props}>
+      <SaveButton />
+      <DeleteButton mutationMode="pessimistic" />
+    </Toolbar>
+  )
+}
+
 export const BlankEdit = (props) => (
   <Edit
     actions={<Actions />}
     {...props}
   >
-    <SimpleForm>
+    <SimpleForm
+      toolbar={<ToolbarForm />}
+    >
       <TextInput disabled source='id' validate={required()}/>
       <NumberInput source='blank_number' validate={required()}/>
       <TextInput multiline source='description' validate={required()}/>

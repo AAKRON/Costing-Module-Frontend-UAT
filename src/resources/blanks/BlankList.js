@@ -1,6 +1,9 @@
+import EditIcon from '@mui/icons-material/Edit'
+import ShowIcon from '@mui/icons-material/Visibility'
 import { Card } from '@mui/material'
 import React from 'react'
 import { ChipField, CreateButton, Datagrid, EditButton, Filter, FunctionField, List, NumberInput, ReferenceInput, SelectInput, TextField, TextInput, TopToolbar } from 'react-admin'
+import { isModifyPermission } from '../../helpers/functions'
 import { BlankExportModal } from './BlankExportModal'
 
 const BlankFilter = (props) => (
@@ -49,9 +52,9 @@ const BlankActions = ({
         context: 'button',
       })}
 
-    <CreateButton />
+    {isModifyPermission() && <CreateButton />}
 
-    <BlankExportModal submitForm={() => 1} />
+    <BlankExportModal />
   </TopToolbar>
 )
 
@@ -95,7 +98,11 @@ export const BlankList = (props) => (
               return <span>${record.total_blank_cost_for_inventory}</span>
           }}
         />
-        <EditButton />
+
+        <EditButton
+          label={isModifyPermission() ? 'Edit' : 'View'}
+          icon={isModifyPermission() ? <EditIcon /> : <ShowIcon />}
+        />
       </Datagrid>
     </List>
   </Card>

@@ -9,6 +9,7 @@ import {
 import axios from 'axios'
 import React from 'react'
 import { SERVER_URL } from '../config'
+import { isModifyPermission } from '../helpers/functions'
 
 // const UPLOAD_PATH = `${SERVER_URL}/items-and-blanks-listings`;
 const VALID_FILE_TYPE =
@@ -188,13 +189,15 @@ export class FileUpload extends React.Component {
         <h2 style={{ margin: '0' }}>
           Please import a spreadsheet with the same name below:
         </h2>
-        <div style={{ margin: '25px 0' }}>
-          <input
-            type='file'
-            onChange={this.handleFileChange}
-            accept='.xls, .xlsx, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
-          />
-        </div>
+        {isModifyPermission() &&
+          <div style={{ margin: '25px 0' }}>
+            <input
+              type='file'
+              onChange={this.handleFileChange}
+              accept='.xls, .xlsx, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
+            />
+          </div>
+        }
 
         <FormControl fullWidth>
           <RadioGroup
@@ -214,19 +217,21 @@ export class FileUpload extends React.Component {
           </RadioGroup>
         </FormControl>
 
-        <Button
-          variant='contained'
-          onClick={this.handleUpload}
-          color='primary'
-        >
-          Upload File
-        </Button>
+        {isModifyPermission() &&
+          <Button
+            variant='contained'
+            onClick={this.handleUpload}
+            color='primary'
+            style={{ marginRight: '1rem' }}
+          >
+            Upload File
+          </Button>
+        }
 
         <Button
           variant='contained'
           onClick={this.handleDownload}
           color='warning'
-          style={{ marginLeft: '1rem' }}
         >
           Download File
         </Button>

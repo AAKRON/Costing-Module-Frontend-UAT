@@ -1,5 +1,9 @@
+import EditIcon from '@mui/icons-material/Edit'
+import ShowIcon from '@mui/icons-material/Visibility'
 import { Card } from '@mui/material'
-import { Datagrid, EditButton, Filter, List, NumberInput, TextField, TextInput } from 'react-admin'
+import React from 'react'
+import { CreateButton, Datagrid, EditButton, Filter, List, NumberInput, TextField, TextInput, TopToolbar } from 'react-admin'
+import { isModifyPermission } from '../../helpers/functions'
 
 const BlankTypeFilter = (props) => (
   <Filter {...props}>
@@ -12,13 +16,34 @@ const BlankTypeFilter = (props) => (
   </Filter>
 )
 
+const Actions = ({
+  filters,
+  displayedFilters,
+  filterValues,
+  resource,
+  showFilter,
+}) => (
+  <TopToolbar>
+  {filters &&
+    React.cloneElement(filters, {
+      resource,
+      showFilter,
+      displayedFilters,
+      filterValues,
+      context: 'button',
+    })}
+  
+    {isModifyPermission() && <CreateButton />}
+  </TopToolbar>
+)
+
 export const BlankTypeListing = (props) => (
   <Card style={{ margin: '2rem', padding: '1rem' }}>
     <List
       title='Blank Types Listing'
       sort={{ field: 'id', order: 'ASC' }}
       filters={<BlankTypeFilter />}
-      exporter={false}
+      actions={<Actions />}
       {...props}
     >
       <Datagrid
@@ -27,7 +52,11 @@ export const BlankTypeListing = (props) => (
         {/* <TextField source='id' /> */}
         <TextField source='type_number' />
         <TextField source='description' />
-        <EditButton />
+
+        <EditButton
+          label={isModifyPermission() ? 'Edit' : 'View'}
+          icon={isModifyPermission() ? <EditIcon /> : <ShowIcon />}
+        />
       </Datagrid>
     </List>
   </Card>

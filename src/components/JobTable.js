@@ -18,6 +18,7 @@ import {
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useNotify, useRefresh } from 'react-admin'
+import { isModifyPermission } from '../helpers/functions'
 import restClient from '../providers/restClient'
 
 const JobTable = ({ jobsInitial, resource, docNumber }) => {
@@ -185,7 +186,7 @@ const JobTable = ({ jobsInitial, resource, docNumber }) => {
   const jobField = (job, index) => {
     return (
       <TableRow key={index} style={{ borderTop: '1px solid #cdcdcd' }}>
-        <th style={{ width: '30%', textAlign: 'left', fontWeight: 400 }}>
+        <th style={{ width: '30%', textAlign: 'left', fontWeight: 400, height: '40px' }}>
           <span>{job.job_number} - {job.description}</span>
         </th>
         <th style={{ fontWeight: 400 }}>
@@ -203,18 +204,20 @@ const JobTable = ({ jobsInitial, resource, docNumber }) => {
         <th style={{...style.inventory, fontWeight: 400}}>
           ${job.overhead_inventory_cost}
         </th>
-        <th>
-          <IconButton
-            onClick={() => editJob(job)}
-          >
-            <ContentCreate />
-          </IconButton>
-          <IconButton
-            onClick={() => removeJob(job)}
-          >
-            <DeleteIcon />
-          </IconButton>
-        </th>
+        {isModifyPermission() &&
+          <th>
+            <IconButton
+              onClick={() => editJob(job)}
+            >
+              <ContentCreate />
+            </IconButton>
+            <IconButton
+              onClick={() => removeJob(job)}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </th>
+        }
       </TableRow>
     )
   }
@@ -268,13 +271,15 @@ const JobTable = ({ jobsInitial, resource, docNumber }) => {
               </TableBody>
             </Table>
 
-            <Button
-              color='primary'
-              variant='contained'
-              onClick={handleRemoveJob}
-            >
-              Save
-            </Button>
+            {isModifyPermission() &&
+              <Button
+                color='primary'
+                variant='contained'
+                onClick={handleRemoveJob}
+              >
+                Save
+              </Button>
+            }
 
             <Modal
               open={openModal}

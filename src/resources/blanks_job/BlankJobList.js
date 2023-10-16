@@ -1,7 +1,9 @@
-
+import EditIcon from '@mui/icons-material/Edit'
+import ShowIcon from '@mui/icons-material/Visibility'
 import { Card } from '@mui/material'
 import React from 'react'
 import { Datagrid, EditButton, Filter, List, NumberInput, TextField, TextInput } from 'react-admin'
+import { isModifyPermission } from '../../helpers/functions'
 
 const BlanksJobFilter = (props) => (
   <Filter {...props}>
@@ -25,6 +27,7 @@ export const BlanksJobList = (props) => (
       title='Blanks and Job'
       sort={{ field: 'id', order: 'ASC' }}
       filters={<BlanksJobFilter />}
+      actions={false}
       perPage={100}
       {...props}
     >
@@ -35,7 +38,11 @@ export const BlanksJobList = (props) => (
         <TextField source='blank_number' />
         <TextField source='description' />
         <TextField source='number_of_jobs' />
-        <EditButton />
+
+        <EditButton
+          label={isModifyPermission() ? 'Edit' : 'View'}
+          icon={isModifyPermission() ? <EditIcon /> : <ShowIcon />}
+        />
       </Datagrid>
     </List>
   </Card>

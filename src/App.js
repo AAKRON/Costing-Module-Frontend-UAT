@@ -1,5 +1,6 @@
 import React from 'react'
 import { Admin, Resource } from 'react-admin'
+import { isModifyPermission } from './helpers/functions'
 import Dashboard from './layout/Dashboard'
 import Menu from './layout/Menu'
 import authClient from './providers/authClient'
@@ -33,20 +34,20 @@ const App = () => (
       name='job_listings'
       list={JobList}
       edit={JobEdit}
-      create={JobCreate}
+      create={isModifyPermission() && JobCreate}
     />
     <Resource
       name='screens'
       list={ScreenListing}
-      create={ScreenCreate}
       edit={ScreenEdit}
+      create={isModifyPermission() && ScreenCreate}
     />
 
     <Resource
       name='blanks'
       list={BlankList}
-      create={BlankCreate}
       edit={BlankEdit}
+      create={isModifyPermission() && BlankCreate}
     />
     <Resource
       name='blank_jobs'
@@ -57,7 +58,7 @@ const App = () => (
       name='blank_types'
       list={BlankTypeListing}
       edit={BlankTypeEdit}
-      create={BlankTypeCreate}
+      create={isModifyPermission() && BlankTypeCreate}
     />
 
 

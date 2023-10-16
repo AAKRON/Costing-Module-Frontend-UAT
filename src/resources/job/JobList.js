@@ -1,7 +1,31 @@
+import EditIcon from '@mui/icons-material/Edit'
+import ShowIcon from '@mui/icons-material/Visibility'
 import { Card } from '@mui/material'
 import React from 'react'
-import { ChipField, Datagrid, EditButton, FunctionField, List, TextField } from 'react-admin'
+import { ChipField, CreateButton, Datagrid, EditButton, FunctionField, List, TextField, TopToolbar } from 'react-admin'
+import { isModifyPermission } from '../../helpers/functions'
 import { JobFilter } from './JobFilter'
+
+const Actions = ({
+  filters,
+  displayedFilters,
+  filterValues,
+  resource,
+  showFilter,
+}) => (
+  <TopToolbar>
+  {filters &&
+    React.cloneElement(filters, {
+      resource,
+      showFilter,
+      displayedFilters,
+      filterValues,
+      context: 'button',
+    })}
+  
+    {isModifyPermission() && <CreateButton />}
+  </TopToolbar>
+)
 
 export const JobList = (props) => {
   return (
@@ -11,6 +35,7 @@ export const JobList = (props) => {
         sort={{ field: 'id', order: 'ASC' }}
         filters={<JobFilter />}
         perPage={25}
+        actions={<Actions />}
         {...props}
       >
         <Datagrid
@@ -30,7 +55,10 @@ export const JobList = (props) => {
             }}
           />
     
-          <EditButton />
+          <EditButton
+            label={isModifyPermission() ? 'Edit' : 'View'}
+            icon={isModifyPermission() ? <EditIcon /> : <ShowIcon />}
+          />
         </Datagrid>
       </List>
     </Card>

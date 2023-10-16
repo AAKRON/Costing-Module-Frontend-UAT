@@ -3,8 +3,9 @@ import {
   MenuItem,
   Modal, Select, TextField
 } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useLogin, useNotify } from 'react-admin'
+import { isAdmin } from '../helpers/functions'
 
 export default () => {
   const login = useLogin()
@@ -12,8 +13,6 @@ export default () => {
   const [database, setDatabase] = useState('')
   const [openConfirm, setOpenConfirm] = useState(false)
   const [confirmPassword, setConfirmPassword] = useState('')
-  
-  const isAdmin = localStorage.getItem('role') === 'admin'
 
   const validatePassword = (password, callback) => {
     login({ username: localStorage.getItem('username'), password })
@@ -36,13 +35,19 @@ export default () => {
     validatePassword(confirmPassword, callback)
   }
 
+  useEffect(() => {
+    if (localStorage.getItem('db') === null) {
+      localStorage.setItem('db', new Date().getFullYear())
+    }
+  }, [])
+
   return (
     <Card style={{ margin: '2rem', padding: '1rem' }}>
-      {isAdmin
+      {isAdmin()
         ? (
           <div>
             <h2 style={{ margin: '0'}}>
-              Current Database: {localStorage.getItem('db') || '2023'}
+              Current Database: {localStorage.getItem('db')}
             </h2>
 
             <FormControl style={{ width: '100%', maxWidth: '500px'}}>
