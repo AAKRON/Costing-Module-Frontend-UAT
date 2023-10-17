@@ -113,15 +113,21 @@ const CopyJobForm = ({ data, docNumber, type, callback }) => {
   useEffect(() => {
     // fetchJobs().then(({ data }) => {
     //   setJobs(data)
+    // }).catch((err) => {
+    //   console.log('Error fetching jobs', err)
     // })
 
     if (type === 'item') {
       fetchItems().then(({ data }) => {
         setItems(data)
+      }).catch((err) => {
+        console.log('Error fetching items', err)
       })
     }else{
       fetchBlanks().then(({ data }) => {
         setBlanks(data)
+      }).catch((err) => {
+        console.log('Error fetching blanks', err)
       })
     }
   }, [])

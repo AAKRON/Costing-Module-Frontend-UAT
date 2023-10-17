@@ -204,6 +204,8 @@ const JobTable = ({ jobsInitial, resource, docNumber }) => {
         (item) => `${item.item_number} - ${item.description}`
       )
       setItems(items)
+    }).catch((err) => {
+      console.log('Error fetching items', err)
     })
 
     fetchJobs().then(({ data }) => {
@@ -211,6 +213,8 @@ const JobTable = ({ jobsInitial, resource, docNumber }) => {
         (job) => `${job.job_number} - ${job.description}`
       )
       setJobs(jobs)
+    }).catch((err) => {
+      console.log('Error fetching jobs', err)
     })
   }, [])
 
@@ -257,6 +261,8 @@ const JobTable = ({ jobsInitial, resource, docNumber }) => {
     )
   }
 
+  if(itemsJobs === undefined) return <div>Loading...</div>
+
   return (
     <>
       {itemsJobs?.length > 0
@@ -301,7 +307,7 @@ const JobTable = ({ jobsInitial, resource, docNumber }) => {
 
               <TableBody>
                 {itemsJobs?.map((job, index) => {
-                  if(!job.deleted) return jobField(job, index)
+                  if(!job?.deleted) return jobField(job, index)
                 })}
               </TableBody>
             </Table>

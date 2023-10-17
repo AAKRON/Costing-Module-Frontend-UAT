@@ -46,7 +46,7 @@ class BlankExportModal extends React.Component {
   componentDidMount() {
     this.fetchBlanks().then(({ data }) => {
       const blanks = data.map(
-        (blank) => `${blank.blank_number} - ${blank.description}`
+        (blank) => `${blank?.blank_number} - ${blank?.description}`
       )
       // Función de comparación personalizada para ordenar por número
       function customCompare(a, b) {
@@ -58,6 +58,8 @@ class BlankExportModal extends React.Component {
       blanks.sort(customCompare)
       // console.log(blanks)
       this.setState({ blanks })
+    }).catch((err) => {
+      console.log('Error fetching blanks', err)
     })
   }
 

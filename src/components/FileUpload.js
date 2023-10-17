@@ -107,8 +107,14 @@ export class FileUpload extends React.Component {
       setTimeout(() => {
         location.replace(REDIRECT_PATH[this.state.document_type]);
       }, 500);
-    });
-  };
+    }).catch((err) => {
+      this.setState({
+        open_snackbar: true,
+        snackbar_message: err.response.data.message,
+      });
+      this.setState({ loading: false });
+    })
+  }
 
   handleDownload = (e) => {
     e.preventDefault();

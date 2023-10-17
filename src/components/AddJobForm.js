@@ -151,6 +151,8 @@ const AddJobForm = ({
   useEffect(() => {
     fetchJobs().then(({ data }) => {
       setJobs(data)
+    }).catch((err) => {
+      console.log('Error fetching jobs', err)
     })
   }, [])
 

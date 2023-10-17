@@ -19,11 +19,15 @@ const ItemCreate = (props) => {
 		fetchBoxes().then(({data}) => {
 			const boxes = data.map(box => ({id: box.id, name: box.name}));
 			setBoxes(boxes)
+		}).catch((err) => {
+			console.log('Error fetching boxes', err)
 		})
 
 		fetchItemTypes().then(({data}) => {
 			const item_types = data.map(box => ({id: box.type_number, name: box.description}));
 			setItemsType(item_types)
+		}).catch((err) => {
+			console.log('Error fetching item types', err)
 		})
 	}, [])
 

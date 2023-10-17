@@ -34,12 +34,12 @@ body {
 
 .menu .link a{
   width: 100%;
-  text-transform: capitalize;
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  height: 36px;
+  height: 42px;
   color: black;
+  font-size: 0.9rem;
 }
 
 .menu .link span{

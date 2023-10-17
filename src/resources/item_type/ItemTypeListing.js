@@ -32,7 +32,9 @@ export const ItemTypeListing = (props) => (
     sort={{ field: 'id', order: 'ASC' }}
     {...props}
   >
-    <Datagrid>
+    <Datagrid
+      isRowSelectable={() => false}
+    >
       <TextField source='id' />
       <TextField source='type_number' />
       <TextField source='description' />

@@ -66,6 +66,8 @@ const JobField = ({ job, type }) => (
 const BlankCostView = ({ type }) => {
   const blank = useEditController()
 
+  if(!blank.record) return null
+
   return (
     <>
       {blank?.record?.jobs?.length > 0
@@ -140,7 +142,7 @@ const BlankCostView = ({ type }) => {
               </Table>
             </Paper>
           </div>
-        : blank?.record?.type_number === 1 && <div>{type} Cost Loading....</div>
+        : <div>No {type} Cost</div>
       }
     </>
   )

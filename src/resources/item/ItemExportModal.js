@@ -95,6 +95,8 @@ class ItemExportModal extends React.Component {
 
       items.sort(customCompare)
       this.setState({ items })
+    }).catch((err) => {
+      console.log('Error fetching items', err)
     })
   }
 
