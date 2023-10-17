@@ -95,8 +95,31 @@ const JobTable = ({ jobsInitial, resource, docNumber }) => {
     }
 
     if(resource === 'item_jobs'){
-      // FALTA REVISAR
-      
+      const jobs = itemsJobs.filter((j) => j.deleted)
+      if(jobs.length === 0) return
+
+      const transformedJobs = jobs.map((j) => {
+        return {
+          deleted: j.deleted,
+          blank_number: docNumber,
+          job_listing_id: j.job_listing_id,
+          hour_per_piece: j.hour_per_piece,
+        }
+      })
+
+      const response = await restClient.delete('item_jobs', {
+        id: docNumber,
+        data: {
+          jobs: transformedJobs,
+        },
+      })
+
+      if(response){
+        notify('Job(s) removed successfully')
+      }else{
+        notify('Error removing job(s)')
+      }
+
       refresh()
     }
   }
@@ -126,8 +149,20 @@ const JobTable = ({ jobsInitial, resource, docNumber }) => {
     }
 
     if(resource === 'item_jobs'){
-      // FALTA REVISAR
-      
+      const response = await restClient.update('item_jobs', {
+        id: jobEdit.job_pk_id,
+        data: {
+          job_listing_id: jobEdit.job_listing_id,
+          hour_per_piece: jobEdit.hour_per_piece,
+        },
+      })
+
+      if(response){
+        notify('Job updated successfully')
+      }else{
+        notify('Error updating job')
+      }
+  
       refresh()
     }
 

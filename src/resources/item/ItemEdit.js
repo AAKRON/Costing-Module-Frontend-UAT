@@ -1,61 +1,64 @@
-import { GET_LIST } from 'admin-on-rest';
-import { AutocompleteInput, DisabledInput, Edit, LongTextInput, NumberInput, SimpleForm } from 'admin-on-rest/lib/mui';
-import axios from 'axios';
-import AutoComplete from 'material-ui/AutoComplete';
-import React from 'react';
-import restClient from '../../restClient';
-import ItemCostView from './ItemCostView';
+import { useEffect, useState } from 'react'
+import { AutocompleteInput, DeleteButton, Edit, ListButton, NumberInput, SaveButton, SimpleForm, TextInput, Toolbar, TopToolbar, required } from 'react-admin'
+import { isModifyPermission } from '../../helpers/functions'
+import restClient from '../../providers/restClient'
+import ItemCostView from './ItemCostView'
 
-const ItemTitle = ({record}) => {
-	return <span>Item #{ record ? `${record.item_number}`: '' }</span>;
-};
+export const ItemEdit = (props) => {
+	const [boxes, setBoxes] = useState([])
+	const [itemsType, setItemsType] = useState([])
 
+	const fetchBoxes = () => restClient.getList('box-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }})
 
-export class  ItemEdit extends React.Component {
-	constructor(props) {
-			super(props);
-			this.state = {
-					boxes: [],
-					item_types: [],
-			};
-	}
+	const fetchItemTypes = () => restClient.getList('item-type-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }})
 
-	fetchBoxes = () => restClient(GET_LIST, 'box-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }});
-	fetchItemTypes = () => restClient(GET_LIST, 'item-type-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }});
+	const Actions = () => (
+    <TopToolbar>
+        <ListButton />
+    </TopToolbar>
+  )
+
+	const ToolbarForm = (props) => {
+		if(!isModifyPermission()) return false
 	
-	fetchApiCall(){
-		axios.all([this.fetchBoxes(), this.fetchItemTypes()])
-				.then(axios.spread((box, item_type) => {
-						const boxes = box.data.map(box => ({id: box.id, name: box.name}));
-						const item_types = item_type.data.map(item_type => ({id: item_type.type_number, name: item_type.description}));
-						this.setState({boxes, item_types});
-				}));
-	}
-	
-	componentWillMount() {
-		this.fetchApiCall();
-	}
-	
-	componentDidMount(){
-		this.fetchApiCall();
+		return (
+			<Toolbar {...props}>
+				<SaveButton />
+				<DeleteButton mutationMode="pessimistic" />
+			</Toolbar>
+		)
 	}
 
-	render () {
-			return(
-				<Edit title={<ItemTitle />} {...this.props}>
-		        <SimpleForm>
-		            <DisabledInput source='id' />
-		            <NumberInput source='item_number' />
-		            <LongTextInput source='description' />
-								<AutocompleteInput source='box_id' choices={this.state.boxes} filter={AutoComplete.fuzzyFilter} translateChoice={false} />
-								<AutocompleteInput source='item_type_id' choices={this.state.item_types} filter={AutoComplete.fuzzyFilter} translateChoice={false} />
-								<NumberInput source='ink_cost' label='Ink Cost($)' />
-								<NumberInput source='number_of_pcs_per_box' label='Number Of PCS/Box' />
-								<ItemCostView type='price'/>
-								<ItemCostView type='inventory'/>
+	useEffect(() => {
+		fetchBoxes().then(({data}) => {
+			const boxes = data.map(box => ({id: box.id, name: box.name}));
+			setBoxes(boxes)
+		})
 
-						</SimpleForm>
-				</Edit>
-			)
-	}
+		fetchItemTypes().then(({data}) => {
+			const item_types = data.map(box => ({id: box.type_number, name: box.description}));
+			setItemsType(item_types)
+		})
+	}, [])
+
+	return (
+		<Edit
+			{...props}
+			actions={<Actions />}
+		>
+			<SimpleForm
+				toolbar={<ToolbarForm />}
+			>
+				<TextInput source='id' disabled validate={required()}/>
+				<NumberInput source='item_number' validate={required()}/>
+				<TextInput multiline source='description' validate={required()}/>
+				<AutocompleteInput source='box_id' choices={boxes}/>
+				<AutocompleteInput source='item_type_id' choices={itemsType} />
+				<NumberInput source='ink_cost' label='Ink Cost($)' validate={required()}/>
+				<NumberInput source='number_of_pcs_per_box' label='Number Of PCS/Box' validate={required()}/>
+				<ItemCostView type='price'/>
+				<ItemCostView type='inventory'/>
+			</SimpleForm>
+		</Edit>
+	)
 }

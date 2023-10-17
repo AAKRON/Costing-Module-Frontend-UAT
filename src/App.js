@@ -12,7 +12,8 @@ import { BoxCreate, BoxEdit, BoxListing } from './resources/box'
 import { GlobalVariableEdit } from './resources/global_variable'
 import { GlobalVariableCreate } from './resources/global_variable/GlobalVariableCreate'
 import { GlobalVariableListing } from './resources/global_variable/GlobalVariableListing'
-import { ItemCreate, ItemList } from './resources/item'
+import { ItemCreate, ItemEdit, ItemList } from './resources/item'
+import { ItemJobEdit, ItemJobsList } from './resources/item_job'
 import { ItemTypeCreate, ItemTypeEdit, ItemTypeListing } from './resources/item_type'
 import { JobCreate, JobEdit, JobList } from './resources/job'
 import { ScreenCreate, ScreenEdit, ScreenListing } from './resources/screen'
@@ -66,15 +67,19 @@ const App = () => (
     <Resource
       name='items'
       list={ItemList}
-      // edit={ItemEdit}
+      edit={ItemEdit}
       create={ItemCreate}
+    />
+    <Resource
+      name='item_jobs'
+      list={ItemJobsList}
+      edit={ItemJobEdit}
     />
     <Resource
       name='boxes'
       list={BoxListing}
       edit={BoxEdit}
       create={BoxCreate}
-
     />
     <Resource
       name='item_types'
@@ -89,7 +94,6 @@ const App = () => (
       edit={UserEdit}
       create={UserCreate}
     />
-
     <Resource
       name='app_constants'
       list={GlobalVariableListing}

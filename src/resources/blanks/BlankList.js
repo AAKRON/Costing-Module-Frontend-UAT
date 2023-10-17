@@ -35,7 +35,7 @@ const BlankFilter = (props) => (
   </Filter>
 )
 
-const BlankActions = ({
+const Actions = ({
   filters,
   displayedFilters,
   filterValues,
@@ -62,7 +62,7 @@ export const BlankList = (props) => (
   <Card style={{ margin: '2rem', padding: '1rem' }}>
     <List
       title='All blanks'
-      actions={<BlankActions />}
+      actions={<Actions />}
       sort={{ field: 'blank_number', order: 'ASC' }}
       filters={<BlankFilter />}
       perPage={50}

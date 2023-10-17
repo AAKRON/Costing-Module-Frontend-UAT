@@ -4,8 +4,6 @@ import UnitsOfMeasureIcon from 'material-ui/svg-icons/action/all-out'
 import ColorIcon from 'material-ui/svg-icons/action/group-work'
 import BIcon from 'material-ui/svg-icons/action/loyalty'
 import VendorIcon from 'material-ui/svg-icons/action/store'
-import ItemIcon from 'material-ui/svg-icons/action/view-stream'
-import ItemJobIcon from 'material-ui/svg-icons/device/widgets'
 import React from 'react'
 import Dashboard from './Dashboard'
 import Menu from './Menu'
@@ -26,7 +24,6 @@ import {
   BLIWCEdit,
   BLIWCListing,
 } from './resources/blanks_listing_item_with_cost'
-import { BoxCreate, BoxEdit, BoxListing } from './resources/box'
 import { ColorCreate, ColorEdit, ColorList } from './resources/color'
 import { CostCalCulatorCreate } from './resources/cost_calculator'
 import {
@@ -39,13 +36,6 @@ import {
   GlobalVariableEdit,
   GlobalVariableListing,
 } from './resources/global_variable'
-import { ItemCreate, ItemEdit, ItemList } from './resources/item'
-import { ItemJobEdit, ItemJobsList } from './resources/item_job'
-import {
-  ItemTypeCreate,
-  ItemTypeEdit,
-  ItemTypeListing,
-} from './resources/item_type'
 import {
   RawMaterialCreate,
   RawMaterialEdit,
@@ -73,38 +63,6 @@ const App = () => (
     dashboard={Dashboard}
     menu={Menu}
   >
-
-    <Resource
-      name='items'
-      list={ItemList}
-      edit={ItemEdit}
-      create={ItemCreate}
-      remove={Delete}
-      icon={ItemIcon}
-    />
-
-    <Resource
-      name='item_jobs'
-      list={ItemJobsList}
-      icon={ItemJobIcon}
-      edit={ItemJobEdit}
-    />
-
-    <Resource
-      name='boxes'
-      list={BoxListing}
-      create={BoxCreate}
-      edit={BoxEdit}
-      remove={Delete}
-    />
-
-    <Resource
-      name='item_types'
-      list={ItemTypeListing}
-      edit={ItemTypeEdit}
-      create={ItemTypeCreate}
-      remove={Delete}
-    />
 
     {/* ===== */}
 

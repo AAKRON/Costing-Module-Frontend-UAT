@@ -1,2 +1,3 @@
-export { ItemJobsList } from './ItemJobsList';
-export { ItemJobEdit } from './ItemJobEdit';
+export { ItemJobEdit } from './ItemJobEdit'
+export { ItemJobsList } from './ItemJobsList'
+

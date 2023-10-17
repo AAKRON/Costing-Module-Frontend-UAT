@@ -130,7 +130,21 @@ const AddJobForm = ({
     }
 
     if(type === 'item'){
+      const response = await restClient.update('update-item-jobs-only', {
+        id: docNumber,
+        data: {
+          item_number: docNumber,
+          copy_jobs: newJobs,
+        },
+      })
 
+      if(response){
+        notify('Job(s) added successfully')
+        callback()
+        refresh()
+      }else{
+        notify('Job(s) failed to add')
+      }
     }
   }
 

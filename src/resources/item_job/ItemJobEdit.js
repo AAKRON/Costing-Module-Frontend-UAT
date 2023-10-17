@@ -1,49 +1,58 @@
 import {
-    DisabledInput,
-    Edit,
-    ListButton,
-    SimpleForm,
-} from 'admin-on-rest/lib/mui';
-import { CardActions } from 'material-ui/Card';
-import FlatButton from 'material-ui/FlatButton';
-import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
-import React from 'react';
-import { AddJobModal } from '../../components/AddJobModal';
-import { CopyJobModal } from '../../components/CopyJobModal';
+  Edit,
+  ListButton,
+  SimpleForm,
+  TextInput,
+  TopToolbar,
+  required,
+  useEditController
+} from 'react-admin'
+import AddJobModal from '../../components/AddJobModal'
+import CopyJobModal from '../../components/CopyJobModal'
+import JobTable from '../../components/JobTable'
+import { isModifyPermission } from '../../helpers/functions'
 
-import JobTable from '../../components/JobTable';
+const Actions = ({ data, docNumber }) => (
+  <TopToolbar sx={{
+    display: 'flex',
+    alignItems: 'center',
+  }}>
+    <ListButton />
 
-const cardActionStyle = {
-  zIndex: 2,
-  display: 'inline-block',
-  float: 'right',
-};
-
-const PostEditActions = ({ basePath, data, refresh }) => (
-  <CardActions style={cardActionStyle}>
-    <ListButton basePath={basePath} />
-    <FlatButton
-      primary
-      label='Refresh'
-      onClick={refresh}
-      icon={<NavigationRefresh />}
-    />
-    {localStorage.getItem('role') === 'admin' && (
-      <AddJobModal data={data} type='item' submitForm={() => 1} />
+    {localStorage.getItem('role') === 'admin' && isModifyPermission() && (
+      <AddJobModal data={data} docNumber={docNumber} type='item' />
     )}
-    {localStorage.getItem('role') === 'admin' && (
-      <CopyJobModal data={data} type='item' submitForm={() => 1} />
-    )}
-  </CardActions>
-);
 
-export const ItemJobEdit = (props) => (
-  <Edit title='' actions={<PostEditActions />} {...props}>
-    <SimpleForm>
-      <DisabledInput source='id' />
-      <DisabledInput source='item_number' label='Item Number' />
-      <DisabledInput source='description' label='Description' />
-      <JobTable />
-    </SimpleForm>
-  </Edit>
-);
+    {localStorage.getItem('role') === 'admin' && isModifyPermission() && (
+      <CopyJobModal data={data} docNumber={docNumber} type='item' />
+    )}
+  </TopToolbar>
+)
+
+export const ItemJobEdit = (props) => {
+  const { record } = useEditController(props)
+
+  if (!record) {
+    return null
+  }
+
+  return (
+    <Edit
+      actions={<Actions data={record} docNumber={record.item_number} />}
+      {...props}
+    >
+      <SimpleForm
+        toolbar={false}
+      >
+        <TextInput disabled source='id' validate={required()}/>
+        <TextInput disabled source='item_number' label='Item Number' validate={required()}/>
+        <TextInput disabled source='description' label='Description' validate={required()}/>
+        <JobTable
+          jobsInitial={record.jobs}
+          docNumber={record.item_number}
+          resource='item_jobs'
+        />
+      </SimpleForm>
+    </Edit>
+  )
+}
