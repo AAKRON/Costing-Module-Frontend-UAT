@@ -1,5 +1,6 @@
 import React from 'react'
 import { Create, ListButton, NumberInput, ReferenceInput, SelectInput, SimpleForm, TextInput, TopToolbar, required } from 'react-admin'
+import { isModifyPermission } from '../../helpers/functions'
 
 export const JobCreate = (props) => {
   if(!isModifyPermission()){
