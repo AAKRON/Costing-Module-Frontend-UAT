@@ -18,4 +18,7 @@ export default {
     name: 'Number of Jobs',
     data: []
   }],
+  credits: {
+    enabled: false
+  },
 }
