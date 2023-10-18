@@ -1,9 +1,9 @@
-import FinalCalcIcon from '@mui/icons-material/AccountBalanceWallet'
+// import FinalCalcIcon from '@mui/icons-material/AccountBalanceWallet'
 import ArrowRight from '@mui/icons-material/ArrowRight'
-import CostCalcIcon from '@mui/icons-material/Build'
-import BomIcon from '@mui/icons-material/ChromeReaderMode'
+// import CostCalcIcon from '@mui/icons-material/Build'
+// import BomIcon from '@mui/icons-material/ChromeReaderMode'
 import DashboardIcon from '@mui/icons-material/Dashboard'
-import RawMaterialIcon from '@mui/icons-material/Dns'
+// import RawMaterialIcon from '@mui/icons-material/Dns'
 import FileDownloadRounded from '@mui/icons-material/FileDownloadRounded'
 import JobIcon from '@mui/icons-material/Gavel'
 import BlankIcon from '@mui/icons-material/Loyalty'
@@ -146,7 +146,7 @@ export default () => {
           ]
         })
       }
-      <Divider style={{ margin: '0' }} />
+      {/* <Divider style={{ margin: '0' }} />
 
       {
         OptionWithSubmenu({
@@ -196,7 +196,7 @@ export default () => {
           to: '/cost_calculator/create',
           label: 'Cost Calculator (P)'
         })
-      }
+      } */}
       <Divider style={{ margin: '0' }} />
   
       { localStorage.getItem('role') === 'admin' && 
