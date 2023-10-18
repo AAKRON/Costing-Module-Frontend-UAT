@@ -3,6 +3,16 @@ import { setAuthorizationToken } from '../actions/authActions'
 import { SERVER_URL } from '../config'
 
 export default {
+  getCustom: (resource) => {
+    const url = `${SERVER_URL}/${resource}`
+
+    return setAuthorizationToken(url)
+    .then(({ json }) => ({
+      data: json,
+    }))
+    .catch(error => console.log(error))
+  },
+  
   getList: (resource, params) => {
     const { page, perPage } = params.pagination
     const { field, order } = params.sort
