@@ -1,58 +1,58 @@
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
-import AddIcon from 'material-ui/svg-icons/content/add';
-import React from 'react';
-import { AddBlankForm } from './AddBlankForm';
+import AddIcon from '@mui/icons-material/Add'
+import {
+  Button,
+  Card,
+  Divider,
+  Modal
+} from '@mui/material'
+import React, { useState } from 'react'
+import AddBlankForm from './AddBlankForm'
 
-class AddBlankModal extends React.Component {
-  state = { open: false };
+const AddBlankModal = ({ data, docNumber }) => {
+  const [openDialog, setOpenDialog] = useState(false)
 
-  handleOpen = () => this.setState({ open: true });
-  handleClose = () => this.setState({ open: false });
+  const handleOpen = () => setOpenDialog(true)
+  const handleClose = () => setOpenDialog(false)
 
-  render() {
-    const actions = [
-      <FlatButton
-        label='Cancel'
-        primary={true}
-        onTouchTap={this.handleClose}
-      />,
-      <FlatButton
-        label='Add Over'
-        primary={true}
-        keyboardFocused={true}
-        onTouchTap={() => {
-          this.refs.copy_blank_form.submit(this.handleClose);
+  return (
+    <span>
+      <Button
+        onClick={handleOpen}
+        sx={{
+          fontSize: '0.7rem',
         }}
-      />,
-    ];
+      >
+        <AddIcon style={{ fontSize: '1rem' }} />
+        Add Blank
+      </Button>
+  
+      <Modal
+        open={openDialog}
+        onClose={handleClose}
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Card style={{ width: '100%', maxWidth: '800px' }}>
+          <h1
+            style={{ padding: '1rem', fontSize: '1.3rem' }}
+          >
+            Add blanks to item
+          </h1>
 
-    return (
-      <span>
-        <FlatButton
-          primary
-          label='Add Blank'
-          onTouchTap={this.handleOpen}
-          icon={<AddIcon />}
-        />
-        <Dialog
-          title={`Add blanks to item`}
-          actions={actions}
-          modal={false}
-          open={this.state.open}
-          onRequestClose={this.handleClose}
-          autoScrollBodyContent={true}
-        >
+          <Divider />
+
           <AddBlankForm
-            data={this.props.data}
-            type={this.props.type}
-            path={this.props.basePath}
-            ref='copy_blank_form'
+            data={data}
+            docNumber={docNumber}
+            callback={handleClose}
           />
-        </Dialog>
-      </span>
-    );
-  }
+        </Card>
+      </Modal>
+    </span>
+  )
 }
 
-export { AddBlankModal };
+export default AddBlankModal

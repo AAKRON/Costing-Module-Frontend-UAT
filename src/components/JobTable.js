@@ -24,9 +24,9 @@ import restClient from '../providers/restClient'
 const JobTable = ({ jobsInitial, resource, docNumber }) => {
   const refresh = useRefresh()
   const notify = useNotify()
-  const [itemsJobs, setItemsJobs] = useState([])
-  const [items, setItems] = useState([])
   const [jobs, setJobs] = useState([])
+  const [items, setItems] = useState([])
+  const [jobsListing, setJobsListing] = useState([])
   const [jobEdit, setJobEdit] = useState({})
   const [overheadCost, setOverheadCost] = useState('pricing')
   const [openModal, setOpenModal] = useState(false)
@@ -50,7 +50,7 @@ const JobTable = ({ jobsInitial, resource, docNumber }) => {
   }
 
   const removeJob = (job) => {
-    const currentItemJobs = itemsJobs.map((j) => {
+    const currentItemJobs = jobs.map((j) => {
       if(j.job_pk_id === job.job_pk_id){
         return {
           ...j,
@@ -61,15 +61,15 @@ const JobTable = ({ jobsInitial, resource, docNumber }) => {
       }
     })
   
-    setItemsJobs(currentItemJobs)
+    setJobs(currentItemJobs)
   }
 
   const handleRemoveJob = async() => {
     if(resource === 'blank_jobs'){
-      const jobs = itemsJobs.filter((j) => j.deleted)
-      if(jobs.length === 0) return
+      const jobsDeleted = jobs.filter((j) => j.deleted)
+      if(jobsDeleted.length === 0) return
 
-      const transformedJobs = jobs.map((j) => {
+      const transformedJobs = jobsDeleted.map((j) => {
         return {
           deleted: j.deleted,
           blank_number: docNumber,
@@ -95,10 +95,10 @@ const JobTable = ({ jobsInitial, resource, docNumber }) => {
     }
 
     if(resource === 'item_jobs'){
-      const jobs = itemsJobs.filter((j) => j.deleted)
-      if(jobs.length === 0) return
+      const jobsDeleted = jobs.filter((j) => j.deleted)
+      if(jobsDeleted.length === 0) return
 
-      const transformedJobs = jobs.map((j) => {
+      const transformedJobs = jobsDeleted.map((j) => {
         return {
           deleted: j.deleted,
           blank_number: docNumber,
@@ -212,14 +212,14 @@ const JobTable = ({ jobsInitial, resource, docNumber }) => {
       const jobs = data.map(
         (job) => `${job.job_number} - ${job.description}`
       )
-      setJobs(jobs)
+      setJobsListing(jobs)
     }).catch((err) => {
       console.log('Error fetching jobs', err)
     })
   }, [])
 
   useEffect(() => {
-    setItemsJobs(jobsInitial)
+    setJobs(jobsInitial)
   }, [jobsInitial])
 
   const jobField = (job, index) => {
@@ -261,11 +261,11 @@ const JobTable = ({ jobsInitial, resource, docNumber }) => {
     )
   }
 
-  if(itemsJobs === undefined) return <div>Loading...</div>
+  if(jobs === undefined) return <div>Loading...</div>
 
   return (
     <>
-      {itemsJobs?.length > 0
+      {jobs?.length > 0
         ?
           <div style={{ width: '100%'}}>
             <h2>Job</h2>
@@ -306,7 +306,7 @@ const JobTable = ({ jobsInitial, resource, docNumber }) => {
               </thead>
 
               <TableBody>
-                {itemsJobs?.map((job, index) => {
+                {jobs?.map((job, index) => {
                   if(!job?.deleted) return jobField(job, index)
                 })}
               </TableBody>
@@ -337,7 +337,7 @@ const JobTable = ({ jobsInitial, resource, docNumber }) => {
                 </h2>
 
                 <Autocomplete
-                  options={jobs}
+                  options={jobsListing}
                   value={jobEdit?.job_number + ' - ' + jobEdit?.description}
                   onChange={selectJobNumberEdit}
                   renderInput={(params) =>

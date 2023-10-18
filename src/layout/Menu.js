@@ -1,7 +1,7 @@
 // import FinalCalcIcon from '@mui/icons-material/AccountBalanceWallet'
 import ArrowRight from '@mui/icons-material/ArrowRight'
 // import CostCalcIcon from '@mui/icons-material/Build'
-// import BomIcon from '@mui/icons-material/ChromeReaderMode'
+import BomIcon from '@mui/icons-material/ChromeReaderMode'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 // import RawMaterialIcon from '@mui/icons-material/Dns'
 import FileDownloadRounded from '@mui/icons-material/FileDownloadRounded'
@@ -12,6 +12,7 @@ import ItemIcon from '@mui/icons-material/ViewStream'
 import { Divider, MenuItem, Popover } from '@mui/material'
 import { useState } from 'react'
 import { Link, Menu } from 'react-admin'
+import { isAdmin } from '../helpers/functions'
 
 export default () => {
   const [menuJobs, setMenuJobs] = useState(null)
@@ -146,7 +147,7 @@ export default () => {
           ]
         })
       }
-      {/* <Divider style={{ margin: '0' }} />
+       <Divider style={{ margin: '0' }} />
 
       {
         OptionWithSubmenu({
@@ -160,7 +161,7 @@ export default () => {
             { to: 'blanks_listing_by_items', label: 'Listing By Item' },
           ]
         })
-      }
+      }{/*
       <Divider style={{ margin: '0' }} />
 
       {
@@ -199,7 +200,7 @@ export default () => {
       } */}
       <Divider style={{ margin: '0' }} />
   
-      { localStorage.getItem('role') === 'admin' && 
+      { isAdmin() && 
         <div>
           {
             OptionWithSubmenu({

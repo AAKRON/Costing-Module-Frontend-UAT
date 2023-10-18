@@ -10,6 +10,7 @@ import {
 } from '@mui/material'
 import { Fragment, useEffect, useState } from 'react'
 import { useNotify, useRefresh } from 'react-admin'
+import { stringHelpers } from '../helpers/stringHelpers'
 import restClient from '../providers/restClient'
 
 const AddJobForm = ({
@@ -42,7 +43,7 @@ const AddJobForm = ({
       return
     }
   
-    const jobId = data?.split(' - ')[0]
+    const jobId = stringHelpers.extractLeadingNumber(data)
     updateNewJob(index, { job_listing_id: jobId })
   }
 
@@ -50,6 +51,10 @@ const AddJobForm = ({
     const updatedJobs = [...newJobs]
     updatedJobs[jobIndex] = { ...updatedJobs[jobIndex], ...newValues }
     setNewJobs(updatedJobs)
+  }
+
+  const AddNewJob = () => {
+    setNewJobs([...newJobs, { job_listing_id: '', hour_per_piece: '' }])
   }
 
   const jobField = (job, jobIndex) => {
@@ -177,7 +182,7 @@ const AddJobForm = ({
           sx={{
             marginTop: '1rem',
           }}
-          onClick={() => setNewJobs([...newJobs, { job_listing_id: '', hour_per_piece: '' }])}
+          onClick={AddNewJob}
         >
           <AddBoxIcon />
           Add Job

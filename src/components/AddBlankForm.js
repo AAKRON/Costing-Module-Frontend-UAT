@@ -1,196 +1,221 @@
-/* eslint-disable */
-import { GET_LIST, UPDATE } from 'admin-on-rest';
-import axios from 'axios';
-import lodash from 'lodash';
-import AutoComplete from 'material-ui/AutoComplete';
-import AddButton from 'material-ui/FlatButton';
-import RemoveButton from 'material-ui/IconButton';
-import Snackbar from 'material-ui/Snackbar';
-import TextField from 'material-ui/TextField';
-import DeleteIcon from 'material-ui/svg-icons/action/delete-forever';
-import AddBoxIcon from 'material-ui/svg-icons/content/add-box';
-import React from 'react';
-import { stringHelpers } from '../helpers/stringHelpers';
-import restClient from '../restClient';
+import AddBoxIcon from '@mui/icons-material/AddBox'
+import DeleteIcon from '@mui/icons-material/DeleteForever'
+import {
+  Autocomplete,
+  Box,
+  Button,
+  Divider,
+  IconButton,
+  TextField
+} from '@mui/material'
+import { Fragment, useEffect, useState } from 'react'
+import { useNotify, useRefresh } from 'react-admin'
+import { stringHelpers } from '../helpers/stringHelpers'
+import restClient from '../providers/restClient'
 
-class AddBlankForm extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      item_number: '',
-      copy_blanks: [],
-      done: false,
-      errors: {},
-      loading: false,
-      open_snackbar: false,
-      snackbar_message: '',
-      blanks: [],
-    };
+const AddBlankForm = ({
+  data,
+  docNumber,
+  callback,
+}) => {
+  const notify = useNotify()
+  const refresh = useRefresh()
+  const [newBlanks, setNewBlanks] = useState([])
+  const [blanks, setBlanks] = useState([])
+
+  const removeBlank = (blank) => {
+    const blanksTemp = [...newBlanks]
+    const newBlanksTemp = blanksTemp.filter((b) => b.blank_number !== blank.blank_number)
+    setNewBlanks(newBlanksTemp)
   }
 
-  fetchBlanks = () =>
-    restClient(GET_LIST, 'blank-list-only', {
+  const fetchBlanks = () => {
+    return restClient.getList('blank-list-only', {
       pagination: { page: 1, perPage: -1 },
       sort: { field: 'id', order: 'ASC' },
-    });
-
-  handleSnackbarClose = () =>
-    this.setState({ open_snackbar: false, snackbar_message: '' });
-
-  componentDidMount() {
-    axios.all([this.fetchBlanks()]).then(
-      axios.spread((blank) => {
-        const blanks = blank.data.map(
-          (blank) => `${blank.blank_number} - ${blank.description}`
-        );
-        this.setState({
-          blanks: blanks,
-          item_number: this.props.data.item_number,
-        });
-      })
-    );
+    })
   }
 
-  handleAddNewBlank = () => {
-    this.setState({
-      copy_blanks: this.state.copy_blanks.concat([
-        { blank_number: '', mult: 1, div: 1 },
-      ]),
-    });
-  };
+  const selectBlankNumberEdit = (data, index) => {
+    if(!data){
+      updateNewBlank(index, { blank_number: '' })
+      return
+    }
+  
+    const blankNumber = stringHelpers.extractLeadingNumber(data)
+    updateNewBlank(index, { blank_number: blankNumber })
+  }
 
-  handleRemoveBlank = (index) => () => {
-    this.setState({
-      copy_blanks: this.state.copy_blanks.filter(
-        (blank, index) => index !== index
-      ),
-    });
-  };
+  const updateNewBlank = (blankIndex, newValues) => {
+    const updatedBlanks = [...newBlanks]
+    updatedBlanks[blankIndex] = { ...updatedBlanks[blankIndex], ...newValues }
+    setNewBlanks(updatedBlanks)
+  }
 
-  handleBlankFieldChange = (index) => (event, value) => {
-    const newBlank = this.state.copy_blanks.map((blank, index) => {
-      if (index !== index) return blank;
-      return { ...blank, [event.target.name]: value };
-    });
+  const AddNewBlank = () => {
+    setNewBlanks([...newBlanks, { blank_number: '', mult: 1, div: 1 }])
+  }
 
-    this.setState({ copy_blanks: newBlank });
-  };
-
-  handleBlankFieldSelectChange = (index) => (value) => {
-    const newBlank = this.state.copy_blanks.map((blank, index) => {
-      if (index !== index) return blank;
-      value = stringHelpers.extractLeadingNumber(value);
-      blank.blank_number = value;
-      return { ...blank, value };
-    });
-
-    this.setState({ copy_blanks: newBlank });
-  };
-
-  submit = (dialogClose) => {
-    const payload = lodash.pick(this.state, ['item_number', 'copy_blanks', 'mult', 'div']);
-
-    var item_blanks = {
-      blanks: payload.copy_blanks.map((blank) => ({
-        blank_number: blank.value.toString(),
-        mult: blank.multiplication || '1',
-        div: blank.division || '1',
-      })),
-    };
-
-    restClient(UPDATE, 'update-item-blanks-only', {
-      id: payload.item_number,
-      data: item_blanks,
-    }).then((response) => {
-      this.setState({
-        open_snackbar: true,
-        snackbar_message: 'Blanks added successfully',
-      });
-
-      window.location.reload();
-
-      setTimeout(() => {
-        dialogClose();
-      }, 700);
-    });
-  };
-
-  blankField = (blank, index) => {
-    const defaultBlank =
-      blank.blank_number && blank.description
-        ? blank.blank_number + ' - ' + blank.description
-        : '';
+  const blankField = (blank, blankIndex) => {
     return (
-      <div key={index}>
-        <AutoComplete
-          floatingLabelText='Type the blank number'
-          filter={AutoComplete.fuzzyFilter}
-          dataSource={this.state.blanks}
-          name='blank_number'
-          maxSearchResults={5}
-          onUpdateInput={this.handleBlankFieldSelectChange(index)}
-          fullWidth={false}
-          searchText={defaultBlank}
+      <div
+        style={{
+          display: 'grid',
+          alignItems: 'center',
+          gridTemplateColumns: '2fr 1fr 1fr auto',
+          gap: '1rem',
+        }}
+      >
+        <Autocomplete
+          options={
+            blanks.filter((j) => !newBlanks.some((nj) => nj.blank_number == j.blank_number))
+              .filter((j) => !data.blanks_listing_by_item.some((dj) => dj.blank_number == j.blank_number))
+              .sort((a, b) => a.blank_number - b.blank_number)
+              .map((blank) => `${blank.blank_number} - ${blank.description}`)
+          }
+          onChange={(e, data) => selectBlankNumberEdit(data, blankIndex)}
+          value={blank.blank_number
+            ? `${blank.blank_number} - ${blanks.find((b) => b.blank_number == blank.blank_number)?.description}`
+            : ''
+          }
+          renderInput={(params) =>
+            <TextField {...params} label='Type the blank number' />
+          }
         />
-        &nbsp;&nbsp;
+
         <TextField
-          hintText='Multiplication'
-          floatingLabelText='Multiplication'
-          errorText=''
+          label='Multiplication'
           name='multiplication'
-          onChange={this.handleBlankFieldChange(index)}
-          defaultValue={'1'}
-          style={{ width: '100px' }}
+          type='number'
+          onChange={(e) => updateNewBlank(blankIndex, { mult: e.target.value })}
+          value={blank.mult}
         />
+
         <TextField
-          hintText='Division'
-          floatingLabelText='Division'
-          errorText=''
+          label='Division'
           name='division'
-          onChange={this.handleBlankFieldChange(index)}
-          defaultValue={'1'}
-          style={{ width: '100px' }}
+          type='number'
+          onChange={(e) => updateNewBlank(blankIndex, { div: e.target.value })}
+          value={blank.div}
         />
-        <RemoveButton onClick={this.handleRemoveBlank(index)}>
+
+        <IconButton
+          onClick={() => removeBlank(blank)}
+        >
           <DeleteIcon />
-        </RemoveButton>
+        </IconButton>
       </div>
-    );
-  };
-
-  render() {
-    const form = (
-      <form onSubmit={this.submitForm}>
-        <TextField
-          hintText='Item Number'
-          floatingLabelText='Item Number'
-          name='item_number'
-          disabled={true}
-          value={this.state.item_number}
-        />
-        <br />
-        <br />
-        <AddButton
-          label='Add Blank'
-          icon={<AddBoxIcon />}
-          onTouchTap={this.handleAddNewBlank}
-          primary
-        />
-        <br />
-        <br />
-        {this.state.copy_blanks.map(this.blankField)}
-
-        <Snackbar
-          open={this.state.open_snackbar}
-          message={this.state.snackbar_message}
-          autoHideDuration={4000}
-          onRequestClose={this.handleSnackbarClose}
-        />
-      </form>
-    );
-
-    return <div> {form} </div>;
+    )
   }
+
+  const submitForm = async(e) => {
+    e.preventDefault()
+
+    if(newBlanks.length === 0){
+      notify('Please add at least one blank')
+      return
+    }
+
+    if(!newBlanks.every((newBlank) =>
+      newBlank.blank_number && newBlank.mult && newBlank.div
+    )){
+      notify('Please fill all the fields')
+      return
+    }
+
+    const data = newBlanks.map((newBlank) => ({
+      blank_number: newBlank.blank_number.toString(),
+      mult: newBlank.mult,
+      div: newBlank.div,
+    }))
+
+    const response = await restClient.update('update-item-blanks-only', {
+      id: docNumber,
+      data:{
+        blanks: data
+      },
+    })
+
+    if(response){
+      notify('Blank(s) added successfully')
+      callback()
+      refresh()
+    }else{
+      notify('Blank(s) failed to add')
+    }
+  }
+  
+  useEffect(() => {
+    fetchBlanks().then(({ data }) => {
+      setBlanks(data)
+    }).catch((err) => {
+      console.log('Error fetching blanks', err)
+    })
+  }, [])
+  
+  return (
+    <form
+      onSubmit={submitForm}
+    >
+      <Box sx={{
+        padding: '1rem',
+      }}>
+        <TextField
+          type='text'
+          disabled={true}
+          label={`Item number`}
+          fullWidth
+          value={data.item_number}
+        />
+
+        <Button
+          sx={{
+            marginTop: '1rem',
+          }}
+          onClick={AddNewBlank}
+        >
+          <AddBoxIcon />
+          Add Blank
+        </Button>
+
+        <div
+        style={{
+          marginTop: '1rem',
+          maxHeight: '300px',
+          overflow: 'auto',
+        }}
+        >
+          {newBlanks.map((newBlank, index) => (
+            <Fragment key={index}>
+              {blankField(newBlank, index)}
+            </Fragment>
+          ))}
+        </div>
+      </Box>
+
+      <Divider />
+
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'flex-end',
+        padding: '1rem',
+      }}>
+        <Button
+          onClick={callback}
+        >
+          Cancel
+        </Button>
+        {newBlanks.length > 0 &&
+          <Button
+            type='submit'
+          >
+            Add Over
+          </Button>
+        }
+      </Box>
+    </form>
+  )
 }
 
-export { AddBlankForm };
+export default AddBlankForm
+

@@ -1,254 +1,218 @@
-/* eslint-disable */
-import { GET_LIST, GET_ONE, UPDATE } from 'admin-on-rest';
-import axios from 'axios';
-import AutoComplete from 'material-ui/AutoComplete';
-import Dialog from 'material-ui/Dialog';
-import FlatButton from 'material-ui/FlatButton';
-import { default as Button, default as RemoveButton } from 'material-ui/IconButton';
+import ContentCreate from '@mui/icons-material/Create'
+import DeleteIcon from '@mui/icons-material/DeleteForever'
 import {
-    Table,
-    TableBody,
-    TableHeader,
-    TableHeaderColumn,
-    TableRow,
-    TableRowColumn,
-} from 'material-ui/Table';
-import TextField from 'material-ui/TextField';
-import DeleteIcon from 'material-ui/svg-icons/action/delete-forever';
-import EditIcon from 'material-ui/svg-icons/content/create';
-import React from 'react';
-import restClient from '../restClient';
+  Autocomplete,
+  Box,
+  Button,
+  Card,
+  IconButton,
+  Modal,
+  Table,
+  TableBody,
+  TableRow,
+  TextField,
+} from '@mui/material'
+import { useEffect, useState } from 'react'
+import { useNotify, useRefresh } from 'react-admin'
+import { isModifyPermission } from '../helpers/functions'
+import { stringHelpers } from '../helpers/stringHelpers'
+import restClient from '../providers/restClient'
 
-export default class ListingItemCost extends React.Component {
-  constructor(props) {
-    super(props);
+const ListingItemCost = ({ blanksInitial, id, docNumber }) => {
+  const refresh = useRefresh()
+  const notify = useNotify()
+  const [blanks, setBlanks] = useState([])
+  const [blanksListing, setBlanksListing] = useState([])
+  const [blankEdit, setBlankEdit] = useState({})
+  const [openModal, setOpenModal] = useState(false)
 
-    this.state = {
-      item: {},
-      item_blanks: [],
-      tableBodyRenderKey: 0,
-      editableBlank: {blank_number: -1, mult:1, div: 1},
-      editIndex: -1,
-      open: false,
-      blanks: [],
-    };
-  }
-  fetchBlankListByItem = () =>
-    restClient(GET_ONE, `blanks_listing_by_items`, {
-      id: this.props.record.id,
-    });
-
-  fecthBLIWC = () =>
-    restClient(GET_ONE, `blanks_listing_item_with_costs`, {
-      id: this.props.record.id,
-    });
-
-  fetchBlanks = () =>
-    restClient(GET_LIST, 'blank-list-only', {
+  const fetchBlanks = () =>
+    restClient.getList('blank-list-only', {
       pagination: { page: 1, perPage: -1 },
       sort: { field: 'id', order: 'ASC' },
-    });
+    })
 
-  componentDidMount() {
-    axios
-      .all([
-        this.props.resource === 'blanks_listing_by_items'
-          ? this.fetchBlankListByItem()
-          : this.fecthBLIWC(),
-        this.fetchBlanks(),
-      ])
-      .then(
-        axios.spread((item, blank) => {
-          const item_blanks = item.data.blanks_listing_by_item;
-
-          const blanks = blank.data.map(
-            (blank) => `${blank.blank_number} - ${blank.description}`
-          );
-          this.setState({ item, item_blanks, blanks });
-        })
-      );
+  const editBlank = (blank) => {
+    setOpenModal(true)
+    setBlankEdit(blank)
   }
 
-  handleRemoveBlank = (blankIndex) => () => {
-    this.state.item_blanks[blankIndex].deleted = true;
-    this.setState({
-      item_blanks: this.state.item_blanks,
-      tableBodyRenderKey: this.state.tableBodyRenderKey + 1,
-      open: false,
-    });
-  };
-
-  handleEditBlank = async () => {
-    const { editIndex, editableBlank } = this.state;
-
-    const tempBlank = this.state.item_blanks;
-    tempBlank[editIndex] = { ...editableBlank, selected: false };
-
-    this.setState({
-      tableBodyRenderKey: this.state.tableBodyRenderKey + 1,
-      open: false,
-    });
-
-    restClient(UPDATE, 'update-item-blanks-data', {
-      id: this.state.item.data.item_id,
-      data: editableBlank,
-    }).then((response) => {
-      this.setState({
-        open_snackbar: true,
-        snackbar_message: 'Item blank updated successfully',
-      });
-
-      setTimeout(() => {
-        window.location.reload();
-      }, 700);
-    });
+  const handleEditBlank = () => {
+    
   }
 
-  handleBlankFieldChange = () => (event, value) => {
-    this.setState({
-      editableBlank: {
-        ...this.state.editableBlank,
-        [event.target.name]: value,
-      },
-    });
-  };
-
-  hadleAutoComplete = () => (data) => {
-    const value = data.split(' - ');
-    this.setState({
-      editableBlank: {
-        ...this.state.editableBlank,
-        blank_number: Number(value[0]),
-      },
-    });
-  };
-
-  toggleDialog = (index) => () => {
-    this.setState({
-      open: true,
-      editableBlank: this.state.item_blanks[index],
-      editIndex: index,
-    });
-  };
-
-  blankField = (blank, index) => {
-    if(blank.deleted){
-      return;
+  const selectBlankNumberEdit = (event, data) => {
+    if(!data){
+      return
     }
+  
+    const blank_number = stringHelpers.extractLeadingNumber(data)
+
+    setBlankEdit({
+      ...blankEdit,
+      blank_number: Number(blank_number),
+    })
+  }
+
+  const removeBlank = (blank) => {
+    const currentItemBlanks = blanks.map((b) => {
+      if(b.blank_number === blank.blank_number){
+        return {
+          ...b,
+          deleted: true
+        }
+      }else{
+        return b
+      }
+    })
+  
+    setBlanks(currentItemBlanks)
+  }
+
+  const handleRemoveBlank = () => {
+    
+  }
+
+  const blankField = (blank, index) => {
     return (
-      <TableRow key={index} selected={blank.selected}>
-        <TableRowColumn>{blank.blank_number}</TableRowColumn>
-        <TableRowColumn>{blank.blank_description || '-'}</TableRowColumn>
-        <TableRowColumn>{blank.mult == null ? 1 : blank.mult}</TableRowColumn>
-        <TableRowColumn>{blank.div == null ? 1 : blank.div}</TableRowColumn>
-        <TableRowColumn>
-          <Button onClick={this.toggleDialog(index)}>
-            <EditIcon />
-          </Button>
-        </TableRowColumn>
-        <TableRowColumn>
-          <RemoveButton onClick={this.handleRemoveBlank(index, blank)}>
-            <DeleteIcon />
-          </RemoveButton>
-        </TableRowColumn>
-      </TableRow>
-    );
-  };
-
-  render() {
-    const { editableBlank } = this.state;
-    const defaultBlank = (editableBlank.blank_number && editableBlank.blank_description) ? editableBlank.blank_number + ' - ' + editableBlank.blank_description : '';
-    const actions = [
-      <FlatButton
-        label='Cancel'
-        primary={true}
-        onTouchTap={() => this.setState({ open: false })}
-      />,
-      <FlatButton
-        label='Update'
-        primary={true}
-        keyboardFocused={true}
-        onTouchTap={() => {
-          this.handleEditBlank();
-        }}
-      />,
-    ];
-
-    if (
-      Array.isArray(this.state.item_blanks) &&
-      this.state.item_blanks.length > 0
-    ) {
-      return (
-        <div>
-          <h2>Blanks By Item</h2>
-          <Dialog
-            title='Edit Blank'
-            actions={actions}
-            modal={false}
-            open={this.state.open}
-            onRequestClose={() => this.setState({ open: false })}
-            autoScrollBodyContent={true}
-          >
-            <AutoComplete
-              floatingLabelText='Type the blank number'
-              filter={AutoComplete.fuzzyFilter}
-              dataSource={this.state.blanks}
-              name='blank_number'
-              maxSearchResults={5}
-              onUpdateInput={this.hadleAutoComplete()}
-              fullWidth={false}
-              searchText={defaultBlank}
-            />
-            &nbsp;&nbsp;
-            <TextField
-              hintText='Multiplication'
-              floatingLabelText='Multiplication'
-              errorText=''
-              name='mult'
-              onChange={this.handleBlankFieldChange()}
-              value={this.state.editableBlank.mult}
-              style={{ width: '100px' }}
-            />
-            <TextField
-              hintText='Division'
-              floatingLabelText='Division'
-              errorText=''
-              name='div'
-              onChange={this.handleBlankFieldChange()}
-              value={this.state.editableBlank.div}
-              style={{ width: '100px' }}
-            />
-          </Dialog>
-
-          <Table multiSelectable={false}>
-            <TableHeader enableSelectAll={false}>
-              <TableRow>
-                <TableHeaderColumn>Blank#</TableHeaderColumn>
-                <TableHeaderColumn>Description</TableHeaderColumn>
-                <TableHeaderColumn>Multiplication</TableHeaderColumn>
-                <TableHeaderColumn>Division</TableHeaderColumn>
-                <TableHeaderColumn></TableHeaderColumn>
-                <TableHeaderColumn></TableHeaderColumn>
-              </TableRow>
-            </TableHeader>
-            <TableBody
-              deselectOnClickaway={false}
-              showRowHover={true}
-              key={this.state.tableBodyRenderKey}
+      <TableRow key={index} style={{ borderTop: '1px solid #cdcdcd' }}>
+        <th style={{ fontWeight: 400 }}>{blank.blank_number}</th>
+        <th style={{ fontWeight: 400, textAlign: 'left' }}>{blank.blank_description || '-'}</th>
+        <th style={{ fontWeight: 400 }}>{blank.mult == null ? 1 : blank.mult}</th>
+        <th style={{ fontWeight: 400 }}>{blank.div == null ? 1 : blank.div}</th>
+        {isModifyPermission() &&
+          <th>
+            <IconButton
+              onClick={() => editBlank(blank)}
             >
-              {this.state.item_blanks.map(this.blankField)}
-            </TableBody>
-          </Table>
-        </div>
-      );
-    }
-
-    return (
-      <div>
-        <br />
-        <br />
-        Loading
-      </div>
-    );
+              <ContentCreate />
+            </IconButton>
+            <IconButton
+              onClick={() => removeBlank(blank)}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </th>
+        }
+      </TableRow>
+    )
   }
+
+  useEffect(() => {
+    fetchBlanks().then(({ data }) => {
+      const blanks = data.map(
+        (b) => `${b.blank_number} - ${b.description}`
+      )
+      setBlanksListing(blanks)
+    }).catch((err) => {
+      console.log('Error fetching items', err)
+    })
+  }, [])
+
+  useEffect(() => {
+    setBlanks(blanksInitial)
+  }, [blanksInitial])
+
+  if(blanks === undefined) return <div>Loading...</div>
+
+  return (
+    <>
+      {blanks?.length > 0
+        ? <div style={{ width: '100%'}}>
+            <h2>Blanks By Item</h2>
+
+            <Table style={{ marginTop: '1rem', fontSize: '0.9rem' }}>
+              <thead style={{ color: '#b7b7b7' }}>
+                <TableRow>
+                  <th>Blank#</th>
+                  <th>Description</th>
+                  <th>Multiplication</th>
+                  <th>Division</th>
+                  <th></th>
+                </TableRow>
+              </thead>
+
+              <TableBody>
+                {blanks?.map((blank, index) => {
+                  if(!blank?.deleted) return blankField(blank, index)
+                })}
+              </TableBody>
+            </Table>
+
+            {isModifyPermission() &&
+              <Button
+                color='primary'
+                variant='contained'
+                onClick={handleRemoveBlank}
+              >
+                Save
+              </Button>
+            }
+
+            <Modal
+              open={openModal}
+              onClose={() => setOpenModal(false)}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Card style={{ padding: '1rem', width: '100%', maxWidth: '500px' }}>
+                <h2 style={{ borderBottom: '1px solid #cdcdcd', padding: '0.5rem'}}>
+                  Edit Blank
+                </h2>
+
+                <Autocomplete
+                  options={blanksListing}
+                  value={blankEdit?.blank_number + ' - ' + blankEdit?.blank_description}
+                  onChange={selectBlankNumberEdit}
+                  renderInput={(params) =>
+                    <TextField {...params} label='Type the blank number' />
+                  }
+                />
+
+                <TextField
+                  fullWidth
+                  label='Multiplication'
+                  name='multiplication'
+                  type='number'
+                  onChange={(e) => setBlankEdit({ ...blankEdit, mult: e.target.value })}
+                  value={blankEdit.mult}
+                />
+
+                <TextField
+                  fullWidth
+                  label='Division'
+                  name='division'
+                  type='number'
+                  onChange={(e) => setBlankEdit({ ...blankEdit, div: e.target.value })}
+                  value={blankEdit.div}
+                />
+        
+                <Box>
+                  <Button
+                    onClick={() => setOpenModal(false)}
+                  >
+                    Cancel
+                  </Button>
+
+                  <Button
+                    onClick={handleEditBlank}
+                  >
+                    Update
+                  </Button>
+                </Box>
+              </Card>
+            </Modal>
+          </div>
+        :
+          <div>
+            No blank(s)
+          </div>
+      }
+    </>
+  )
 }
+
+export default ListingItemCost

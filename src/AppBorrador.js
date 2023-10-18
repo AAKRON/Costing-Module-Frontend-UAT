@@ -2,19 +2,11 @@ import { Admin, Resource } from 'admin-on-rest'
 import { Delete } from 'admin-on-rest/lib/mui'
 import UnitsOfMeasureIcon from 'material-ui/svg-icons/action/all-out'
 import ColorIcon from 'material-ui/svg-icons/action/group-work'
-import BIcon from 'material-ui/svg-icons/action/loyalty'
 import VendorIcon from 'material-ui/svg-icons/action/store'
 import React from 'react'
 import Dashboard from './Dashboard'
 import Menu from './Menu'
 import authClient from './authClient'
-import {
-  BlankTypeCreate,
-  BlankTypeEdit,
-  BlankTypeListing,
-} from './resources/blank_type'
-import { BlankCreate, BlankEdit, BlankList } from './resources/blanks'
-import { BlankJobEdit, BlanksJobList } from './resources/blanks_job'
 import {
   BLBICreate,
   BLBIEdit,
@@ -32,11 +24,6 @@ import {
   FinalCalculationList,
 } from './resources/final_calculation'
 import {
-  GlobalVariableCreate,
-  GlobalVariableEdit,
-  GlobalVariableListing,
-} from './resources/global_variable'
-import {
   RawMaterialCreate,
   RawMaterialEdit,
   RawMaterialListing,
@@ -51,7 +38,6 @@ import {
   UnitsOfMeasureEdit,
   UnitsOfMeasureList,
 } from './resources/unitsofmeasure'
-import { UserCreate, UserEdit, UserListing } from './resources/user'
 import { VendorCreate, VendorEdit, VendorList } from './resources/vendor'
 import restClient from './restClient'
 
@@ -67,23 +53,21 @@ const App = () => (
     {/* ===== */}
 
     <Resource
-      name='blanks'
-      list={BlankList}
-      create={BlankCreate}
-      icon={BIcon}
-      edit={BlankEdit}
+      name='blanks_listing_item_with_costs'
+      list={BLIWCListing}
+      edit={BLIWCEdit}
       remove={Delete}
     />
-
-    <Resource name='blank_jobs' list={BlanksJobList} edit={BlankJobEdit} />
 
     <Resource
-      name='blank_types'
-      list={BlankTypeListing}
-      edit={BlankTypeEdit}
-      create={BlankTypeCreate}
+      name='blanks_listing_by_items'
+      list={BLBIListing}
+      create={BLBICreate}
+      edit={BLBIEdit}
       remove={Delete}
     />
+
+    {/* ===== */}
 
     <Resource
       name='colors'
@@ -136,37 +120,7 @@ const App = () => (
       remove={Delete}
     />
 
-    <Resource
-      name='blanks_listing_item_with_costs'
-      list={BLIWCListing}
-      edit={BLIWCEdit}
-      remove={Delete}
-    />
-
-    <Resource
-      name='blanks_listing_by_items'
-      list={BLBIListing}
-      create={BLBICreate}
-      edit={BLBIEdit}
-      remove={Delete}
-    />
-
     <Resource name='cost_calculator' create={CostCalCulatorCreate} />
-
-    <Resource
-      name='users'
-      list={UserListing}
-      edit={UserEdit}
-      create={UserCreate}
-      remove={Delete}
-    />
-
-    <Resource
-      name='app_constants'
-      list={GlobalVariableListing}
-      edit={GlobalVariableEdit}
-      create={GlobalVariableCreate}
-    />
   </Admin>
 );
 

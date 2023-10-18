@@ -10,7 +10,7 @@ import {
 import AddJobModal from '../../components/AddJobModal'
 import CopyJobModal from '../../components/CopyJobModal'
 import JobTable from '../../components/JobTable'
-import { isModifyPermission } from '../../helpers/functions'
+import { isAdmin, isModifyPermission } from '../../helpers/functions'
 
 const Actions = ({ data, docNumber }) => (
   <TopToolbar sx={{
@@ -19,11 +19,11 @@ const Actions = ({ data, docNumber }) => (
   }}>
     <ListButton />
 
-    {localStorage.getItem('role') === 'admin' && isModifyPermission() && (
+    {isAdmin() && isModifyPermission() && (
       <AddJobModal data={data} docNumber={docNumber} type='blank' />
     )}
 
-    {localStorage.getItem('role') === 'admin' && isModifyPermission() && (
+    {isAdmin() && isModifyPermission() && (
       <CopyJobModal data={data} docNumber={docNumber} type='blank' />
     )}
   </TopToolbar>

@@ -1,50 +1,45 @@
-import React from 'react';
+import React from 'react'
+import { Edit, ListButton, NumberInput, SimpleForm, TextInput, TopToolbar, useEditController } from 'react-admin'
+import AddBlankModal from '../../components/AddBlankModal'
+import ListingItemCost from '../../components/ListingItemCost'
+import { isAdmin, isModifyPermission } from '../../helpers/functions'
 
-import ListingItemCost from '../../components/ListingItemCost';
+const Actions = ({ data, docNumber }) => (
+  <TopToolbar>
+    <ListButton />
 
-import { CardActions } from 'material-ui/Card';
-import FlatButton from 'material-ui/FlatButton';
-import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
-
-import {
-    DisabledInput,
-    Edit,
-    ListButton,
-    NumberInput,
-    SimpleForm,
-} from 'admin-on-rest/lib/mui';
-import { AddBlankModal } from '../../components/AddBlankModal';
-
-const cardActionStyle = {
-  zIndex: 2,
-  display: 'inline-block',
-  float: 'right',
-};
-const BLIWCTitle = ({ record }) => {
-  return <span>Blank List Item With Cost #{record ? `${record.id}` : ''}</span>;
-};
-const PostEditActions = ({ basePath, data, refresh }) => (
-  <CardActions style={cardActionStyle}>
-    <ListButton basePath={basePath} />
-    <FlatButton
-      primary
-      label='Refresh'
-      onClick={refresh}
-      icon={<NavigationRefresh />}
-    />
-    {localStorage.getItem('role') === 'admin' && (
-      <AddBlankModal data={data} type='blank' submitForm={() => 1} />
+    {isAdmin() && isModifyPermission() && (
+      <AddBlankModal data={data} docNumber={docNumber} />
     )}
-  </CardActions>
-);
-const BLIWCEdit = (props) => (
-  <Edit title={<BLIWCTitle />} actions={<PostEditActions />} {...props}>
-    <SimpleForm>
-      <DisabledInput source='id' />
-      <NumberInput source='item_number' />
-      <ListingItemCost />
-    </SimpleForm>
-  </Edit>
-);
+  </TopToolbar>
+)
 
-export { BLIWCEdit };
+const BLIWCEdit = (props) => {
+  const { record } = useEditController(props)
+
+  if (!record) {
+    return null
+  }
+
+  return (
+    <Edit
+      actions={<Actions data={record} docNumber={record.item_number} />}
+      {...props}
+    >
+      <SimpleForm
+        toolbar={false}
+      >
+        <TextInput disabled source='id' />
+        <NumberInput disabled source='item_number' />
+        <ListingItemCost
+          blanksInitial={record.blanks_listing_by_item}
+          id={record.id}
+          docNumber={record.item_number}
+        />
+      </SimpleForm>
+    </Edit>
+  )
+}
+
+export { BLIWCEdit }
+

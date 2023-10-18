@@ -1,17 +1,18 @@
 import {
-    DisabledInput,
-    Edit,
-    ListButton,
-    NumberInput,
-    SimpleForm,
-} from 'admin-on-rest/lib/mui';
-import React from 'react';
-import { AddBlankModal } from '../../components/AddBlankModal';
-import ListingItemCost from '../../components/ListingItemCost';
+  DisabledInput,
+  Edit,
+  ListButton,
+  NumberInput,
+  SimpleForm,
+} from 'admin-on-rest/lib/mui'
+import React from 'react'
+import { AddBlankModal } from '../../components/AddBlankModal'
+import ListingItemCost from '../../components/ListingItemCost2'
 
-import { CardActions } from 'material-ui/Card';
-import FlatButton from 'material-ui/FlatButton';
-import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
+import { CardActions } from 'material-ui/Card'
+import FlatButton from 'material-ui/FlatButton'
+import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh'
+import { isAdmin, isModifyPermission } from '../../helpers/functions'
 
 const cardActionStyle = {
   zIndex: 2,
@@ -32,7 +33,7 @@ const PostEditActions = ({ basePath, data, refresh }) => {
         onClick={refresh}
         icon={<NavigationRefresh />}
       />
-      {localStorage.getItem('role') === 'admin' && (
+      {isAdmin() && isModifyPermission() && (
         <AddBlankModal
           data={data}
           type='blank'

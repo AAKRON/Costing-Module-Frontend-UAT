@@ -8,6 +8,7 @@ import { BlankTypeCreate, BlankTypeEdit } from './resources/blank_type'
 import { BlankTypeListing } from './resources/blank_type/BlankTypeListing'
 import { BlankCreate, BlankEdit, BlankList } from './resources/blanks'
 import { BlankJobEdit, BlanksJobList } from './resources/blanks_job'
+import { BLIWCEdit, BLIWCListing } from './resources/blanks_listing_item_with_cost'
 import { BoxCreate, BoxEdit, BoxListing } from './resources/box'
 import { GlobalVariableEdit } from './resources/global_variable'
 import { GlobalVariableCreate } from './resources/global_variable/GlobalVariableCreate'
@@ -86,6 +87,18 @@ const App = () => (
       list={ItemTypeListing}
       edit={ItemTypeEdit}
       create={ItemTypeCreate}
+    />
+
+    <Resource
+      name='blanks_listing_item_with_costs'
+      list={BLIWCListing}
+      edit={BLIWCEdit}
+    />
+    <Resource
+      name='blanks_listing_by_items'
+      // list={BLBIListing}
+      // create={BLBICreate}
+      // edit={BLBIEdit}
     />
 
     <Resource
