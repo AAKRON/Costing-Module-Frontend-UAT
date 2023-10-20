@@ -1,57 +1,41 @@
-import {
-  DisabledInput,
-  Edit,
-  ListButton,
-  NumberInput,
-  SimpleForm,
-} from 'admin-on-rest/lib/mui'
-import React from 'react'
-import { AddBlankModal } from '../../components/AddBlankModal'
-import ListingItemCost from '../../components/ListingItemCost2'
-
-import { CardActions } from 'material-ui/Card'
-import FlatButton from 'material-ui/FlatButton'
-import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh'
+import { Edit, ListButton, SimpleForm, TextInput, TopToolbar, required, useEditController } from 'react-admin'
+import AddBlankModal from '../../components/AddBlankModal'
+import ListingItemCost from '../../components/ListingItemCost'
 import { isAdmin, isModifyPermission } from '../../helpers/functions'
 
-const cardActionStyle = {
-  zIndex: 2,
-  display: 'inline-block',
-  float: 'right',
-};
-const BLBITitle = ({ record }) => {
-  return <span>Blank List By Item #{record ? `${record.id}` : ''}</span>;
-};
-
-const PostEditActions = ({ basePath, data, refresh }) => {
-  return (
-    <CardActions style={cardActionStyle}>
-      <ListButton basePath={basePath} />
-      <FlatButton
-        primary
-        label='Refresh'
-        onClick={refresh}
-        icon={<NavigationRefresh />}
-      />
-      {isAdmin() && isModifyPermission() && (
-        <AddBlankModal
-          data={data}
-          type='blank'
-          basePath={basePath}
-          submitForm={() => 1}
-        />
-      )}
-    </CardActions>
-  );
-};
 export const BLBIEdit = (props) => {
+  const { record } = useEditController(props)
+
+  if (!record) {
+    return null
+  }
+
+  const Actions = ({ data, docNumber }) => (
+    <TopToolbar>
+      <ListButton />
+  
+      {isAdmin() && isModifyPermission() && (
+        <AddBlankModal data={data} docNumber={docNumber} />
+      )}
+    </TopToolbar>
+  )
+
   return (
-    <Edit title={<BLBITitle />} actions={<PostEditActions />} {...props}>
-      <SimpleForm toolbar={false}>
-        <DisabledInput source='id' />
-        <NumberInput source='item_number' />
-        <ListingItemCost />
+    <Edit
+      actions={<Actions data={record} docNumber={record.item_number} />}
+      {...props}
+    >
+      <SimpleForm
+        toolbar={false}
+      >
+        <TextInput disabled source='id' validate={required()}/>
+        <TextInput disabled source='item_number' validate={required()}/>
+        <ListingItemCost
+          blanksInitial={record.blanks_listing_by_item}
+          id={record.id}
+          docNumber={record.item_number}
+        />
       </SimpleForm>
     </Edit>
-  );
-};
+  )
+}
