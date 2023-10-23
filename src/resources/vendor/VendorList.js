@@ -1,75 +1,64 @@
-import FlatButton from 'material-ui/FlatButton';
-import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
-import React from 'react';
+import EditIcon from '@mui/icons-material/Edit'
+import ShowIcon from '@mui/icons-material/Visibility'
+import { Card } from '@mui/material'
+import React from 'react'
+import { CreateButton, Datagrid, EditButton, Filter, List, TextField, TextInput, TopToolbar } from 'react-admin'
+import { isModifyPermission } from '../../helpers/functions'
+import { VendorExportModal } from './VendorExportModal'
 
-import {
-    CreateButton,
-    Datagrid,
-    EditButton,
-    Filter,
-    List,
-    TextField,
-    TextInput,
-} from 'admin-on-rest/lib/mui';
-// import PriceField from '../../components/PriceField';
-import { CardActions } from 'material-ui/Card';
+export const VendorList = (props) => {
+  const FilterSearch = (props) => (
+    <Filter {...props}>
+      <TextInput label='Search by vendor code ' source='code' alwaysOn />
+      <TextInput label='Search by vendor name ' source='name' alwaysOn />
+    </Filter>
+  )
 
-// import { RawMaterialFilter } from './RawMaterialFilter';
-import { VendorExportModal } from './VendorExportModal';
+  const Actions = ({
+    filters,
+    displayedFilters,
+    filterValues,
+    resource,
+    showFilter,
+  }) => (
+    <TopToolbar>
+      {filters &&
+        React.cloneElement(filters, {
+          resource,
+          showFilter,
+          displayedFilters,
+          filterValues,
+          context: 'button',
+        })}
+  
+      {isModifyPermission() && <CreateButton />}
+  
+      <VendorExportModal />
+    </TopToolbar>
+  )
 
-const cardActionStyle = {
-  zIndex: 2,
-  display: 'inline-block',
-  float: 'right',
-};
-const VendorListActions = ({
-  resource,
-  filters,
-  displayedFilters,
-  filterValues,
-  basePath,
-  showFilter,
-  refresh,
-}) => (
-  <CardActions style={cardActionStyle}>
-    {filters &&
-      React.cloneElement(filters, {
-        resource,
-        showFilter,
-        displayedFilters,
-        filterValues,
-        context: 'button',
-      })}
-    <CreateButton basePath={basePath} />
-    <FlatButton
-      primary
-      label='Refresh'
-      onClick={refresh}
-      icon={<NavigationRefresh />}
-    />
-    <VendorExportModal submitForm={() => 1} />
-  </CardActions>
-);
-const FilterSearch = (props) => (
-  <Filter {...props}>
-    <TextInput label='Search by vendor code ' source='code' alwaysOn />
-    <TextInput label='Search by vendor name ' source='name' alwaysOn />
-  </Filter>
-);
+  return (
+    <Card style={{ margin: '2rem', padding: '1rem' }}>
+      <List
+        title='All Vendors'
+        sort={{ field: 'id', order: 'ASC' }}
+        actions={<Actions />}
+        filters={<FilterSearch />}
+        {...props}
+      >
+        <Datagrid
+          isRowSelectable={() => false}
+        >
+          <TextField source='id' />
+          <TextField source='name' />
+          <TextField source='code' />
 
-export const VendorList = (props) => (
-  <List
-    title='All Vendors'
-    sort={{ field: 'id', order: 'ASC' }}
-    actions={<VendorListActions />}
-    filters={<FilterSearch />}
-    {...props}
-  >
-    <Datagrid>
-      <TextField source='id' />
-      <TextField source='name' />
-      <TextField source='code' />
-      <EditButton />
-    </Datagrid>
-  </List>
-);
+          <EditButton
+            label={isModifyPermission() ? 'Edit' : 'View'}
+            icon={isModifyPermission() ? <EditIcon /> : <ShowIcon />}
+          />
+        </Datagrid>
+      </List>
+    </Card>
+  )
+}

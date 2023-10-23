@@ -11,6 +11,7 @@ import { BlankJobEdit, BlanksJobList } from './resources/blanks_job'
 import { BLBICreate, BLBIEdit, BLBIListing } from './resources/blanks_listing_by_item'
 import { BLIWCEdit, BLIWCListing } from './resources/blanks_listing_item_with_cost'
 import { BoxCreate, BoxEdit, BoxListing } from './resources/box'
+import { ColorCreate, ColorEdit, ColorList } from './resources/color'
 import { GlobalVariableEdit } from './resources/global_variable'
 import { GlobalVariableCreate } from './resources/global_variable/GlobalVariableCreate'
 import { GlobalVariableListing } from './resources/global_variable/GlobalVariableListing'
@@ -18,9 +19,12 @@ import { ItemCreate, ItemEdit, ItemList } from './resources/item'
 import { ItemJobEdit, ItemJobsList } from './resources/item_job'
 import { ItemTypeCreate, ItemTypeEdit, ItemTypeListing } from './resources/item_type'
 import { JobCreate, JobEdit, JobList } from './resources/job'
+import { RawMaterialTypeCreate, RawMaterialTypeEdit, RawMaterialTypeList } from './resources/raw_material_type'
 import { ScreenCreate, ScreenEdit, ScreenListing } from './resources/screen'
 import Spreadsheet from './resources/spreadsheet'
+import { UnitsOfMeasureCreate, UnitsOfMeasureEdit, UnitsOfMeasureList } from './resources/unitsofmeasure'
 import { UserCreate, UserEdit, UserListing } from './resources/user'
+import { VendorCreate, VendorEdit, VendorList } from './resources/vendor'
 
 const App = () => (
   <Admin
@@ -100,6 +104,31 @@ const App = () => (
       list={BLBIListing}
       create={BLBICreate}
       edit={BLBIEdit}
+    />
+
+    <Resource
+      name='colors'
+      list={ColorList}
+      edit={ColorEdit}
+      create={ColorCreate}
+    />
+    <Resource
+      name='units_of_measures'
+      list={UnitsOfMeasureList}
+      edit={UnitsOfMeasureEdit}
+      create={UnitsOfMeasureCreate}
+    />
+    <Resource
+      name='rawmaterialtypes'
+      list={RawMaterialTypeList}
+      edit={RawMaterialTypeEdit}
+      create={RawMaterialTypeCreate}
+    />
+    <Resource
+      name='vendors'
+      list={VendorList}
+      create={VendorCreate}
+      edit={VendorEdit}
     />
 
     <Resource

@@ -1,16 +1,36 @@
-import React from 'react';
-import { Edit, DisabledInput, SimpleForm, TextInput, NumberInput } from 'admin-on-rest/lib/mui';
+import React from 'react'
+import { DeleteButton, Edit, ListButton, NumberInput, SaveButton, SimpleForm, TextInput, Toolbar, TopToolbar, required } from 'react-admin'
+import { isModifyPermission } from '../../helpers/functions'
 
-const ColorTitle = ({record}) => {
-    return <span>Color #{ record ? `${record.name}`: '' }</span>;
-};
+const Actions = () => (
+  <TopToolbar>
+      <ListButton />
+  </TopToolbar>
+)
+
+const ToolbarForm = (props) => {
+  if(!isModifyPermission()) return false
+
+  return (
+    <Toolbar {...props}>
+      <SaveButton />
+      <DeleteButton mutationMode="pessimistic" />
+    </Toolbar>
+  )
+}
+
 export const ColorEdit = (props) => (
-    <Edit title={<ColorTitle />} {...props}>
-        <SimpleForm>
-            <DisabledInput source='id' />
-            <TextInput source='code' />
-            <TextInput source='name' />
-            <NumberInput source='cost_of_color' label='Cost($)'/>
-        </SimpleForm>
-    </Edit>
-);
+  <Edit
+    actions={<Actions />}
+    {...props}
+  >
+    <SimpleForm
+      toolbar={<ToolbarForm />}
+    >
+      <TextInput disabled source='id' validate={required()} />
+      <TextInput source='code' validate={required()} />
+      <TextInput source='name' validate={required()} />
+      <NumberInput source='cost_of_color' label='Cost($)'/>
+    </SimpleForm>
+  </Edit>
+)

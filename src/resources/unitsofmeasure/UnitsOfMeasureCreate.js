@@ -1,12 +1,27 @@
-import React from 'react';
-import {Create, TextInput, SimpleForm } from 'admin-on-rest/lib/mui'
+import React from 'react'
+import { Create, ListButton, SimpleForm, TextInput, TopToolbar, required } from 'react-admin'
+import { isModifyPermission } from '../../helpers/functions'
 
+export const UnitsOfMeasureCreate = (props) => {
+  if(!isModifyPermission()){
+    return null
+  }
 
-export const UnitsOfMeasureCreate = (props) => (
-    <Create {...props}>
-        <SimpleForm invalid={true}>
-            <TextInput source='name' />
-            <TextInput source='abbr' />
-        </SimpleForm>
+  const Actions = () => (
+    <TopToolbar>
+        <ListButton />
+    </TopToolbar>
+  )
+
+  return (
+    <Create
+      {...props}
+      actions={<Actions />}
+    >
+      <SimpleForm>
+        <TextInput source='name' validate={required()} />
+        <TextInput source='abbr' validate={required()} />
+      </SimpleForm>
     </Create>
-);
+  )
+}

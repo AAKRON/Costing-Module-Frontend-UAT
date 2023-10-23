@@ -1,3 +1,3 @@
-export { UnitsOfMeasureList } from './UnitsOfMeasureList';
-export { UnitsOfMeasureEdit } from './UnitsOfMeasureEdit';
-export { UnitsOfMeasureCreate } from './UnitsOfMeasureCreate';
+export { UnitsOfMeasureCreate } from './UnitsOfMeasureCreate'
+export { UnitsOfMeasureEdit } from './UnitsOfMeasureEdit'
+export { UnitsOfMeasureList } from './UnitsOfMeasureList'

@@ -1,3 +1,3 @@
-export { RawMaterialTypeList } from './RawMaterialTypeList';
-export { RawMaterialTypeEdit } from './RawMaterialTypeEdit';
-export { RawMaterialTypeCreate } from './RawMaterialTypeCreate';
+export { RawMaterialTypeCreate } from './RawMaterialTypeCreate'
+export { RawMaterialTypeEdit } from './RawMaterialTypeEdit'
+export { RawMaterialTypeList } from './RawMaterialTypeList'

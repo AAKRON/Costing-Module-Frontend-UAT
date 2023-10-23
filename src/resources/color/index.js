@@ -1,3 +1,3 @@
-export { ColorList } from './ColorList';
-export { ColorEdit } from './ColorEdit';
-export { ColorCreate } from './ColorCreate';
+export { ColorCreate } from './ColorCreate'
+export { ColorEdit } from './ColorEdit'
+export { ColorList } from './ColorList'

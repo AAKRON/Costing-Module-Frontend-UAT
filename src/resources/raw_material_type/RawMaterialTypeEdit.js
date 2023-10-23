@@ -1,15 +1,34 @@
-import React from 'react';
-import { Edit, DisabledInput, SimpleForm, TextInput } from 'admin-on-rest/lib/mui';
+import React from 'react'
+import { DeleteButton, Edit, ListButton, SaveButton, SimpleForm, TextInput, Toolbar, TopToolbar } from 'react-admin'
+import { isModifyPermission } from '../../helpers/functions'
 
-const Title = ({record}) => {
-    return <span>Raw Material Type { record ? `${record.name}`: '' }</span>;
-};
+const Actions = () => (
+  <TopToolbar>
+      <ListButton />
+  </TopToolbar>
+)
+
+const ToolbarForm = (props) => {
+  if(!isModifyPermission()) return false
+
+  return (
+    <Toolbar {...props}>
+      <SaveButton />
+      <DeleteButton mutationMode="pessimistic" />
+    </Toolbar>
+  )
+}
 
 export const RawMaterialTypeEdit = (props) => (
-    <Edit title={<Title />} {...props}>
-        <SimpleForm>
-            <DisabledInput source='id' />
-            <TextInput source='name' />
-        </SimpleForm>
-    </Edit>
-);
+  <Edit
+    actions={<Actions />}
+    {...props}
+  >
+    <SimpleForm
+      toolbar={<ToolbarForm />}
+    >
+      <TextInput disabled source='id' />
+      <TextInput source='name' />
+    </SimpleForm>
+  </Edit>
+)

@@ -24,7 +24,7 @@ const styles = {
       marginBottom: '10px',
     },
   },
-  CenterAlgin: {
+  bodyDialog: {
     textAlign: 'center',
     padding: '0 2rem 2rem',
   },
@@ -121,7 +121,7 @@ class ItemExportModal extends React.Component {
 
           <Divider />
 
-          <div style={styles.CenterAlgin}>
+          <div style={styles.bodyDialog}>
             <h2>Export All Items</h2>
 
             <Button
