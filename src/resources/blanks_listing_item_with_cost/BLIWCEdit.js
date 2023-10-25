@@ -33,7 +33,7 @@ const BLIWCEdit = (props) => {
         <NumberInput disabled source='item_number' />
         <ListingItemCost
           blanksInitial={record.blanks_listing_by_item}
-          id={record.id}
+          resource='blanks_listing_item_with_costs'
           docNumber={record.item_number}
         />
       </SimpleForm>

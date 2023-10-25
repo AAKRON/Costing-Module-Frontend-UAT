@@ -32,7 +32,7 @@ export const BLBIEdit = (props) => {
         <TextInput disabled source='item_number' validate={required()}/>
         <ListingItemCost
           blanksInitial={record.blanks_listing_by_item}
-          id={record.id}
+          resource='blanks_listing_by_items'
           docNumber={record.item_number}
         />
       </SimpleForm>

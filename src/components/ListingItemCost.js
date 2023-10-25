@@ -18,7 +18,7 @@ import { isModifyPermission } from '../helpers/functions'
 import { stringHelpers } from '../helpers/stringHelpers'
 import restClient from '../providers/restClient'
 
-const ListingItemCost = ({ blanksInitial, id, docNumber }) => {
+const ListingItemCost = ({ blanksInitial, resource, docNumber }) => {
   const refresh = useRefresh()
   const notify = useNotify()
   const [blanks, setBlanks] = useState([])
@@ -37,8 +37,46 @@ const ListingItemCost = ({ blanksInitial, id, docNumber }) => {
     setBlankEdit(blank)
   }
 
-  const handleEditBlank = () => {
-    // PENDIENT
+  const handleEditBlank = async() => {
+    if(resource === 'blanks_listing_item_with_costs'){
+      const response = await restClient.update('blanks_listing_item_with_costs', {
+        id: docNumber,
+        data: {
+          blank_number: blankEdit.blank_number,
+          mult: blankEdit.mult,
+          div: blankEdit.div,
+        },
+      })
+
+      if(response){
+        notify('Blank updated successfully')
+      }else{
+        notify('Error updating blank')
+      }
+  
+      refresh()
+    }
+
+    if(resource === 'blanks_listing_by_items'){
+      const response = await restClient.update('blanks_listing_by_items', {
+        id: docNumber,
+        data: {
+          blank_number: blankEdit.blank_number,
+          mult: blankEdit.mult,
+          div: blankEdit.div,
+        },
+      })
+
+      if(response){
+        notify('Blank updated successfully')
+      }else{
+        notify('Error updating blank')
+      }
+  
+      refresh()
+    }
+
+    setOpenModal(false)
   }
 
   const selectBlankNumberEdit = (event, data) => {
@@ -69,8 +107,60 @@ const ListingItemCost = ({ blanksInitial, id, docNumber }) => {
     setBlanks(currentItemBlanks)
   }
 
-  const handleRemoveBlank = () => {
-    // PENDIENT
+  const handleRemoveBlank = async() => {
+    if(resource === 'blanks_listing_item_with_costs'){
+      const blanksDeleted = blanks.filter((b) => b.deleted)
+      if(blanksDeleted.length === 0) return
+
+      const transformedBlanks = blanksDeleted.map((j) => {
+        return {
+          deleted: j.deleted,
+          blank_number: j.blank_number,
+        }
+      })
+      
+      const response = await restClient.delete('blanks_listing_item_with_costs', {
+        id: docNumber,
+        data: {
+          blanks: transformedBlanks,
+        },
+      })
+
+      if(response){
+        notify('Blank(s) removed successfully')
+      }else{
+        notify('Error removing blank(s)')
+      }
+
+      refresh()
+    }
+
+    if(resource === 'blanks_listing_by_items'){
+      const blanksDeleted = blanks.filter((b) => b.deleted)
+      if(blanksDeleted.length === 0) return
+
+      const transformedBlanks = blanksDeleted.map((j) => {
+        return {
+          deleted: j.deleted,
+          blank_number: j.blank_number,
+        }
+      })
+      
+      const response = await restClient.delete('blanks_listing_by_items', {
+        id: docNumber,
+        data: {
+          blanks: transformedBlanks,
+        },
+      })
+
+      if(response){
+        notify('Blank(s) removed successfully')
+      }else{
+        notify('Error removing blank(s)')
+      }
+
+      refresh()
+    }
   }
 
   const blankField = (blank, index) => {

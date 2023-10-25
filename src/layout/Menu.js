@@ -152,7 +152,7 @@ export default () => {
       {
         OptionWithSubmenu({
           icon: <BomIcon />,
-          label: 'Bill of Materials (P)',
+          label: 'Bill of Materials',
           nameMenu: 'menu-bill-materials',
           targetMenu: menuBillMaterials,
           onTargetMenu: setMenuBillMaterials,
