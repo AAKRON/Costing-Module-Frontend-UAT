@@ -78,8 +78,8 @@ const ListingItemCost = ({ blanksInitial, id, docNumber }) => {
       <TableRow key={index} style={{ borderTop: '1px solid #cdcdcd' }}>
         <th style={{ fontWeight: 400, height: '40px' }}>{blank.blank_number}</th>
         <th style={{ fontWeight: 400, textAlign: 'left' }}>{blank.blank_description || '-'}</th>
-        <th style={{ fontWeight: 400 }}>{blank.mult == null ? 1 : blank.mult}</th>
-        <th style={{ fontWeight: 400 }}>{blank.div == null ? 1 : blank.div}</th>
+        <th style={{ fontWeight: 400 }}>{blank.mult}</th>
+        <th style={{ fontWeight: 400 }}>{blank.div}</th>
         {isModifyPermission() &&
           <th>
             <IconButton

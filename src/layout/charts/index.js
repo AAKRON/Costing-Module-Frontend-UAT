@@ -24,8 +24,6 @@ const GenerateComponent = (options, name) => {
               options={options}
             />
       }
-
-      <div style={{ margin: '1rem 0'}} />
     </>
   )
 }
@@ -127,8 +125,11 @@ const Charts = () => {
       </form>
 
       {GenerateComponent(options.optionJobs, 'Number of jobs created each day')}
-      {GenerateComponent(options.optionBlanks, 'Number of blanks created each day')}
-      {GenerateComponent(options.optionBlanksType, 'Number of blanks by type')}
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr'}}>
+        {GenerateComponent(options.optionBlanks, 'Number of blanks created each day')}
+        {GenerateComponent(options.optionBlanksType, 'Number of blanks by type')}
+      </div>
     </>
   )
 }
