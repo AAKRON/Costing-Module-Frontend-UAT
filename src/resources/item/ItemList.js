@@ -37,7 +37,7 @@ export const ItemList = (props) => (
       actions={<Actions />}
       sort={{ field: 'item_number', order: 'ASC' }}
       filters={<ItemFilter />}
-      perPage={50}
+      perPage={10}
       {...props}
     >
       <Datagrid

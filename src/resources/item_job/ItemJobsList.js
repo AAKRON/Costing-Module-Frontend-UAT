@@ -33,7 +33,7 @@ export const ItemJobsList = (props) => {
         actions={<Actions />}
         filters={<ItemJobFilter />}
         sort={{ field: 'item_number', order: 'ASC' }}
-        perPage={50}
+        perPage={10}
         {...props}
       >
         <Datagrid

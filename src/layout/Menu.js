@@ -167,7 +167,7 @@ export default () => {
       {
         OptionWithSubmenu({
           icon: <RawMaterialIcon />,
-          label: 'Raw Material (P)',
+          label: 'Raw Material',
           nameMenu: 'menu-raw-material',
           targetMenu: menuRawMaterial,
           onTargetMenu: setMenuRawMaterial,

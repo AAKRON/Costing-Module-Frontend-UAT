@@ -1,3 +1,4 @@
-export { RawMaterialListing } from './RawMaterialListing';
-export { RawMaterialCreate } from './RawMaterialCreate';
-export { RawMaterialEdit } from './RawMaterialEdit';
+export { default as RawMaterialCreate } from './RawMaterialCreate'
+export { default as RawMaterialEdit } from './RawMaterialEdit'
+export { RawMaterialListing } from './RawMaterialListing'
+

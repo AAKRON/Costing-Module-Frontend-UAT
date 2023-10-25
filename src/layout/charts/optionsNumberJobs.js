@@ -4,7 +4,7 @@ export default {
   },
   title: {
     text: 'Number of jobs created each day',
-    align: 'left'
+    align: 'center'
   },
   xAxis: {
     categories: [],
@@ -16,6 +16,7 @@ export default {
   },
   series: [{
     name: 'Number of Jobs',
+    color: '#752092',
     data: []
   }],
   credits: {

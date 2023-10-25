@@ -1,7 +1,9 @@
 import {
-  Button, Card, FormControl, InputLabel,
+  Button, Card,
+  Divider,
+  FormControl, InputLabel,
   MenuItem,
-  Modal, Select, TextField
+  Modal, Select, TextField,
 } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useLogin, useNotify } from 'react-admin'
@@ -112,6 +114,8 @@ export default () => {
                 </Modal>
               </FormControl>
             </div>
+
+            <Divider style={{ margin: '2rem 0 1rem'}} />
 
             <div>
               <Charts />

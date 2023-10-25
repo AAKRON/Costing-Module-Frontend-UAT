@@ -65,7 +65,7 @@ export const BlankList = (props) => (
       actions={<Actions />}
       sort={{ field: 'blank_number', order: 'ASC' }}
       filters={<BlankFilter />}
-      perPage={50}
+      perPage={10}
       {...props}
     >
       <Datagrid

@@ -1,19 +1,16 @@
-import axios from 'axios';
-import React from 'react';
-// import lodash from 'lodash';
+import FileFileDownload from '@mui/icons-material/FileDownload'
 import {
-    GET_LIST,
-} from 'admin-on-rest';
-import AutoComplete from 'material-ui/AutoComplete';
-import Chip from 'material-ui/Chip';
-import Dialog from 'material-ui/Dialog';
-import Divider from 'material-ui/Divider';
-import FlatButton from 'material-ui/FlatButton';
-import RaisedButton from 'material-ui/RaisedButton';
-import FileFileDownload from 'material-ui/svg-icons/file/file-download';
-import { SERVER_URL } from '../../config';
-import { stringHelpers } from '../../helpers/stringHelpers';
-import restClient from '../../restClient';
+  Autocomplete,
+  Button,
+  Dialog,
+  DialogTitle,
+  Divider,
+  TextField
+} from '@mui/material'
+import React from 'react'
+import { SERVER_URL } from '../../config'
+import { stringHelpers } from '../../helpers/stringHelpers'
+import restClient from '../../providers/restClient'
 
 const styles = {
   RaisedButton: {
@@ -27,193 +24,172 @@ const styles = {
       marginBottom: '10px',
     },
   },
-  CenterAlgin: {
+  bodyDialog: {
     textAlign: 'center',
+    padding: '0 2rem 2rem',
+    minWidth: '500px',
   },
-  Blank: {
-    margin: 4,
-  },
-  Wrapper: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    marginBottom: '10px',
-  },
-};
+}
 
 class RawMaterialExportModal extends React.Component {
-  state = { open: false, blanks: [], seleted_blanks: [], searchText: '' };
+  state = { open: false, blanks: [], seleted_blanks: [] }
 
   fetchRawMaterials = () =>
-    restClient(GET_LIST, 'raw-material-list-only', {
+    restClient.getList('raw-material-list-only', {
       pagination: { page: 1, perPage: -1 },
-      sort: { field: 'id', order: 'DESC' },
-      // filter: { type_id: 1 },
-    });
+      sort: { field: 'id', order: 'ASC' },
+    })
 
-  handleOpen = () => this.setState({ open: true });
-
-  handleClose = () => this.setState({ open: false });
+  handleOpen = () => this.setState({ open: true })
+  handleClose = () => this.setState({ open: false })
 
   componentDidMount() {
-    axios.all([this.fetchRawMaterials()]).then(
-      axios.spread((raw) => {
-        console.log(raw);
-        const blanks = raw.data.map((raw) => `${raw.id} - ${raw.name}`);
-        this.setState({ blanks });
-      })
-    );
+    this.fetchRawMaterials().then(({ data }) => {
+      const blanks = data.map(
+        (raw) => `${raw?.id} - ${raw?.name}`
+      )
+      // Función de comparación personalizada para ordenar por número
+      function customCompare(a, b) {
+        const numA = parseInt(a.split(' - ')[0])
+        const numB = parseInt(b.split(' - ')[0])
+        return numA - numB
+      }
+
+      blanks.sort(customCompare)
+      this.setState({ blanks })
+    }).catch((err) => {
+      console.log('Error fetching blanks', err)
+    })
   }
 
   handleBlankPriceCostDownload = (e) => {
-    e.preventDefault();
-
+    e.preventDefault()
     window.open(
       `${SERVER_URL}/raw-material-download/listing-raw-material.csv`,
       '_blank'
-    );
-  };
+    )
+  }
 
   handleBlankInventoryCostDownload = (e) => {
-    e.preventDefault();
-
+    e.preventDefault()
     window.open(
       `${SERVER_URL}/raw-material-download/listing-raw-material.csv`,
       '_blank'
-    );
-  };
+    )
+  }
 
   handleSeletedBlankPriceCostDownload = (e) => {
-    e.preventDefault();
+    e.preventDefault()
+
+    const blanks = this.state.seleted_blanks.map((blank) => {
+      return stringHelpers.extractLeadingNumber(blank)
+    })
 
     window.open(
-      `${SERVER_URL}/raw-material-download/listing-raw-material.csv?blanks=${this.state.seleted_blanks.toString()}`,
+      `${SERVER_URL}/raw-material-download/listing-raw-material.csv?blanks=${blanks.toString()}`,
       '_blank'
-    );
-  };
+    )
+  }
 
   handleSeletedBlankInventoryCostDownload = (e) => {
-    e.preventDefault();
+    e.preventDefault()
+  
+    const blanks = this.state.seleted_blanks.map((blank) => {
+      return stringHelpers.extractLeadingNumber(blank)
+    })
 
     window.open(
-      `${SERVER_URL}/raw-material-download/listing-raw-material.csv?blanks=${this.state.seleted_blanks.toString()}`,
+      `${SERVER_URL}/raw-material-download/listing-raw-material.csv?blanks=${blanks.toString()}`,
       '_blank'
-    );
-  };
-
-  handleRequestDelete = (seleted_blank_index) => {
-    this.setState({
-      seleted_blanks: this.state.seleted_blanks.filter(
-        (blank, index) => seleted_blank_index !== index
-      ),
-    });
-  };
-
-  renderBlanksChip(blank, index) {
-    return (
-      <Chip
-        key={blank}
-        onRequestDelete={() => this.handleRequestDelete(index)}
-        style={styles.Blank}
-      >
-        {blank}
-      </Chip>
-    );
+    )
   }
 
   render() {
-    console.log(this.state.blanks);
     return (
       <span>
-        <FlatButton
-          primary
-          label='Export Raw Material'
-          onTouchTap={this.handleOpen}
-          icon={<FileFileDownload />}
-        />
-        <Dialog
-          title='Export Raw Material List'
-          modal={false}
-          open={this.state.open}
-          onRequestClose={this.handleClose}
-          autoScrollBodyContent={true}
+        <Button
+          style={{ fontSize: '0.8rem' }}
+          onClick={this.handleOpen}
         >
-          <div style={styles.CenterAlgin}>
-            <h2>Export All Raw Material</h2>
-            <RaisedButton
-              style={styles.RaisedButton.FirstButton}
-              label='Raw Material Listing'
-              secondary={true}
-              onTouchTap={this.handleOpen}
-              icon={<FileFileDownload />}
-              onClick={this.handleBlankPriceCostDownload}
-            />
+          <FileFileDownload  style={{ fontSize: '1rem' }}/>
+          Export Raw Material
+        </Button>
 
-            {/* <RaisedButton
+        <Dialog
+          open={this.state.open}
+          onClose={this.handleClose}
+        >
+          <DialogTitle>
+            Export Raw Material List
+          </DialogTitle>
+
+          <Divider />
+
+          <div style={styles.bodyDialog}>
+            <h2>Export All Raw Material</h2>
+            <Button
+              variant='contained'
+              color='error'
+              style={styles.RaisedButton.FirstButton}
+              onClick={this.handleBlankPriceCostDownload}
+            >
+              <FileFileDownload />
+              Raw Material Listing
+            </Button>
+
+            {/* <Button
+              variant='contained'
+              color='error'
               style={styles.RaisedButton.SecondButton}
-              label='Inventory Cost Blanks'
-              secondary={true}
-              onTouchTap={this.handleOpen}
-              icon={<FileFileDownload />}
               onClick={this.handleBlankInventoryCostDownload}
-            /> */}
+            >
+              <FileFileDownload />
+              Inventory Cost Blanks
+            </Button> */}
             <Divider />
 
             <h2 style={{ marginBottom: 0 }}>Export Selected Raw Materials</h2>
-            <AutoComplete
-              floatingLabelText={`Type the Raw Material name`}
-              filter={AutoComplete.fuzzyFilter}
-              dataSource={this.state.blanks}
-              maxSearchResults={5}
-              onNewRequest={(blank_description) => {
-                var seleted_blanks = this.state.seleted_blanks;
-                var blanks_number =
-                  stringHelpers.extractLeadingNumber(blank_description);
-                console.log(blanks_number);
-                this.setState({ searchText: blank_description });
-
-                if (seleted_blanks.indexOf(blanks_number) === -1) {
-                  seleted_blanks.push(blanks_number);
-                }
-
-                this.setState({
-                  seleted_blanks: seleted_blanks,
-                  searchText: '',
-                });
+            <Autocomplete
+              multiple
+              options={this.state.blanks}
+              value={this.state.seleted_blanks}
+              onChange={(e, value) => {
+                this.setState({ seleted_blanks: value })
               }}
-              fullWidth={true}
-              searchText={this.state.searchText}
+              renderInput={(params) =>
+                <TextField {...params} label='Type the Raw Material name' />
+              }
             />
-            <h4 style={{ textAlign: 'left', margin: '5px 0' }}>
-              Selected Raw Material:
-            </h4>
-            <div style={styles.Wrapper}>
-              {this.state.seleted_blanks.map(this.renderBlanksChip, this)}
-            </div>
+
             {this.state.seleted_blanks.length > 0 && (
-              <RaisedButton
-                style={styles.RaisedButton.FirstButton}
-                label='Export Selected Raw Materials'
-                primary={true}
-                onTouchTap={this.handleOpen}
-                icon={<FileFileDownload />}
-                onClick={this.handleSeletedBlankPriceCostDownload}
-              />
+              <>
+                <Button
+                  variant='contained'
+                  color='info'
+                  style={styles.RaisedButton.FirstButton}
+                  onClick={this.handleSeletedBlankPriceCostDownload}
+                >
+                  <FileFileDownload />
+                  Export Selected Raw Materials
+                </Button>
+
+                {/* <Button
+                  variant='contained'
+                  color='info'
+                  style={styles.RaisedButton.SecondButton}
+                  onClick={this.handleSeletedBlankInventoryCostDownload}
+                >
+                  <FileFileDownload />
+                  Inventory Cost Blanks
+                </Button> */}
+              </>
             )}
-            {/* {this.state.seleted_blanks.length > 0 && (
-              <RaisedButton
-                style={styles.RaisedButton.SecondButton}
-                label='Inventory Cost Blanks'
-                primary={true}
-                onTouchTap={this.handleOpen}
-                icon={<FileFileDownload />}
-                onClick={this.handleSeletedBlankInventoryCostDownload}
-              />
-            )} */}
           </div>
         </Dialog>
       </span>
-    );
+    )
   }
 }
 
-export { RawMaterialExportModal };
+export { RawMaterialExportModal }
+

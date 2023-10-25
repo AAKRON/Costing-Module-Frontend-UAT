@@ -8,8 +8,14 @@ const ItemCreate = (props) => {
     return null
   }
 
-	const [boxes, setBoxes] = useState([])
-	const [itemsType, setItemsType] = useState([])
+	const [boxes, setBoxes] = useState({
+		loading: true,
+		data: []
+	})
+	const [itemsType, setItemsType] = useState({
+		loading: true,
+		data: []
+	})
 
 	const fetchBoxes = () => restClient.getList('box-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }})
 
@@ -18,14 +24,14 @@ const ItemCreate = (props) => {
 	useEffect(() => {
 		fetchBoxes().then(({data}) => {
 			const boxes = data.map(box => ({id: box.id, name: box.name}));
-			setBoxes(boxes)
+			setBoxes({ loading: false, data: boxes })
 		}).catch((err) => {
 			console.log('Error fetching boxes', err)
 		})
 
 		fetchItemTypes().then(({data}) => {
 			const item_types = data.map(box => ({id: box.type_number, name: box.description}));
-			setItemsType(item_types)
+			setItemsType({ loading: false, data: item_types })
 		}).catch((err) => {
 			console.log('Error fetching item types', err)
 		})
@@ -45,8 +51,16 @@ const ItemCreate = (props) => {
 			<SimpleForm>
 				<NumberInput source='item_number' validate={required()}/>
 				<TextInput source='description' validate={required()}/>
-				<AutocompleteInput source='box_id' choices={boxes}/>
-				<AutocompleteInput source='item_type_id' choices={itemsType} />
+				<AutocompleteInput
+					isLoading={boxes.loading}
+					source='box_id'
+					choices={boxes.data}
+				/>
+				<AutocompleteInput
+					isLoading={itemsType.loading}
+					source='item_type_id'
+					choices={itemsType.data}
+				/>
 			</SimpleForm>
 		</Create>
 	)

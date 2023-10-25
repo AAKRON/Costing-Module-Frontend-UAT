@@ -1,36 +1,20 @@
-import FlatButton from 'material-ui/FlatButton';
-import React from 'react';
+import EditIcon from '@mui/icons-material/Edit'
+import ShowIcon from '@mui/icons-material/Visibility'
+import { Card } from '@mui/material'
+import React from 'react'
+import { CreateButton, Datagrid, EditButton, FunctionField, List, TextField, TopToolbar } from 'react-admin'
+import { isModifyPermission } from '../../helpers/functions'
+import { RawMaterialExportModal } from './RawMaterialExportModal'
+import { RawMaterialFilter } from './RawMaterialFilter'
 
-import NavigationRefresh from 'material-ui/svg-icons/navigation/refresh';
-
-import {
-    CreateButton,
-    Datagrid,
-    EditButton,
-    List,
-    TextField,
-} from 'admin-on-rest/lib/mui';
-import { CardActions } from 'material-ui/Card';
-import PriceField from '../../components/PriceField';
-
-import { RawMaterialExportModal } from './RawMaterialExportModal';
-import { RawMaterialFilter } from './RawMaterialFilter';
-
-const cardActionStyle = {
-  zIndex: 2,
-  display: 'inline-block',
-  float: 'right',
-};
-const RawMaterialListActions = ({
-  resource,
+const Actions = ({
   filters,
   displayedFilters,
   filterValues,
-  basePath,
+  resource,
   showFilter,
-  refresh,
 }) => (
-  <CardActions style={cardActionStyle}>
+  <TopToolbar>
     {filters &&
       React.cloneElement(filters, {
         resource,
@@ -39,32 +23,44 @@ const RawMaterialListActions = ({
         filterValues,
         context: 'button',
       })}
-    <CreateButton basePath={basePath} />
-    <FlatButton
-      primary
-      label='Refresh'
-      onClick={refresh}
-      icon={<NavigationRefresh />}
-    />
-    <RawMaterialExportModal submitForm={() => 1} />
-  </CardActions>
-);
+
+    {isModifyPermission() && <CreateButton />}
+
+    <RawMaterialExportModal />
+  </TopToolbar>
+)
+
 export const RawMaterialListing = (props) => (
-  <List
-    title='RawMaterial Listing'
-    actions={<RawMaterialListActions />}
-    filters={<RawMaterialFilter />}
-    {...props}
-  >
-    <Datagrid>
-      <TextField source='id' />
-      <TextField source='name' />
-      <TextField source='raw_material_type' label='Type' />
-      <TextField source='vendor' />
-      <PriceField source='cost' label='Cost ($)' />
-      <TextField source='unit' />
-      <TextField source='color' />
-      <EditButton />
-    </Datagrid>
-  </List>
-);
+  <Card style={{ margin: '2rem', padding: '1rem' }}>
+    <List
+      title='RawMaterial Listing'
+      actions={<Actions />}
+      filters={<RawMaterialFilter />}
+      {...props}
+    >
+      <Datagrid
+        isRowSelectable={() => false}
+      >
+        <TextField source='id' />
+        <TextField source='name' />
+        <TextField source='raw_material_type' label='Type' />
+        <TextField source='vendor' />
+        <FunctionField
+          source='cost'
+          label='Cost($)'
+          render={
+            record => {
+              return <span>${record.cost}</span>
+          }}
+        />
+        <TextField source='unit' />
+        <TextField source='color' />
+
+        <EditButton
+          label={isModifyPermission() ? 'Edit' : 'View'}
+          icon={isModifyPermission() ? <EditIcon /> : <ShowIcon />}
+        />
+      </Datagrid>
+    </List>
+  </Card>
+)

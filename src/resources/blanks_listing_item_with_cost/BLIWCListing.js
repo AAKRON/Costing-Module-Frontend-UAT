@@ -37,7 +37,7 @@ export const BLIWCListing = (props) => (
       title='Blanks Listing Item with Cost'
       sort={{ field: 'item_number', order: 'ASC' }}
       filters={<BLIWCListingFilter />}
-      perPage={50}
+      perPage={10}
       {...props}
     >
       <Datagrid

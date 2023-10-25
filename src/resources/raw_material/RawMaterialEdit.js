@@ -1,128 +1,124 @@
-import {
-    AutocompleteInput,
-    DisabledInput,
-    Edit,
-    NumberInput,
-    SimpleForm,
-    TextInput,
-} from 'admin-on-rest/lib/mui';
-import React from 'react';
-// import {SERVER_URL} from '../../config';
-import { GET_LIST } from 'admin-on-rest';
-import axios from 'axios';
-import restClient from '../../restClient';
+import { useEffect, useState } from 'react'
+import { AutocompleteInput, DeleteButton, Edit, ListButton, NumberInput, SaveButton, SimpleForm, TextInput, Toolbar, TopToolbar, required } from 'react-admin'
+import { isModifyPermission } from '../../helpers/functions'
+import restClient from '../../providers/restClient'
 
-const Title = ({ record }) => {
-  return <span>Raw Material #{record ? `${record.name}` : ''}</span>;
-};
-export class RawMaterialEdit extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      units_of_measures: [],
-      colors: [],
-      vendors: [],
-      raw_material_types: [],
-    };
-    this.load = false;
-  }
+const RawMaterialEdit = (props) => {
+	const [unitsMeasures, setUnitsMeasures] = useState({
+    loading: true,
+    data: []
+  })
+  const [colors, setColors] = useState({
+    loading: true,
+    data: []
+  })
+  const [vendors, setVendors] = useState({
+    loading: true,
+    data: []
+  })
+  const [rawMaterialTypes, setRawMaterialTypes] = useState({
+    loading: true,
+    data: []
+  })
 
-  /*fetchUnitsOfMeasure = () => axios.get(SERVER_URL + '/units-of-measure-list-only');
-    fetchColors = () => axios.get(SERVER_URL + '/color-list-only');
-    fetchVendors = () => axios.get(SERVER_URL + '/vendor-list-only');
-    fetchRawMaterialTypes = () => axios.get(SERVER_URL + '/raw-material-type-list-only');*/
+  const Actions = () => (
+		<TopToolbar>
+				<ListButton />
+		</TopToolbar>
+	)
+  
+  const ToolbarForm = (props) => {
+		if(!isModifyPermission()) return false
+	
+		return (
+			<Toolbar {...props}>
+				<SaveButton />
+				<DeleteButton mutationMode="pessimistic" />
+			</Toolbar>
+		)
+	}
 
-  fetchUnitsOfMeasure = () =>
-    restClient(GET_LIST, 'units-of-measure-list-only', {
-      pagination: { page: 1, perPage: -1 },
-      sort: { field: 'id', order: 'ASC' },
-    });
-  fetchColors = () =>
-    restClient(GET_LIST, 'color-list-only', {
-      pagination: { page: 1, perPage: -1 },
-      sort: { field: 'id', order: 'ASC' },
-    });
-  fetchVendors = () =>
-    restClient(GET_LIST, 'vendor-list-only', {
-      pagination: { page: 1, perPage: -1 },
-      sort: { field: 'id', order: 'ASC' },
-    });
-  fetchRawMaterialTypes = () =>
-    restClient(GET_LIST, 'raw-material-type-list-only', {
-      pagination: { page: 1, perPage: -1 },
-      sort: { field: 'id', order: 'ASC' },
-    });
+  const fetchUnitsMeasures = () =>
+    restClient.getList('units-of-measure-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }})
 
-  async fetchApiCall() {
-    axios
-      .all([
-        this.fetchUnitsOfMeasure(),
-        this.fetchColors(),
-        this.fetchVendors(),
-        this.fetchRawMaterialTypes(),
-      ])
-      .then(
-        axios.spread((response1, response2, response3, response4) => {
-          const units_of_measures = response1.data.map((data) => ({
-            id: data.id,
-            name: data.name,
-          }));
-          const colors = response2.data.map((data) => ({
-            id: data.id,
-            name: data.name,
-          }));
-          const vendors = response3.data.map((data) => ({
-            id: data.id,
-            name: data.name,
-          }));
-          const raw_material_types = response4.data.map((data) => ({
-            id: data.id,
-            name: data.name,
-          }));
-          this.setState({
-            units_of_measures,
-            colors,
-            vendors,
-            raw_material_types,
-          });
-        })
-      );
-  }
-  async componentWillMount() {
-    await this.fetchApiCall();
-  }
+  const fetchColors = () =>
+    restClient.getList('color-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }})
 
-  async componentDidMount() {
-    await this.fetchApiCall();
-  }
+  const fetchVendors = () =>
+    restClient.getList('vendor-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }})
 
-  async componentDidUpdate() {
-    if (this.load === false) {
-      await this.fetchApiCall();
-      this.load = true;
-    }
-  }
+  const fetchRawMaterialTypes = () =>
+    restClient.getList('raw-material-type-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }})
 
-  render() {
-    return (
-      <Edit title={<Title />} {...this.props}>
-        <SimpleForm>
-          <DisabledInput source='id' />
-          <TextInput source='name' />
-          <NumberInput source='cost' label='Cost ($)' />
-          <AutocompleteInput
-            source='units_of_measure_id'
-            choices={this.state.units_of_measures}
-          />
-          <AutocompleteInput source='color_id' choices={this.state.colors} />
-          <AutocompleteInput source='vendor_id' choices={this.state.vendors} />
-          <AutocompleteInput
-            source='rawmaterialtype_id'
-            label='Raw Material Type'
-            choices={this.state.raw_material_types}
-          />
-        </SimpleForm>
-      </Edit>
-    );
-  }
+  useEffect (() => {
+    fetchUnitsMeasures().then(({data}) => {
+      const units_measures = data.map(unit => ({id: unit.id, name: unit.name}));
+      setUnitsMeasures({ loading: false, data: units_measures })
+    }).catch((err) => {
+      console.log('Error fetching units of measure', err)
+    })
+
+    fetchColors().then(({data}) => {
+      const colors = data.map(color => ({id: color.id, name: color.name}));
+      setColors({ loading: false, data: colors })
+    }).catch((err) => {
+      console.log('Error fetching colors', err)
+    })
+
+    fetchVendors().then(({data}) => {
+      const vendors = data.map(vendor => ({id: vendor.id, name: vendor.name}));
+      setVendors({ loading: false, data: vendors })
+    }).catch((err) => {
+      console.log('Error fetching vendors', err)
+    })
+
+    fetchRawMaterialTypes().then(({data}) => {
+      const raw_material_types = data.map(raw_material_type => ({id: raw_material_type.id, name: raw_material_type.name}))
+      setRawMaterialTypes({ loading: false, data: raw_material_types })
+    }).catch((err) => {
+      console.log('Error fetching raw material types', err)
+    })
+  }, [])
+
+  return(
+    <Edit
+      actions={<Actions />}
+      {...props}
+    >
+      <SimpleForm
+        toolbar={<ToolbarForm />}
+      >
+        <TextInput source='id' disabled validate={required()}/>
+        <TextInput source='name' validate={required()}/>
+        <NumberInput source='cost' label='Cost ($)' validate={required()}/>
+        <AutocompleteInput
+          isLoading={unitsMeasures.loading}
+          source='units_of_measure_id'
+          choices={unitsMeasures.data}
+          validate={required()}
+        />
+        <AutocompleteInput
+          isLoading={colors.loading}
+          source='color_id'
+          choices={colors.data}
+          validate={required()}
+        />
+        <AutocompleteInput
+          isLoading={vendors.loading}
+          source='vendor_id'
+          choices={vendors.data}
+          validate={required()}
+        />
+        <AutocompleteInput
+          isLoading={rawMaterialTypes.loading}
+          source='rawmaterialtype_id'
+          label='Raw Material Type'
+          choices={rawMaterialTypes.data}
+          validate={required()}
+        />
+      </SimpleForm>
+    </Edit>
+  )
 }
+
+export default RawMaterialEdit

@@ -34,7 +34,7 @@ export const BLBIListing = (props) => (
       actions={<Actions />}
       sort={{ field: 'id', order: 'ASC' }}
       filters={<BLBIFilter />}
-      perPage={50}
+      perPage={10}
       {...props}
     >
       <Datagrid

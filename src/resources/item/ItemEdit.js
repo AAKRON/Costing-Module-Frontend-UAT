@@ -5,8 +5,14 @@ import restClient from '../../providers/restClient'
 import ItemCostView from './ItemCostView'
 
 export const ItemEdit = (props) => {
-	const [boxes, setBoxes] = useState([])
-	const [itemsType, setItemsType] = useState([])
+	const [boxes, setBoxes] = useState({
+		loading: true,
+		data: []
+	})
+	const [itemsType, setItemsType] = useState({
+		loading: true,
+		data: []
+	})
 
 	const fetchBoxes = () => restClient.getList('box-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }})
 
@@ -32,14 +38,14 @@ export const ItemEdit = (props) => {
 	useEffect(() => {
 		fetchBoxes().then(({data}) => {
 			const boxes = data.map(box => ({id: box.id, name: box.name}));
-			setBoxes(boxes)
+			setBoxes({ loading: false, data: boxes })
 		}).catch((err) => {
 			console.log('Error fetching boxes', err)
 		})
 
 		fetchItemTypes().then(({data}) => {
 			const item_types = data.map(box => ({id: box.type_number, name: box.description}));
-			setItemsType(item_types)
+			setItemsType({ loading: false, data: item_types })
 		}).catch((err) => {
 			console.log('Error fetching item types', err)
 		})
@@ -56,8 +62,16 @@ export const ItemEdit = (props) => {
 				<TextInput source='id' disabled validate={required()}/>
 				<NumberInput source='item_number' validate={required()}/>
 				<TextInput multiline source='description' validate={required()}/>
-				<AutocompleteInput source='box_id' choices={boxes}/>
-				<AutocompleteInput source='item_type_id' choices={itemsType} />
+				<AutocompleteInput
+					isLoading={boxes.loading}
+					source='box_id'
+					choices={boxes.data}
+				/>
+				<AutocompleteInput
+					source='item_type_id'
+					choices={itemsType.data}
+					isLoading={itemsType.loading}
+				/>
 				<NumberInput source='ink_cost' label='Ink Cost($)' validate={required()}/>
 				<NumberInput source='number_of_pcs_per_box' label='Number Of PCS/Box' validate={required()}/>
 				<ItemCostView type='price'/>

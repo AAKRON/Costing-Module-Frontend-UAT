@@ -19,6 +19,7 @@ import { ItemCreate, ItemEdit, ItemList } from './resources/item'
 import { ItemJobEdit, ItemJobsList } from './resources/item_job'
 import { ItemTypeCreate, ItemTypeEdit, ItemTypeListing } from './resources/item_type'
 import { JobCreate, JobEdit, JobList } from './resources/job'
+import { RawMaterialCreate, RawMaterialEdit, RawMaterialListing } from './resources/raw_material'
 import { RawMaterialTypeCreate, RawMaterialTypeEdit, RawMaterialTypeList } from './resources/raw_material_type'
 import { ScreenCreate, ScreenEdit, ScreenListing } from './resources/screen'
 import Spreadsheet from './resources/spreadsheet'
@@ -107,6 +108,12 @@ const App = () => (
     />
 
     <Resource
+      name='raw_materials'
+      list={RawMaterialListing}
+      create={RawMaterialCreate}
+      edit={RawMaterialEdit}
+    />
+    <Resource
       name='colors'
       list={ColorList}
       edit={ColorEdit}
@@ -130,6 +137,15 @@ const App = () => (
       create={VendorCreate}
       edit={VendorEdit}
     />
+
+    {/* <Resource
+      name='final_calculations'
+      list={FinalCalculationList}
+      edit={FinalCalculationEdit}
+      create={FinalCalculationCreate}
+    />
+
+    <Resource name='cost_calculator' create={CostCalCulatorCreate} /> */}
 
     <Resource
       name='users'

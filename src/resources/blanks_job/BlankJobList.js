@@ -28,7 +28,7 @@ export const BlanksJobList = (props) => (
       sort={{ field: 'id', order: 'ASC' }}
       filters={<BlanksJobFilter />}
       actions={false}
-      perPage={50}
+      perPage={10}
       {...props}
     >
       <Datagrid
