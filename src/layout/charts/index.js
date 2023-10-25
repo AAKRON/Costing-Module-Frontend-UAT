@@ -1,39 +1,54 @@
 import {
-  Button
+  Button,
+  Input,
 } from '@mui/material'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 import { useEffect, useState } from 'react'
+import { getDate } from '../../helpers/functions'
 import restClient from '../../providers/restClient'
-import optionsNumberBlanksInitial from './optionsNumberBlanks'
-import optionsNumberJobsInitial from './optionsNumberJobs'
+import optionsBlanksTypeInitial from './optionsBlanksType'
+import optionsBlanksInitial from './optionsNumberBlanks'
+import optionsJobsInitial from './optionsNumberJobs'
+
+const GenerateComponent = (options, name) => {
+  return (
+    <>
+      {
+        options?.series[0].data.length === 0
+          ? <div style={{ padding: '6rem', margin: 'auto', textAlign: 'center' }}>
+              {name}
+            </div>
+          : <HighchartsReact
+              highcharts={Highcharts}
+              options={options}
+            />
+      }
+
+      <div style={{ margin: '1rem 0'}} />
+    </>
+  )
+}
 
 const Charts = () => {
   const [filters, setFilters] = useState({
-    startDate: null,
-    endDate: null,
+    startDate: getDate({ day: 1 }),
+    endDate: getDate({ }),
   })
 
   const [options, setOptions] = useState({
-    optionJobs: optionsNumberJobsInitial,
-    optionBlanks: optionsNumberBlanksInitial,
+    optionJobs: optionsJobsInitial,
+    optionBlanks: optionsBlanksInitial,
+    optionBlanksType: optionsBlanksTypeInitial,
   })
 
   const submitFilters = (e) => {
     e.preventDefault()
-    const startDate = e.currentTarget.elements.startDate.value
-    const endDate = e.currentTarget.elements.endDate.value
-
-    setFilters({
-      startDate,
-      endDate,
-    })
+    getDataCharts()
   }
 
   const getDataCharts = async() => {
-    if(!filters.startDate || !filters.endDate) {
-      return
-    }
+    if(!filters.startDate || !filters.endDate) return
 
     const response = await restClient.getCustom('charts', {
       start_date: filters.startDate,
@@ -42,9 +57,11 @@ const Charts = () => {
   
     const dataJobs = response.data.number_of_jobs_created_each_day
     const dataBlanks = response.data.number_of_blanks_created_each_day
+    const dataBlanksType = response.data.number_of_blanks_by_type
 
     const optionJobs = {...options.optionJobs}
     const optionBlanks = {...options.optionBlanks}
+    const optionBlanksType = {...options.optionBlanksType}
   
     optionJobs.xAxis.categories = dataJobs.dates
     optionJobs.series[0].data = dataJobs.data
@@ -52,62 +69,66 @@ const Charts = () => {
     optionBlanks.xAxis.categories = dataBlanks.dates
     optionBlanks.series[0].data = dataBlanks.data
 
+    optionBlanksType.series[0].data = dataBlanksType.data.map((_, index) => ({
+      name: dataBlanksType.categories[index],
+      y: dataBlanksType.data[index]
+    }))
+
     setOptions({
       optionJobs,
       optionBlanks,
+      optionBlanksType,
     })
   }
 
   useEffect(() => {
     getDataCharts()
-  }, [filters])
+  }, [])
 
   return (
     <>
       <form
         onSubmit={submitFilters}
-        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
       >
         <h3>
           Selected dates:
         </h3>
 
-        <input
-          type='date'
-          name='startDate'
-        />
-        <input
-          type='date'
-          name='endDate'
-        />
-        <Button color='secondary' variant='contained' type='submit'>
-          Filter
-        </Button>
+        <div 
+          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+        >
+          <Input
+            type='date'
+            value={filters.startDate}
+            max={filters.endDate}
+            onChange={(e) => {
+              setFilters({
+                ...filters,
+                startDate: e.target.value
+              })
+            }}
+          />
+        
+          <Input
+            type='date'
+            min={filters.startDate}
+            value={filters.endDate}
+            onChange={(e) => {
+              setFilters({
+                ...filters,
+                endDate: e.target.value
+              })
+            }}
+          />
+          <Button color='secondary' variant='contained' type='submit'>
+            Filter
+          </Button>
+        </div>
       </form>
 
-      {
-        options.optionJobs?.series[0].data.length === 0
-          ? <div style={{ padding: '5rem', margin: 'auto' }}>
-              Empty of number of jobs
-            </div>
-          : <HighchartsReact
-              highcharts={Highcharts}
-              options={options.optionJobs}
-            />
-      }
-
-      <div style={{ margin: '1rem 0'}} />
-    
-      {
-        options.optionBlanks?.series[0].data.length === 0
-          ? <div style={{ padding: '5rem', margin: 'auto' }}>
-              Empty of number of blanks
-            </div>
-          : <HighchartsReact
-              highcharts={Highcharts}
-              options={options.optionBlanks}
-            />
-      }
+      {GenerateComponent(options.optionJobs, 'Number of jobs created each day')}
+      {GenerateComponent(options.optionBlanks, 'Number of blanks created each day')}
+      {GenerateComponent(options.optionBlanksType, 'Number of blanks by type')}
     </>
   )
 }
