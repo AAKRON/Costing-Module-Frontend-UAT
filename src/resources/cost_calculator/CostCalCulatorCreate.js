@@ -1,24 +1,18 @@
-import Paper from 'material-ui/Paper';
-import React from 'react';
-import CostCalCulator from '../../components/CostCalCulator';
+import {
+  Card
+} from '@mui/material'
+import React from 'react'
 
-const style = {
-  display: 'inline-block',
-  width: '100%',
-  height: '100%',
-  padding: '15px'
-};
 const pageHeader = {
   fontSize: '24px',
   lineHeight: '36px'
-};
+}
+
 export const CostCalCulatorCreate = (props) => (
-    <div>
-      <Paper style={style} zDepth={1}>
-        <span style={pageHeader}>
-          <span>Cost Calculator</span>
-        </span>
-        <CostCalCulator />
-      </Paper>
-    </div>
-);
+  <Card style={{ margin: '2rem', padding: '1rem' }}>
+    <span style={pageHeader}>
+      <span>Cost Calculator</span>
+    </span>
+    {/* <CostCalCulator /> */}
+  </Card>
+)

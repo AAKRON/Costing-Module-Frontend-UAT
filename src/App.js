@@ -12,6 +12,8 @@ import { BLBICreate, BLBIEdit, BLBIListing } from './resources/blanks_listing_by
 import { BLIWCEdit, BLIWCListing } from './resources/blanks_listing_item_with_cost'
 import { BoxCreate, BoxEdit, BoxListing } from './resources/box'
 import { ColorCreate, ColorEdit, ColorList } from './resources/color'
+import { CostCalCulatorCreate } from './resources/cost_calculator'
+import { FinalCalculationCreate, FinalCalculationEdit, FinalCalculationList } from './resources/final_calculation'
 import { GlobalVariableEdit } from './resources/global_variable'
 import { GlobalVariableCreate } from './resources/global_variable/GlobalVariableCreate'
 import { GlobalVariableListing } from './resources/global_variable/GlobalVariableListing'
@@ -138,14 +140,13 @@ const App = () => (
       edit={VendorEdit}
     />
 
-    {/* <Resource
+    <Resource
       name='final_calculations'
       list={FinalCalculationList}
-      edit={FinalCalculationEdit}
       create={FinalCalculationCreate}
+      edit={FinalCalculationEdit}
     />
-
-    <Resource name='cost_calculator' create={CostCalCulatorCreate} /> */}
+    <Resource name='cost_calculator' create={CostCalCulatorCreate} />
 
     <Resource
       name='users'

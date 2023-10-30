@@ -2,8 +2,6 @@ import React from 'react'
 import { Create, ListButton, NumberInput, SimpleForm, TopToolbar, required } from 'react-admin'
 import { isModifyPermission } from '../../helpers/functions'
 
-
-
 export const BLBICreate = (props) => {
   if(!isModifyPermission()){
     return null

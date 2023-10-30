@@ -1,6 +1,6 @@
-// import FinalCalcIcon from '@mui/icons-material/AccountBalanceWallet'
+import FinalCalcIcon from '@mui/icons-material/AccountBalanceWallet'
 import ArrowRight from '@mui/icons-material/ArrowRight'
-// import CostCalcIcon from '@mui/icons-material/Build'
+import CostCalcIcon from '@mui/icons-material/Build'
 import BomIcon from '@mui/icons-material/ChromeReaderMode'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import RawMaterialIcon from '@mui/icons-material/Dns'
@@ -179,14 +179,14 @@ export default () => {
             { to: 'vendors', label: 'Vendor' },
           ]
         })
-      }{/*
+      }
       <Divider style={{ margin: '0' }} />
     
       {
         Option({
           icon: <FinalCalcIcon />,
           to: '/final_calculations',
-          label: 'Final Calc (P)'
+          label: 'Final Calc'
         })
       }
       <Divider style={{ margin: '0' }} />
@@ -197,7 +197,7 @@ export default () => {
           to: '/cost_calculator/create',
           label: 'Cost Calculator (P)'
         })
-      } */}
+      }
       <Divider style={{ margin: '0' }} />
   
       { isAdmin() && 

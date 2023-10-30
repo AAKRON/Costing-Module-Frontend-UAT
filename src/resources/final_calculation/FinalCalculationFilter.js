@@ -1,5 +1,5 @@
-import { Filter, TextInput } from 'admin-on-rest/lib/mui';
-import React from 'react';
+import React from 'react'
+import { Filter, TextInput } from 'react-admin'
 
 export const FinalCalculationFilter = (props) => (
   <Filter {...props}>
@@ -8,4 +8,4 @@ export const FinalCalculationFilter = (props) => (
     <TextInput label='Search by blank name' source='blank_name' alwaysOn />
     <TextInput label='Search by blank number' source='q' alwaysOn />
   </Filter>
-);
+)

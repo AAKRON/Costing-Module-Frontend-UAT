@@ -1,65 +1,114 @@
-import { GET_LIST } from 'admin-on-rest';
-import { AutocompleteInput, DisabledInput, Edit, NumberInput, SimpleForm, TextInput } from 'admin-on-rest/lib/mui';
-import axios from 'axios';
-import AutoComplete from 'material-ui/AutoComplete';
-import React from 'react';
-import restClient from '../../restClient';
-import FinalCalculationCostView from './FinalCalculationCostView';
+import { useEffect, useState } from 'react'
+import { AutocompleteInput, DeleteButton, Edit, ListButton, NumberInput, SaveButton, SimpleForm, TextInput, Toolbar, TopToolbar, required } from 'react-admin'
+import { isModifyPermission } from '../../helpers/functions'
+import restClient from '../../providers/restClient'
+import FinalCalculationCostView from './FinalCalculationCostView'
 
-export class  FinalCalculationEdit extends React.Component {
-	constructor(props) {
-			super(props);
-			this.state = {
-					blanks: [],
-          colors: [],
-          raw_materials: [],
-			};
+const FinalCalculationEdit = (props) => {
+  const [blanks, setBlanks] = useState({
+		loading: true,
+		data: []
+	})
+	const [colors, setColors] = useState({
+		loading: true,
+		data: []
+	})
+  const [raw_materials, setRawMaterials] = useState({
+    loading: true,
+    data: []
+  })
 
-      axios.all([this.fetchBlanks(), this.fetchColors(), this.fetchRawMaterials()])
-  				.then(axios.spread((blank, color, raw_material) => {
-  						const blanks = blank.data.map(blank => ({id: blank.id, name: `${blank.id} - ${blank.description}`}));
-              const colors = color.data.map(color => ({id: color.name, name: color.name}));
-              colors.push({id:'', name: 'No Colorant'})
-              const raw_materials = raw_material.data.map(raw_material => ({id: raw_material.id, name: raw_material.name}));
-              this.setState({blanks, colors, raw_materials});
-  				}));
+  const fetchBlanks = () => restClient.getList('blank-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }})
+
+  const fetchColors = () => restClient.getList('color-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }})
+
+  const fetchRawMaterials = () => restClient.getList('raw-material-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }})
+
+  const Actions = () => (
+    <TopToolbar>
+        <ListButton />
+    </TopToolbar>
+  )
+  
+  const ToolbarForm = (props) => {
+    if(!isModifyPermission()) return false
+  
+    return (
+      <Toolbar {...props}>
+        <SaveButton />
+        <DeleteButton mutationMode="pessimistic" />
+      </Toolbar>
+    )
   }
 
-	fetchBlanks = () => restClient(GET_LIST, 'blank-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }});
+  useEffect(() => {
+    fetchBlanks().then(({data}) => {
+      const blanks = data.map(blank => ({id: blank.id, name: `${blank.id} - ${blank.description}`}))
+      setBlanks({ loading: false, data: blanks })
+    }).catch((err) => console.log('Error fetching blanks', err))
 
-  fetchColors = () => restClient(GET_LIST, 'color-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }});
+    fetchColors().then(({data}) => {
+      const colors = data.map(color => ({id: color.name, name: color.name}))
+      colors.push({id:'', name: 'No Colorant'})
+      setColors({ loading: false, data: colors })
+    }).catch((err) => console.log('Error fetching colors', err))
 
-  fetchRawMaterials = () => restClient(GET_LIST, 'raw-material-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }});
+    fetchRawMaterials().then(({data}) => {
+      const raw_materials = data.map(raw_material => ({id: raw_material.id, name: raw_material.name}))
+      setRawMaterials({ loading: false, data: raw_materials })
+    }).catch((err) => console.log('Error fetching raw materials', err))
+  }, [])
 
-	render () {
-    	return(
-				<Edit {...this.props}>
-		        <SimpleForm>
-		            <DisabledInput source='id' />
-                { this.state.blanks.length > 0 &&
-		            <AutocompleteInput source='blank_id' choices={this.state.blanks} filter={AutoComplete.fuzzyFilter} translateChoice={false} />
-                }
-                <NumberInput source='color_number' label='Color #'/>
-                <TextInput source='color_description' />
+  return (
+    <Edit
+      actions={<Actions />}
+      {...props}
+    >
+      <SimpleForm
+        toolbar={<ToolbarForm />}
+      >
+        <TextInput disabled source='id' />
 
-                { this.state.raw_materials.length > 0 &&
-                <AutocompleteInput source='raw_material_id' choices={this.state.raw_materials} filter={AutoComplete.fuzzyFilter} translateChoice={false} />
-                }
+        <AutocompleteInput
+          isLoading={blanks.loading}
+          source='blank_id'
+          choices={blanks.data}
+          validate={required()}
+        />
+        <NumberInput source='color_number' label='Color #' validate={required()}/>
+        <TextInput source='color_description' validate={required()}/>
 
-                { this.state.colors.length > 0 &&
-                <AutocompleteInput source='colorant_one' choices={this.state.colors} filter={AutoComplete.fuzzyFilter} translateChoice={false} />
-                }
-                <TextInput source='number_of_pieces_per_unit_one' />
-                <NumberInput source='percentage_of_colorant_one' />
+        <AutocompleteInput
+          isLoading={raw_materials.loading}
+          source='raw_material_id'
+          choices={raw_materials.data}
+          validate={required()}
+        />
 
-                { this.state.colors.length > 0 &&
-		            <AutocompleteInput source='colorant_two' choices={this.state.colors} filter={AutoComplete.fuzzyFilter} translateChoice={false} />
-                }
-                <TextInput source='number_of_pieces_per_unit_two' />
-                <NumberInput source='percentage_of_colorant_two' />
-								<FinalCalculationCostView />
-						</SimpleForm>
-				</Edit>
-			)
-	}
+        <AutocompleteInput
+          isLoading={colors.loading}
+          source='colorant_one'
+          choices={colors.data}
+          validate={required()}
+        />
+
+        <NumberInput source='number_of_pieces_per_unit_one' validate={required()}/>
+        <NumberInput source='percentage_of_colorant_one' validate={required()}/>
+
+        <AutocompleteInput
+          isLoading={colors.loading}
+          source='colorant_two'
+          choices={colors.data}
+          validate={required()}
+        />
+
+        <NumberInput source='number_of_pieces_per_unit_two' validate={required()} />
+        <NumberInput source='percentage_of_colorant_two' validate={required()}/>
+
+        <FinalCalculationCostView />
+      </SimpleForm>
+    </Edit>
+  )
 }
+
+export default FinalCalculationEdit
