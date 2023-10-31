@@ -98,7 +98,21 @@ const Charts = () => {
           <Input
             type='date'
             value={filters.startDate}
-            max={filters.endDate}
+            min={
+              getDate({
+                day: 1,
+                month: 1,
+                year: localStorage.getItem('db')
+              })
+            }
+            max={
+              getDate({
+                day: 31,
+                month: 12,
+                year: localStorage.getItem('db')
+              })
+            }
+            // max={filters.endDate}
             onChange={(e) => {
               setFilters({
                 ...filters,
@@ -109,7 +123,21 @@ const Charts = () => {
         
           <Input
             type='date'
-            min={filters.startDate}
+            min={
+              getDate({
+                day: 1,
+                month: 1,
+                year: localStorage.getItem('db')
+              })
+            }
+            max={
+              getDate({
+                day: 31,
+                month: 12,
+                year: localStorage.getItem('db')
+              })
+            }
+            // min={filters.startDate}
             value={filters.endDate}
             onChange={(e) => {
               setFilters({

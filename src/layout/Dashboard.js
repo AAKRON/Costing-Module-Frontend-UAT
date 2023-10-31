@@ -5,7 +5,7 @@ import {
   MenuItem,
   Modal, Select, TextField,
 } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useLogin, useNotify } from 'react-admin'
 import { isAdmin } from '../helpers/functions'
 import Charts from './charts'
@@ -37,12 +37,6 @@ export default () => {
   
     validatePassword(confirmPassword, callback)
   }
-
-  useEffect(() => {
-    if (localStorage.getItem('db') === null) {
-      localStorage.setItem('db', new Date().getFullYear())
-    }
-  }, [])
 
   return (
     <Card style={{ margin: '2rem', padding: '1rem' }}>

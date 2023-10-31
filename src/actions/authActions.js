@@ -16,7 +16,6 @@ export function logout() {
   localStorage.removeItem('token');
   localStorage.removeItem('username');
   localStorage.removeItem('role');
-  localStorage.removeItem('db');
   return Promise.resolve();
 }
 

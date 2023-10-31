@@ -5,12 +5,14 @@ export const isModifyPermission = () => {
 }
 
 export const getDate = ({
-  day
+  day,
+  month,
+  year,
 }) => {
   const now = new Date()
-  const date = day || now.getDate()
-  const month = now.getMonth() + 1
-  const year = now.getFullYear()
+  const _day = day || now.getDate()
+  const _month = month || now.getMonth() + 1
+  const _year = year || now.getFullYear()
 
-  return `${year}-${month < 10 ? `0${month}` : month}-${date < 10 ? `0${date}` : date}`
+  return `${_year}-${_month < 10 ? `0${_month}` : _month}-${_day < 10 ? `0${_day}` : _day}`
 }

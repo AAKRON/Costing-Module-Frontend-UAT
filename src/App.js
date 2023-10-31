@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Admin, Resource } from 'react-admin'
 import Dashboard from './layout/Dashboard'
 import Menu from './layout/Menu'
@@ -29,138 +29,146 @@ import { UnitsOfMeasureCreate, UnitsOfMeasureEdit, UnitsOfMeasureList } from './
 import { UserCreate, UserEdit, UserListing } from './resources/user'
 import { VendorCreate, VendorEdit, VendorList } from './resources/vendor'
 
-const App = () => (
-  <Admin
-    title='Aakron Costing Module'
-    authProvider={authClient}
-    dataProvider={restClient}
-    dashboard={Dashboard}
-    menu={Menu}
-  >
-    <Resource
-      name='spreadsheet'
-      list={Spreadsheet}
-    />
+const App = () => {
+  useEffect(() => {
+    if (localStorage.getItem('db') === null) {
+      localStorage.setItem('db', new Date().getFullYear())
+    }
+  }, [])
 
-    <Resource
-      name='job_listings'
-      list={JobList}
-      edit={JobEdit}
-      create={JobCreate}
-    />
-    <Resource
-      name='screens'
-      list={ScreenListing}
-      edit={ScreenEdit}
-      create={ScreenCreate}
-    />
-
-    <Resource
-      name='blanks'
-      list={BlankList}
-      edit={BlankEdit}
-      create={BlankCreate}
-    />
-    <Resource
-      name='blank_jobs'
-      list={BlanksJobList}
-      edit={BlankJobEdit}
-    />
-    <Resource
-      name='blank_types'
-      list={BlankTypeListing}
-      edit={BlankTypeEdit}
-      create={BlankTypeCreate}
-    />
-
-    <Resource
-      name='items'
-      list={ItemList}
-      edit={ItemEdit}
-      create={ItemCreate}
-    />
-    <Resource
-      name='item_jobs'
-      list={ItemJobsList}
-      edit={ItemJobEdit}
-    />
-    <Resource
-      name='boxes'
-      list={BoxListing}
-      edit={BoxEdit}
-      create={BoxCreate}
-    />
-    <Resource
-      name='item_types'
-      list={ItemTypeListing}
-      edit={ItemTypeEdit}
-      create={ItemTypeCreate}
-    />
-
-    <Resource
-      name='blanks_listing_item_with_costs'
-      list={BLIWCListing}
-      edit={BLIWCEdit}
-    />
-    <Resource
-      name='blanks_listing_by_items'
-      list={BLBIListing}
-      create={BLBICreate}
-      edit={BLBIEdit}
-    />
-
-    <Resource
-      name='raw_materials'
-      list={RawMaterialListing}
-      create={RawMaterialCreate}
-      edit={RawMaterialEdit}
-    />
-    <Resource
-      name='colors'
-      list={ColorList}
-      edit={ColorEdit}
-      create={ColorCreate}
-    />
-    <Resource
-      name='units_of_measures'
-      list={UnitsOfMeasureList}
-      edit={UnitsOfMeasureEdit}
-      create={UnitsOfMeasureCreate}
-    />
-    <Resource
-      name='rawmaterialtypes'
-      list={RawMaterialTypeList}
-      edit={RawMaterialTypeEdit}
-      create={RawMaterialTypeCreate}
-    />
-    <Resource
-      name='vendors'
-      list={VendorList}
-      create={VendorCreate}
-      edit={VendorEdit}
-    />
-
-    <Resource
-      name='final_calculations'
-      list={FinalCalculationList}
-      create={FinalCalculationCreate}
-      edit={FinalCalculationEdit}
-    />
-    <Resource name='cost_calculator' create={CostCalCulatorCreate} />
-
-    <Resource
-      name='users'
-      list={UserListing}
-      edit={UserEdit}
-      create={UserCreate}
-    />
-    <Resource
-      name='app_constants'
-      list={GlobalVariableListing}
-      edit={GlobalVariableEdit}
-      create={GlobalVariableCreate}
-    />
-  </Admin>
-)
+  return (
+    <Admin
+      title='Aakron Costing Module'
+      authProvider={authClient}
+      dataProvider={restClient}
+      dashboard={Dashboard}
+      menu={Menu}
+    >
+      <Resource
+        name='spreadsheet'
+        list={Spreadsheet}
+      />
+  
+      <Resource
+        name='job_listings'
+        list={JobList}
+        edit={JobEdit}
+        create={JobCreate}
+      />
+      <Resource
+        name='screens'
+        list={ScreenListing}
+        edit={ScreenEdit}
+        create={ScreenCreate}
+      />
+  
+      <Resource
+        name='blanks'
+        list={BlankList}
+        edit={BlankEdit}
+        create={BlankCreate}
+      />
+      <Resource
+        name='blank_jobs'
+        list={BlanksJobList}
+        edit={BlankJobEdit}
+      />
+      <Resource
+        name='blank_types'
+        list={BlankTypeListing}
+        edit={BlankTypeEdit}
+        create={BlankTypeCreate}
+      />
+  
+      <Resource
+        name='items'
+        list={ItemList}
+        edit={ItemEdit}
+        create={ItemCreate}
+      />
+      <Resource
+        name='item_jobs'
+        list={ItemJobsList}
+        edit={ItemJobEdit}
+      />
+      <Resource
+        name='boxes'
+        list={BoxListing}
+        edit={BoxEdit}
+        create={BoxCreate}
+      />
+      <Resource
+        name='item_types'
+        list={ItemTypeListing}
+        edit={ItemTypeEdit}
+        create={ItemTypeCreate}
+      />
+  
+      <Resource
+        name='blanks_listing_item_with_costs'
+        list={BLIWCListing}
+        edit={BLIWCEdit}
+      />
+      <Resource
+        name='blanks_listing_by_items'
+        list={BLBIListing}
+        create={BLBICreate}
+        edit={BLBIEdit}
+      />
+  
+      <Resource
+        name='raw_materials'
+        list={RawMaterialListing}
+        create={RawMaterialCreate}
+        edit={RawMaterialEdit}
+      />
+      <Resource
+        name='colors'
+        list={ColorList}
+        edit={ColorEdit}
+        create={ColorCreate}
+      />
+      <Resource
+        name='units_of_measures'
+        list={UnitsOfMeasureList}
+        edit={UnitsOfMeasureEdit}
+        create={UnitsOfMeasureCreate}
+      />
+      <Resource
+        name='rawmaterialtypes'
+        list={RawMaterialTypeList}
+        edit={RawMaterialTypeEdit}
+        create={RawMaterialTypeCreate}
+      />
+      <Resource
+        name='vendors'
+        list={VendorList}
+        create={VendorCreate}
+        edit={VendorEdit}
+      />
+  
+      <Resource
+        name='final_calculations'
+        list={FinalCalculationList}
+        create={FinalCalculationCreate}
+        edit={FinalCalculationEdit}
+      />
+      <Resource name='cost_calculator' create={CostCalCulatorCreate} />
+  
+      <Resource
+        name='users'
+        list={UserListing}
+        edit={UserEdit}
+        create={UserCreate}
+      />
+      <Resource
+        name='app_constants'
+        list={GlobalVariableListing}
+        edit={GlobalVariableEdit}
+        create={GlobalVariableCreate}
+      />
+    </Admin>
+  )
+}
 
 export default App
