@@ -4,7 +4,7 @@ import { Card } from '@mui/material'
 import React from 'react'
 import { ChipField, CreateButton, Datagrid, EditButton, Filter, FunctionField, List, NumberInput, ReferenceInput, SelectInput, TextField, TextInput, TopToolbar } from 'react-admin'
 import { isModifyPermission } from '../../helpers/functions'
-import { BlankExportModal } from './BlankExportModal'
+import BlankExportModal from './BlankExportModal'
 
 const BlankFilter = (props) => (
   <Filter {...props}>

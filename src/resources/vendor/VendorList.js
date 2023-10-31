@@ -4,7 +4,7 @@ import { Card } from '@mui/material'
 import React from 'react'
 import { CreateButton, Datagrid, EditButton, Filter, List, TextField, TextInput, TopToolbar } from 'react-admin'
 import { isModifyPermission } from '../../helpers/functions'
-import { VendorExportModal } from './VendorExportModal'
+import VendorExportModal from './VendorExportModal'
 
 export const VendorList = (props) => {
   const FilterSearch = (props) => (

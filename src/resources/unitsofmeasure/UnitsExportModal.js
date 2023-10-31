@@ -7,7 +7,7 @@ import {
   Divider,
   TextField
 } from '@mui/material'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { SERVER_URL } from '../../config'
 import { stringHelpers } from '../../helpers/stringHelpers'
 import restClient from '../../providers/restClient'
@@ -31,32 +31,34 @@ const styles = {
   },
 }
 
-class UnitsExportModal extends React.Component {
-  state = { open: false, blanks: [], seleted_blanks: [] }
+const UnitsExportModal = () => {
+  const [open, setOpen] = useState(false)
+  const [blanks, setBlanks] = useState([])
+  const [seleted_blanks, setSeletedBlanks] = useState([])
 
-  fetchRawMaterials = () =>
+  const fetchRawMaterials = () =>
     restClient.getList('units-of-measure-list-only', {
       pagination: { page: 1, perPage: -1 },
       sort: { field: 'id', order: 'ASC' },
     })
 
-  handleOpen = () => this.setState({ open: true })
-  handleClose = () => this.setState({ open: false })
+  const handleOpen = () => setOpen(true)
+  const handleClose = () => setOpen(false)
 
-  handleBlankPriceCostDownload = (e) => {
+  const handleBlankPriceCostDownload = (e) => {
     e.preventDefault()
     window.open(`${SERVER_URL}/units-download/listing-units.csv`, '_blank')
   }
 
-  handleBlankInventoryCostDownload = (e) => {
+  const handleBlankInventoryCostDownload = (e) => {
     e.preventDefault()
     window.open(`${SERVER_URL}/units-download/listing-units.csv`, '_blank')
   }
 
-  handleSeletedBlankPriceCostDownload = (e) => {
+  const handleSeletedBlankPriceCostDownload = (e) => {
     e.preventDefault()
 
-    const blanks = this.state.seleted_blanks.map((blank) => {
+    const blanks = seleted_blanks.map((blank) => {
       return stringHelpers.extractLeadingNumber(blank)
     })
 
@@ -66,10 +68,10 @@ class UnitsExportModal extends React.Component {
     )
   }
 
-  handleSeletedBlankInventoryCostDownload = (e) => {
+  const handleSeletedBlankInventoryCostDownload = (e) => {
     e.preventDefault()
 
-    const blanks = this.state.seleted_blanks.map((blank) => {
+    const blanks = seleted_blanks.map((blank) => {
       return stringHelpers.extractLeadingNumber(blank)
     })
 
@@ -79,8 +81,8 @@ class UnitsExportModal extends React.Component {
     )
   }
 
-  componentDidMount() {
-    this.fetchRawMaterials().then(({ data }) => {
+  useEffect(() => {
+    fetchRawMaterials().then(({ data }) => {
       const blanks = data.map(
         (raw) => `${raw.id} - ${raw.name} - ${raw.abbr}`
       )
@@ -92,99 +94,97 @@ class UnitsExportModal extends React.Component {
       }
 
       blanks.sort(customCompare)
-      this.setState({ blanks })
+      setBlanks(blanks)
     }).catch((err) => {
       console.log('Error fetching raw materials', err)
     })
-  }
+  }, [])
 
-  render() {
-    return (
-      <span>
-        <Button
-          style={{ fontSize: '0.8rem' }}
-          onClick={this.handleOpen}
-        >
-          <FileFileDownload  style={{ fontSize: '1rem' }}/>
-          Export Units of Measures
-        </Button>
-  
-        <Dialog
-          open={this.state.open}
-          onClose={this.handleClose}
-        >
-          <DialogTitle>
-            Export Units of Measures List
-          </DialogTitle>
+  return (
+    <span>
+      <Button
+        style={{ fontSize: '0.8rem' }}
+        onClick={handleOpen}
+      >
+        <FileFileDownload  style={{ fontSize: '1rem' }}/>
+        Export Units of Measures
+      </Button>
 
+      <Dialog
+        open={open}
+        onClose={handleClose}
+      >
+        <DialogTitle>
+          Export Units of Measures List
+        </DialogTitle>
+
+        <Divider />
+
+        <div style={styles.bodyDialog}>
+          <h2>Export Units of Measure</h2>
+
+          <Button
+            variant='contained'
+            color='error'
+            style={styles.RaisedButton.FirstButton}
+            onClick={handleBlankPriceCostDownload}
+          >
+            <FileFileDownload />
+            Units of Measures Listing
+          </Button>
+
+          {/* <Button
+            variant='contained'
+            color='error'
+            style={styles.RaisedButton.SecondButton}
+            onClick={handleBlankInventoryCostDownload}
+          >
+            <FileFileDownload />
+            Inventory Cost Blanks
+          </Button> */}
           <Divider />
 
-          <div style={styles.bodyDialog}>
-            <h2>Export Units of Measure</h2>
+          <h2 style={{ marginBottom: 0 }}>Export Selected Units of Measures</h2>
+          <Autocomplete
+            multiple
+            options={blanks}
+            value={seleted_blanks}
+            onChange={(e, value) => {
+              setSeletedBlanks(value)
+            }}
+            renderInput={(params) =>
+              <TextField {...params} label='Type the unit of measures name' />
+            }
+          />
 
-            <Button
-              variant='contained'
-              color='error'
-              style={styles.RaisedButton.FirstButton}
-              onClick={this.handleBlankPriceCostDownload}
-            >
-              <FileFileDownload />
-              Units of Measures Listing
-            </Button>
+          {seleted_blanks.length > 0 && (
+            <>
+              <Button
+                variant='contained'
+                color='info'
+                style={styles.RaisedButton.FirstButton}
+                onClick={handleSeletedBlankPriceCostDownload}
+              >
+                <FileFileDownload />
+                Export Selected Units of Measures
+              </Button>
 
-            {/* <Button
-              variant='contained'
-              color='error'
-              style={styles.RaisedButton.SecondButton}
-              onClick={this.handleBlankInventoryCostDownload}
-            >
-              <FileFileDownload />
-              Inventory Cost Blanks
-            </Button> */}
-            <Divider />
-
-            <h2 style={{ marginBottom: 0 }}>Export Selected Units of Measures</h2>
-            <Autocomplete
-              multiple
-              options={this.state.blanks}
-              value={this.state.seleted_blanks}
-              onChange={(e, value) => {
-                this.setState({ seleted_blanks: value })
-              }}
-              renderInput={(params) =>
-                <TextField {...params} label='Type the unit of measures name' />
-              }
-            />
-
-            {this.state.seleted_blanks.length > 0 && (
-              <>
-                <Button
-                  variant='contained'
-                  color='info'
-                  style={styles.RaisedButton.FirstButton}
-                  onClick={this.handleSeletedBlankPriceCostDownload}
-                >
-                  <FileFileDownload />
-                  Export Selected Units of Measures
-                </Button>
-
-                {/* <Button
-                  variant='contained'
-                  color='info'
-                  style={styles.RaisedButton.SecondButton}
-                  onClick={this.handleSeletedBlankInventoryCostDownload}
-                >
-                  <FileFileDownload />
-                  Inventory Cost Blanks
-                </Button> */}
-              </>
-            )}
-          </div>
-        </Dialog>
-      </span>
-    )
-  }
+              {/* <Button
+                variant='contained'
+                color='info'
+                style={styles.RaisedButton.SecondButton}
+                onClick={handleSeletedBlankInventoryCostDownload}
+              >
+                <FileFileDownload />
+                Inventory Cost Blanks
+              </Button> */}
+            </>
+          )}
+        </div>
+      </Dialog>
+    </span>
+  )
 }
 
-export { UnitsExportModal }
+export default UnitsExportModal
 

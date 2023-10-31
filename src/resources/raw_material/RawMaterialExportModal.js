@@ -7,7 +7,7 @@ import {
   Divider,
   TextField
 } from '@mui/material'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { SERVER_URL } from '../../config'
 import { stringHelpers } from '../../helpers/stringHelpers'
 import restClient from '../../providers/restClient'
@@ -31,24 +31,67 @@ const styles = {
   },
 }
 
-class RawMaterialExportModal extends React.Component {
-  state = { open: false, blanks: [], seleted_blanks: [] }
+const RawMaterialExportModal = () => {
+  const [open, setOpen] = useState(false)
+  const [blanks, setBlanks] = useState([])
+  const [seleted_blanks, setSeletedBlanks] = useState([])
 
-  fetchRawMaterials = () =>
+  const fetchRawMaterials = () =>
     restClient.getList('raw-material-list-only', {
       pagination: { page: 1, perPage: -1 },
       sort: { field: 'id', order: 'ASC' },
     })
 
-  handleOpen = () => this.setState({ open: true })
-  handleClose = () => this.setState({ open: false })
+  const handleOpen = () => setOpen(true)
+  const handleClose = () => setOpen(false)
 
-  componentDidMount() {
-    this.fetchRawMaterials().then(({ data }) => {
+  const handleBlankPriceCostDownload = (e) => {
+    e.preventDefault()
+    window.open(
+      `${SERVER_URL}/raw-material-download/listing-raw-material.csv`,
+      '_blank'
+    )
+  }
+
+  const handleBlankInventoryCostDownload = (e) => {
+    e.preventDefault()
+    window.open(
+      `${SERVER_URL}/raw-material-download/listing-raw-material.csv`,
+      '_blank'
+    )
+  }
+
+  const handleSeletedBlankPriceCostDownload = (e) => {
+    e.preventDefault()
+
+    const blanks = seleted_blanks.map((blank) => {
+      return stringHelpers.extractLeadingNumber(blank)
+    })
+
+    window.open(
+      `${SERVER_URL}/raw-material-download/listing-raw-material.csv?blanks=${blanks.toString()}`,
+      '_blank'
+    )
+  }
+
+  const handleSeletedBlankInventoryCostDownload = (e) => {
+    e.preventDefault()
+
+    const blanks = seleted_blanks.map((blank) => {
+      return stringHelpers.extractLeadingNumber(blank)
+    })
+
+    window.open(
+      `${SERVER_URL}/raw-material-download/listing-raw-material.csv?blanks=${blanks.toString()}`,
+      '_blank'
+    )
+  }
+
+  useEffect(() => {
+    fetchRawMaterials().then(({ data }) => {
       const blanks = data.map(
         (raw) => `${raw?.id} - ${raw?.name}`
       )
-      // Función de comparación personalizada para ordenar por número
       function customCompare(a, b) {
         const numA = parseInt(a.split(' - ')[0])
         const numB = parseInt(b.split(' - ')[0])
@@ -56,140 +99,96 @@ class RawMaterialExportModal extends React.Component {
       }
 
       blanks.sort(customCompare)
-      this.setState({ blanks })
+      setBlanks(blanks)
     }).catch((err) => {
       console.log('Error fetching blanks', err)
     })
-  }
+  }, [])
 
-  handleBlankPriceCostDownload = (e) => {
-    e.preventDefault()
-    window.open(
-      `${SERVER_URL}/raw-material-download/listing-raw-material.csv`,
-      '_blank'
-    )
-  }
+  return (
+    <span>
+      <Button
+        style={{ fontSize: '0.8rem' }}
+        onClick={handleOpen}
+      >
+        <FileFileDownload  style={{ fontSize: '1rem' }}/>
+        Export Raw Material
+      </Button>
 
-  handleBlankInventoryCostDownload = (e) => {
-    e.preventDefault()
-    window.open(
-      `${SERVER_URL}/raw-material-download/listing-raw-material.csv`,
-      '_blank'
-    )
-  }
+      <Dialog
+        open={open}
+        onClose={handleClose}
+      >
+        <DialogTitle>
+          Export Raw Material List
+        </DialogTitle>
 
-  handleSeletedBlankPriceCostDownload = (e) => {
-    e.preventDefault()
+        <Divider />
 
-    const blanks = this.state.seleted_blanks.map((blank) => {
-      return stringHelpers.extractLeadingNumber(blank)
-    })
+        <div style={styles.bodyDialog}>
+          <h2>Export All Raw Material</h2>
+          <Button
+            variant='contained'
+            color='error'
+            style={styles.RaisedButton.FirstButton}
+            onClick={handleBlankPriceCostDownload}
+          >
+            <FileFileDownload />
+            Raw Material Listing
+          </Button>
 
-    window.open(
-      `${SERVER_URL}/raw-material-download/listing-raw-material.csv?blanks=${blanks.toString()}`,
-      '_blank'
-    )
-  }
-
-  handleSeletedBlankInventoryCostDownload = (e) => {
-    e.preventDefault()
-  
-    const blanks = this.state.seleted_blanks.map((blank) => {
-      return stringHelpers.extractLeadingNumber(blank)
-    })
-
-    window.open(
-      `${SERVER_URL}/raw-material-download/listing-raw-material.csv?blanks=${blanks.toString()}`,
-      '_blank'
-    )
-  }
-
-  render() {
-    return (
-      <span>
-        <Button
-          style={{ fontSize: '0.8rem' }}
-          onClick={this.handleOpen}
-        >
-          <FileFileDownload  style={{ fontSize: '1rem' }}/>
-          Export Raw Material
-        </Button>
-
-        <Dialog
-          open={this.state.open}
-          onClose={this.handleClose}
-        >
-          <DialogTitle>
-            Export Raw Material List
-          </DialogTitle>
-
+          {/* <Button
+            variant='contained'
+            color='error'
+            style={styles.RaisedButton.SecondButton}
+            onClick={handleBlankInventoryCostDownload}
+          >
+            <FileFileDownload />
+            Inventory Cost Blanks
+          </Button> */}
           <Divider />
 
-          <div style={styles.bodyDialog}>
-            <h2>Export All Raw Material</h2>
-            <Button
-              variant='contained'
-              color='error'
-              style={styles.RaisedButton.FirstButton}
-              onClick={this.handleBlankPriceCostDownload}
-            >
-              <FileFileDownload />
-              Raw Material Listing
-            </Button>
+          <h2 style={{ marginBottom: 0 }}>Export Selected Raw Materials</h2>
+          <Autocomplete
+            multiple
+            options={blanks}
+            value={seleted_blanks}
+            onChange={(e, value) => {
+              setSeletedBlanks(value)
+            }}
+            renderInput={(params) =>
+              <TextField {...params} label='Type the Raw Material name' />
+            }
+          />
 
-            {/* <Button
-              variant='contained'
-              color='error'
-              style={styles.RaisedButton.SecondButton}
-              onClick={this.handleBlankInventoryCostDownload}
-            >
-              <FileFileDownload />
-              Inventory Cost Blanks
-            </Button> */}
-            <Divider />
+          {seleted_blanks.length > 0 && (
+            <>
+              <Button
+                variant='contained'
+                color='info'
+                style={styles.RaisedButton.FirstButton}
+                onClick={handleSeletedBlankPriceCostDownload}
+              >
+                <FileFileDownload />
+                Export Selected Raw Materials
+              </Button>
 
-            <h2 style={{ marginBottom: 0 }}>Export Selected Raw Materials</h2>
-            <Autocomplete
-              multiple
-              options={this.state.blanks}
-              value={this.state.seleted_blanks}
-              onChange={(e, value) => {
-                this.setState({ seleted_blanks: value })
-              }}
-              renderInput={(params) =>
-                <TextField {...params} label='Type the Raw Material name' />
-              }
-            />
-
-            {this.state.seleted_blanks.length > 0 && (
-              <>
-                <Button
-                  variant='contained'
-                  color='info'
-                  style={styles.RaisedButton.FirstButton}
-                  onClick={this.handleSeletedBlankPriceCostDownload}
-                >
-                  <FileFileDownload />
-                  Export Selected Raw Materials
-                </Button>
-
-                {/* <Button
-                  variant='contained'
-                  color='info'
-                  style={styles.RaisedButton.SecondButton}
-                  onClick={this.handleSeletedBlankInventoryCostDownload}
-                >
-                  <FileFileDownload />
-                  Inventory Cost Blanks
-                </Button> */}
-              </>
-            )}
-          </div>
-        </Dialog>
-      </span>
-    )
-  }
+              {/* <Button
+                variant='contained'
+                color='info'
+                style={styles.RaisedButton.SecondButton}
+                onClick={handleSeletedBlankInventoryCostDownload}
+              >
+                <FileFileDownload />
+                Inventory Cost Blanks
+              </Button> */}
+            </>
+          )}
+        </div>
+      </Dialog>
+    </span>
+  )
 }
 
-export { RawMaterialExportModal }
+export default RawMaterialExportModal
 

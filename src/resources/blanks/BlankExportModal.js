@@ -7,7 +7,7 @@ import {
   Divider,
   TextField
 } from '@mui/material'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { SERVER_URL } from '../../config'
 import { stringHelpers } from '../../helpers/stringHelpers'
 import restClient from '../../providers/restClient'
@@ -30,45 +30,26 @@ const styles = {
   },
 }
 
-class BlankExportModal extends React.Component {
-  state = { open: false, blanks: [], seleted_blanks: [] }
+const BlankExportModal = () => {
+  const [open, setOpen] = useState(false)
+  const [blanks, setBlanks] = useState([])
+  const [seleted_blanks, setSeletedBlanks] = useState([])
 
-  fetchBlanks = () => {
-    return restClient.getList('blank-list-only', {
+  const fetchBlanks = () => 
+    restClient.getList('blank-list-only', {
       pagination: { page: 1, perPage: -1 },
       sort: { field: 'id', order: 'ASC' },
     })
-  }
 
-  handleOpen = () => this.setState({ open: true })
-  handleClose = () => this.setState({ open: false })
+  const handleOpen = () => setOpen(true)
+  const handleClose = () => setOpen(false)
 
-  componentDidMount() {
-    this.fetchBlanks().then(({ data }) => {
-      const blanks = data.map(
-        (blank) => `${blank?.blank_number} - ${blank?.description}`
-      )
-      // Función de comparación personalizada para ordenar por número
-      function customCompare(a, b) {
-        const numA = parseInt(a.split(' - ')[0])
-        const numB = parseInt(b.split(' - ')[0])
-        return numA - numB
-      }
-
-      blanks.sort(customCompare)
-      // console.log(blanks)
-      this.setState({ blanks })
-    }).catch((err) => {
-      console.log('Error fetching blanks', err)
-    })
-  }
-
-  handleBlankPriceCostDownload = (e) => {
+  const handleBlankPriceCostDownload = (e) => {
     e.preventDefault()
     window.open(`${SERVER_URL}/blank-download/blank-price-cost.csv`, '_blank')
   }
 
-  handleBlankInventoryCostDownload = (e) => {
+  const handleBlankInventoryCostDownload = (e) => {
     e.preventDefault()
     window.open(
       `${SERVER_URL}/blank-download/blank-inventory-cost.csv`,
@@ -76,10 +57,10 @@ class BlankExportModal extends React.Component {
     )
   }
 
-  handleSeletedBlankPriceCostDownload = (e) => {
+  const handleSeletedBlankPriceCostDownload = (e) => {
     e.preventDefault()
 
-    const blanks = this.state.seleted_blanks.map((blank) => {
+    const blanks = seleted_blanks.map((blank) => {
       return stringHelpers.extractLeadingNumber(blank)
     })
   
@@ -89,10 +70,10 @@ class BlankExportModal extends React.Component {
     )
   }
 
-  handleSeletedBlankInventoryCostDownload = (e) => {
+  const handleSeletedBlankInventoryCostDownload = (e) => {
     e.preventDefault()
 
-    const blanks = this.state.seleted_blanks.map((blank) => {
+    const blanks = seleted_blanks.map((blank) => {
       return stringHelpers.extractLeadingNumber(blank)
     })
 
@@ -102,91 +83,109 @@ class BlankExportModal extends React.Component {
     )
   }
 
-  render() {
-    return (
-      <span>
-        <Button
-          style={{ fontSize: '0.8rem' }}
-          onClick={this.handleOpen}
-        >
-          <FileFileDownload  style={{ fontSize: '1rem' }}/>
-          Export Blanks
-        </Button>
+  useEffect(() => {
+    fetchBlanks().then(({ data }) => {
+      const blanks = data.map(
+        (blank) => `${blank?.blank_number} - ${blank?.description}`
+      )
 
-        <Dialog
-          open={this.state.open}
-          onClose={this.handleClose}
-        >
-          <DialogTitle>
-            Export Manufactured Blank List
-          </DialogTitle>
+      function customCompare(a, b) {
+        const numA = parseInt(a.split(' - ')[0])
+        const numB = parseInt(b.split(' - ')[0])
+        return numA - numB
+      }
 
+      blanks.sort(customCompare)
+      setBlanks(blanks)
+    }).catch((err) => {
+      console.log('Error fetching blanks', err)
+    })
+  }, [])
+
+
+  return (
+    <span>
+      <Button
+        style={{ fontSize: '0.8rem' }}
+        onClick={handleOpen}
+      >
+        <FileFileDownload  style={{ fontSize: '1rem' }}/>
+        Export Blanks
+      </Button>
+
+      <Dialog
+        open={open}
+        onClose={handleClose}
+      >
+        <DialogTitle>
+          Export Manufactured Blank List
+        </DialogTitle>
+
+        <Divider />
+
+        <div style={styles.CenterAlgin}>
+          <h2>Export All Blanks</h2>
+          <Button
+            variant='contained'
+            color='error'
+            style={styles.RaisedButton.FirstButton}
+            onClick={handleBlankPriceCostDownload}
+          >
+            <FileFileDownload />
+            Price Cost Blanks
+          </Button>
+
+          <Button
+            variant='contained'
+            color='error'
+            style={styles.RaisedButton.SecondButton}
+            onClick={handleBlankInventoryCostDownload}
+          >
+            <FileFileDownload />
+            Inventory Cost Blanks
+          </Button>
           <Divider />
 
-          <div style={styles.CenterAlgin}>
-            <h2>Export All Blanks</h2>
-            <Button
-              variant='contained'
-              color='error'
-              style={styles.RaisedButton.FirstButton}
-              onClick={this.handleBlankPriceCostDownload}
-            >
-              <FileFileDownload />
-              Price Cost Blanks
-            </Button>
+          <h2 style={{ marginBottom: 0 }}>Export Selected Blanks</h2>
+          <Autocomplete
+            multiple
+            options={blanks}
+            value={seleted_blanks}
+            onChange={(e, value) => {
+              setSeletedBlanks(value)
+            }}
+            renderInput={(params) =>
+              <TextField {...params} label='Type the manufactured blank number' />
+            }
+          />
 
-            <Button
-              variant='contained'
-              color='error'
-              style={styles.RaisedButton.SecondButton}
-              onClick={this.handleBlankInventoryCostDownload}
-            >
-              <FileFileDownload />
-              Inventory Cost Blanks
-            </Button>
-            <Divider />
+          {seleted_blanks.length > 0 && (
+            <>
+              <Button
+                variant='contained'
+                color='info'
+                style={styles.RaisedButton.FirstButton}
+                onClick={handleSeletedBlankPriceCostDownload}
+              >
+                <FileFileDownload />
+                Price Cost Blanks
+              </Button>
 
-            <h2 style={{ marginBottom: 0 }}>Export Selected Blanks</h2>
-            <Autocomplete
-              multiple
-              options={this.state.blanks}
-              value={this.state.seleted_blanks}
-              onChange={(e, value) => {
-                this.setState({ seleted_blanks: value })
-              }}
-              renderInput={(params) =>
-                <TextField {...params} label='Type the manufactured blank number' />
-              }
-            />
-
-            {this.state.seleted_blanks.length > 0 && (
-              <>
-                <Button
-                  variant='contained'
-                  color='info'
-                  style={styles.RaisedButton.FirstButton}
-                  onClick={this.handleSeletedBlankPriceCostDownload}
-                >
-                  <FileFileDownload />
-                  Price Cost Blanks
-                </Button>
-
-                <Button
-                  variant='contained'
-                  color='info'
-                  style={styles.RaisedButton.SecondButton}
-                  onClick={this.handleSeletedBlankInventoryCostDownload}
-                >
-                  <FileFileDownload />
-                  Inventory Cost Blanks
-                </Button>
-              </>
-            )}
-          </div>
-        </Dialog>
-      </span>
-    )
-  }
+              <Button
+                variant='contained'
+                color='info'
+                style={styles.RaisedButton.SecondButton}
+                onClick={handleSeletedBlankInventoryCostDownload}
+              >
+                <FileFileDownload />
+                Inventory Cost Blanks
+              </Button>
+            </>
+          )}
+        </div>
+      </Dialog>
+    </span>
+  )
 }
 
-export { BlankExportModal }
+export default BlankExportModal

@@ -4,7 +4,7 @@ import { Card } from '@mui/material'
 import React from 'react'
 import { CreateButton, Datagrid, EditButton, FunctionField, List, TextField, TopToolbar } from 'react-admin'
 import { isModifyPermission } from '../../helpers/functions'
-import { RawMaterialExportModal } from './RawMaterialExportModal'
+import RawMaterialExportModal from './RawMaterialExportModal'
 import { RawMaterialFilter } from './RawMaterialFilter'
 
 const Actions = ({

@@ -7,7 +7,7 @@ import {
   Divider,
   TextField
 } from '@mui/material'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { SERVER_URL } from '../../config'
 import { stringHelpers } from '../../helpers/stringHelpers'
 import restClient from '../../providers/restClient'
@@ -31,32 +31,34 @@ const styles = {
   },
 }
 
-class ColorExportModal extends React.Component {
-  state = { open: false, blanks: [], seleted_blanks: [] }
+const ColorExportModal = () => {
+  const [open, setOpen] = useState(false)
+  const [blanks, setBlanks] = useState([])
+  const [seleted_blanks, setSeletedBlanks] = useState([])
 
-  fetchRawMaterials = () =>
+  const fetchRawMaterials = () =>
     restClient.getList('color-list-only', {
       pagination: { page: 1, perPage: -1 },
       sort: { field: 'id', order: 'ASC' },
     })
 
-  handleOpen = () => this.setState({ open: true })
-  handleClose = () => this.setState({ open: false })
+  const handleOpen = () => setOpen(true)
+  const handleClose = () => setOpen(false)
 
-  handleBlankPriceCostDownload = (e) => {
+  const handleItemPriceCostDownload = (e) => {
     e.preventDefault()
     window.open(`${SERVER_URL}/color-download/listing-color.csv`, '_blank')
   }
 
-  handleBlankInventoryCostDownload = (e) => {
+  const handleItemInventoryCostDownload = (e) => {
     e.preventDefault()
     window.open(`${SERVER_URL}/color-download/listing-color.csv`, '_blank')
   }
 
-  handleSeletedBlankPriceCostDownload = (e) => {
+  const handleSeletedBlankPriceCostDownload = (e) => {
     e.preventDefault()
 
-    const blanks = this.state.seleted_blanks.map((blank) => {
+    const blanks = seleted_blanks.map((blank) => {
       return stringHelpers.extractLeadingNumber(blank)
     })
 
@@ -66,10 +68,10 @@ class ColorExportModal extends React.Component {
     )
   }
 
-  handleSeletedBlankInventoryCostDownload = (e) => {
+  const handleSeletedBlankInventoryCostDownload = (e) => {
     e.preventDefault()
 
-    const blanks = this.state.seleted_blanks.map((blank) => {
+    const blanks = seleted_blanks.map((blank) => {
       return stringHelpers.extractLeadingNumber(blank)
     })
 
@@ -78,9 +80,9 @@ class ColorExportModal extends React.Component {
       '_blank'
     )
   }
-  
-  componentDidMount() {
-    this.fetchRawMaterials().then(({ data }) => {
+
+  useEffect(() => {
+    fetchRawMaterials().then(({ data }) => {
       const blanks = data.map(
         (raw) => `${raw.id} - ${raw.name}`
       )
@@ -92,99 +94,97 @@ class ColorExportModal extends React.Component {
       }
 
       blanks.sort(customCompare)
-      this.setState({ blanks })
+      setBlanks(blanks)
     }).catch((err) => {
       console.log('Error fetching raw materials', err)
     })
-  }
-
-  render() {
-    return (
-      <span>
-        <Button
-          style={{ fontSize: '0.8rem' }}
-          onClick={this.handleOpen}
-        >
-          <FileFileDownload  style={{ fontSize: '1rem' }}/>
-          Export Color
-        </Button>
+  }, [])
   
-        <Dialog
-          open={this.state.open}
-          onClose={this.handleClose}
-        >
-          <DialogTitle>
-            Export Color List
-          </DialogTitle>
+  return (
+    <span>
+      <Button
+        style={{ fontSize: '0.8rem' }}
+        onClick={handleOpen}
+      >
+        <FileFileDownload  style={{ fontSize: '1rem' }}/>
+        Export Color
+      </Button>
 
+      <Dialog
+        open={open}
+        onClose={handleClose}
+      >
+        <DialogTitle>
+          Export Color List
+        </DialogTitle>
+
+        <Divider />
+
+        <div style={styles.bodyDialog}>
+          <h2>Export All Colors</h2>
+
+          <Button
+            variant='contained'
+            color='error'
+            style={styles.RaisedButton.FirstButton}
+            onClick={handleItemPriceCostDownload}
+          >
+            <FileFileDownload />
+            Export Color Listing
+          </Button>
+
+          {/* <Button
+            variant='contained'
+            color='error'
+            style={styles.RaisedButton.SecondButton}
+            onClick={handleItemInventoryCostDownload}
+          >
+            <FileFileDownload />
+            Inventory Cost Blanks
+          </Button> */}
           <Divider />
 
-          <div style={styles.bodyDialog}>
-            <h2>Export All Colors</h2>
+          <h2 style={{ marginBottom: 0 }}>Export Selected Colors</h2>
+          <Autocomplete
+            multiple
+            options={blanks}
+            value={seleted_blanks}
+            onChange={(e, value) => {
+              setSeletedBlanks(value)
+            }}
+            renderInput={(params) =>
+              <TextField {...params} label='Type the color name' />
+            }
+          />
 
-            <Button
-              variant='contained'
-              color='error'
-              style={styles.RaisedButton.FirstButton}
-              onClick={this.handleItemPriceCostDownload}
-            >
-              <FileFileDownload />
-              Export Color Listing
-            </Button>
+          {seleted_blanks.length > 0 && (
+            <>
+              <Button
+                variant='contained'
+                color='info'
+                style={styles.RaisedButton.FirstButton}
+                onClick={handleSeletedBlankPriceCostDownload}
+              >
+                <FileFileDownload />
+                Export Selected Colors
+              </Button>
 
-            {/* <Button
-              variant='contained'
-              color='error'
-              style={styles.RaisedButton.SecondButton}
-              onClick={this.handleItemInventoryCostDownload}
-            >
-              <FileFileDownload />
-              Inventory Cost Blanks
-            </Button> */}
-            <Divider />
-
-            <h2 style={{ marginBottom: 0 }}>Export Selected Colors</h2>
-            <Autocomplete
-              multiple
-              options={this.state.blanks}
-              value={this.state.seleted_blanks}
-              onChange={(e, value) => {
-                this.setState({ seleted_blanks: value })
-              }}
-              renderInput={(params) =>
-                <TextField {...params} label='Type the color name' />
-              }
-            />
-
-            {this.state.seleted_blanks.length > 0 && (
-              <>
-                <Button
-                  variant='contained'
-                  color='info'
-                  style={styles.RaisedButton.FirstButton}
-                  onClick={this.handleSeletedBlankPriceCostDownload}
-                >
-                  <FileFileDownload />
-                  Export Selected Colors
-                </Button>
-
-                {/* <Button
-                  variant='contained'
-                  color='info'
-                  style={styles.RaisedButton.SecondButton}
-                  onClick={this.handleSeletedBlankInventoryCostDownload}
-                >
-                  <FileFileDownload />
-                  Inventory Cost Blanks
-                </Button> */}
-              </>
-            )}
-          </div>
-        </Dialog>
-      </span>
-    )
-  }
+              {/* <Button
+                variant='contained'
+                color='info'
+                style={styles.RaisedButton.SecondButton}
+                onClick={handleSeletedBlankInventoryCostDownload}
+              >
+                <FileFileDownload />
+                Inventory Cost Blanks
+              </Button> */}
+            </>
+          )}
+        </div>
+      </Dialog>
+    </span>
+  )
 }
 
-export { ColorExportModal }
+export default ColorExportModal
 

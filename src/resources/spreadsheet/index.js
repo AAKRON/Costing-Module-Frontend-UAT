@@ -1,6 +1,6 @@
 import { Card } from '@mui/material'
 import { useLogin, useNotify } from 'react-admin'
-import { FileUpload } from '../../components/FileUpload'
+import FileUpload from '../../components/FileUpload'
 import { isAdmin } from '../../helpers/functions'
 
 const Spreadsheet = () => {
@@ -18,7 +18,7 @@ const Spreadsheet = () => {
 
   return (
     <Card style={{ margin: '2rem', padding: '1rem' }}>
-      {isAdmin() && <FileUpload validatePassword={validatePassword} />}
+      {isAdmin() && <FileUpload />}
 
       {!isAdmin() && (
         <h1 style={{ color: '#00bcd4', textAlign: 'center', fontSize: '1.7rem' }}>
