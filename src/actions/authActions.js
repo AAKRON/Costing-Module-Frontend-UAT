@@ -41,6 +41,7 @@ export function login(data) {
       localStorage.setItem('username', username);
       localStorage.setItem('token', token);
       localStorage.setItem('role', role);
+      return true
     }).catch((err) => {
       console.log('Error logging in', err)
     })

@@ -6,36 +6,37 @@ import {
   Modal, Select, TextField,
 } from '@mui/material'
 import { useState } from 'react'
-import { useLogin, useNotify } from 'react-admin'
+import { useNotify } from 'react-admin'
+import { login } from '../actions/authActions'
 import { isAdmin } from '../helpers/functions'
 import Charts from './charts'
 
 export default () => {
-  const login = useLogin()
   const notify = useNotify()
   const [database, setDatabase] = useState('')
   const [openConfirm, setOpenConfirm] = useState(false)
   const [confirmPassword, setConfirmPassword] = useState('')
 
-  const validatePassword = (password, callback) => {
-    login({ username: localStorage.getItem('username'), password })
-      .then(() => {
-        callback()
-        notify('Database updated successfully')
-      })
-      .catch(() => notify('Invalid email or password'))
-  }
-
   const handleConfirmAuth = (e) => {
     e.preventDefault()
 
-    const callback = () => {
-      localStorage.setItem('db', database)
-      setOpenConfirm(false)
-      setDatabase('')
-    }
-  
-    validatePassword(confirmPassword, callback)
+    login({
+      username: localStorage.getItem('username'),
+      password: confirmPassword,
+    })
+      .then((res) => {
+        if (res) {
+          notify('Database Changed Successfully')
+          localStorage.setItem('db', database)
+          setOpenConfirm(false)
+          setDatabase('')
+        } else {
+          notify('Incorrect username or password', 'error')
+        }
+      })
+      .catch(() => {
+        notify('Incorrect username or password', 'error')
+      })
   }
 
   return (

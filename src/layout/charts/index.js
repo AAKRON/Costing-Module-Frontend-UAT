@@ -1,14 +1,17 @@
 import {
   Button,
+  Divider,
   Input,
 } from '@mui/material'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { getDate } from '../../helpers/functions'
 import restClient from '../../providers/restClient'
 import optionsBlanksTypeInitial from './optionsBlanksType'
+import optionsItemsTypeInitial from './optionsItemsType'
 import optionsBlanksInitial from './optionsNumberBlanks'
+import optionsItemsInitial from './optionsNumberItems'
 import optionsJobsInitial from './optionsNumberJobs'
 
 const GenerateComponent = (options, name) => {
@@ -29,59 +32,111 @@ const GenerateComponent = (options, name) => {
 }
 
 const Charts = () => {
+  const refStartDate = useRef()
+  const refEndDate = useRef()
+
   const [filters, setFilters] = useState({
-    startDate: getDate({ day: 1 }),
-    endDate: getDate({ }),
+    startDate: '',
+    endDate: '',
   })
 
   const [options, setOptions] = useState({
     optionJobs: optionsJobsInitial,
     optionBlanks: optionsBlanksInitial,
     optionBlanksType: optionsBlanksTypeInitial,
+    optionItems: optionsItemsInitial,
+    optionItemsType: optionsItemsTypeInitial,
   })
 
   const submitFilters = (e) => {
     e.preventDefault()
-    getDataCharts()
+    getDataCharts({
+      startDate: filters.startDate,
+      endDate: filters.endDate,
+    })
   }
 
-  const getDataCharts = async() => {
-    if(!filters.startDate || !filters.endDate) return
-
+  const getDataCharts = async({ startDate, endDate }) => {
     const response = await restClient.getCustom('charts', {
-      start_date: filters.startDate,
-      end_date: filters.endDate,
+      start_date: startDate,
+      end_date: endDate,
     })
   
-    const dataJobs = response.data.number_of_jobs_created_each_day
-    const dataBlanks = response.data.number_of_blanks_created_each_day
+    const dataJobsByDay = response.data.number_of_jobs_created_each_day
+    const dataBlanksByDay = response.data.number_of_blanks_created_each_day
+    const dataItemsByDay = response.data.number_of_items_created_each_day
+    const dataItemsType = response.data.number_of_items_by_type
     const dataBlanksType = response.data.number_of_blanks_by_type
 
     const optionJobs = {...options.optionJobs}
     const optionBlanks = {...options.optionBlanks}
     const optionBlanksType = {...options.optionBlanksType}
+    const optionItems = {...options.optionItems}
+    const optionItemsType = {...options.optionItemsType}
   
-    optionJobs.xAxis.categories = dataJobs.dates
-    optionJobs.series[0].data = dataJobs.data
+    optionJobs.xAxis.categories = dataJobsByDay.dates
+    optionJobs.series[0].data = dataJobsByDay.data
 
-    optionBlanks.xAxis.categories = dataBlanks.dates
-    optionBlanks.series[0].data = dataBlanks.data
+    optionBlanks.xAxis.categories = dataBlanksByDay.dates
+    optionBlanks.series[0].data = dataBlanksByDay.data
 
     optionBlanksType.series[0].data = dataBlanksType.data.map((_, index) => ({
       name: dataBlanksType.categories[index],
       y: dataBlanksType.data[index]
     }))
 
+    optionItems.xAxis.categories = dataItemsByDay.dates
+    optionItems.series[0].data = dataItemsByDay.data
+
+    optionItemsType.series[0].data = dataItemsType.data.map((_, index) => ({
+      name: dataItemsType.categories[index],
+      y: dataItemsType.data[index]
+    }))
+
     setOptions({
       optionJobs,
       optionBlanks,
       optionBlanksType,
+      optionItems,
+      optionItemsType,
     })
   }
 
   useEffect(() => {
-    getDataCharts()
-  }, [])
+    setFilters({
+      startDate: getDate({ day: 1 , year: localStorage.getItem('db')}),
+      endDate: getDate({ year: localStorage.getItem('db')}),
+    })
+
+    getDataCharts({
+      startDate: getDate({ day: 1 , year: localStorage.getItem('db')}),
+      endDate: getDate({ year: localStorage.getItem('db')}),
+    })
+
+    refStartDate.current.children[0].min = getDate({
+      day: 1,
+      month: 1,
+      year: localStorage.getItem('db')
+    })
+
+    refStartDate.current.children[0].max = getDate({
+      day: 31,
+      month: 12,
+      year: localStorage.getItem('db')
+    })
+
+    refEndDate.current.children[0].min = getDate({
+      day: 1,
+      month: 1,
+      year: localStorage.getItem('db')
+    })
+
+    refEndDate.current.children[0].max = getDate({
+      day: 31,
+      month: 12,
+      year: localStorage.getItem('db')
+    })
+  }, [localStorage.getItem('db')])
 
   return (
     <>
@@ -98,21 +153,7 @@ const Charts = () => {
           <Input
             type='date'
             value={filters.startDate}
-            min={
-              getDate({
-                day: 1,
-                month: 1,
-                year: localStorage.getItem('db')
-              })
-            }
-            max={
-              getDate({
-                day: 31,
-                month: 12,
-                year: localStorage.getItem('db')
-              })
-            }
-            // max={filters.endDate}
+            ref={refStartDate}
             onChange={(e) => {
               setFilters({
                 ...filters,
@@ -123,21 +164,7 @@ const Charts = () => {
         
           <Input
             type='date'
-            min={
-              getDate({
-                day: 1,
-                month: 1,
-                year: localStorage.getItem('db')
-              })
-            }
-            max={
-              getDate({
-                day: 31,
-                month: 12,
-                year: localStorage.getItem('db')
-              })
-            }
-            // min={filters.startDate}
+            ref={refEndDate}
             value={filters.endDate}
             onChange={(e) => {
               setFilters({
@@ -156,7 +183,18 @@ const Charts = () => {
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr'}}>
         {GenerateComponent(options.optionBlanks, 'Number of blanks created each day')}
+        {GenerateComponent(options.optionItems, 'Number of items created each day')}
+      </div>
+
+      <Divider />
+
+      <h3>
+        Number of blanks and items by type all time
+      </h3>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr'}}>
         {GenerateComponent(options.optionBlanksType, 'Number of blanks by type')}
+        {GenerateComponent(options.optionItemsType, 'Number of items by type')}
       </div>
     </>
   )
