@@ -35,7 +35,7 @@ const AddBlankModal = ({ data, docNumber }) => {
           justifyContent: 'center',
         }}
       >
-        <Card style={{ width: '100%', maxWidth: '800px' }}>
+        <Card style={{ width: '100%', maxWidth: '800px', margin: '1rem'  }}>
           <h1
             style={{ padding: '1rem', fontSize: '1.3rem' }}
           >

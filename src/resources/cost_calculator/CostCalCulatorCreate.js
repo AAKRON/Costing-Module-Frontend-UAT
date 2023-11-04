@@ -2,6 +2,7 @@ import {
   Card
 } from '@mui/material'
 import React from 'react'
+import AddCostCalculator from '../../components/AddCostCalculator'
 
 const pageHeader = {
   fontSize: '24px',
@@ -13,6 +14,7 @@ export const CostCalCulatorCreate = (props) => (
     <span style={pageHeader}>
       <span>Cost Calculator</span>
     </span>
-    {/* <CostCalCulator /> */}
+
+    <AddCostCalculator />
   </Card>
 )

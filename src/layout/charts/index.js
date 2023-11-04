@@ -5,7 +5,7 @@ import {
 } from '@mui/material'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getDate } from '../../helpers/functions'
 import restClient from '../../providers/restClient'
 import optionsBlanksTypeInitial from './optionsBlanksType'
@@ -32,9 +32,6 @@ const GenerateComponent = (options, name) => {
 }
 
 const Charts = () => {
-  const refStartDate = useRef()
-  const refEndDate = useRef()
-
   const [filters, setFilters] = useState({
     startDate: '',
     endDate: '',
@@ -112,30 +109,6 @@ const Charts = () => {
       startDate: getDate({ day: 1 , year: localStorage.getItem('db')}),
       endDate: getDate({ year: localStorage.getItem('db')}),
     })
-
-    refStartDate.current.children[0].min = getDate({
-      day: 1,
-      month: 1,
-      year: localStorage.getItem('db')
-    })
-
-    refStartDate.current.children[0].max = getDate({
-      day: 31,
-      month: 12,
-      year: localStorage.getItem('db')
-    })
-
-    refEndDate.current.children[0].min = getDate({
-      day: 1,
-      month: 1,
-      year: localStorage.getItem('db')
-    })
-
-    refEndDate.current.children[0].max = getDate({
-      day: 31,
-      month: 12,
-      year: localStorage.getItem('db')
-    })
   }, [localStorage.getItem('db')])
 
   return (
@@ -153,7 +126,10 @@ const Charts = () => {
           <Input
             type='date'
             value={filters.startDate}
-            ref={refStartDate}
+            inputProps={{
+              max: getDate({ day: 31, month: 12, year: localStorage.getItem('db')}),
+              min: getDate({ day: 1, month: 1, year: localStorage.getItem('db')}),
+            }}
             onChange={(e) => {
               setFilters({
                 ...filters,
@@ -164,7 +140,10 @@ const Charts = () => {
         
           <Input
             type='date'
-            ref={refEndDate}
+            inputProps={{
+              max: getDate({ day: 31, month: 12, year: localStorage.getItem('db')}),
+              min: getDate({ day: 1, month: 1, year: localStorage.getItem('db')}),
+            }}
             value={filters.endDate}
             onChange={(e) => {
               setFilters({

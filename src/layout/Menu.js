@@ -195,7 +195,7 @@ export default () => {
         Option({
           icon: <CostCalcIcon />,
           to: '/cost_calculator/create',
-          label: 'Cost Calculator (P)'
+          label: 'Cost Calculator'
         })
       }
       <Divider style={{ margin: '0' }} />

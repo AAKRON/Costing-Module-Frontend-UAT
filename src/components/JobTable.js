@@ -331,7 +331,7 @@ const JobTable = ({ jobsInitial, resource, docNumber }) => {
                 justifyContent: 'center',
               }}
             >
-              <Card style={{ padding: '1rem', width: '100%', maxWidth: '500px' }}>
+              <Card style={{ padding: '1rem', width: '100%', maxWidth: '500px', margin: '1rem'  }}>
                 <h2 style={{ borderBottom: '1px solid #cdcdcd', padding: '0.5rem'}}>
                   Edit Job
                 </h2>
