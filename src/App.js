@@ -9,7 +9,7 @@ import { BlankTypeListing } from './resources/blank_type/BlankTypeListing'
 import { BlankCreate, BlankEdit, BlankList } from './resources/blanks'
 import { BlankJobEdit, BlanksJobList } from './resources/blanks_job'
 import { BLBICreate, BLBIEdit, BLBIListing } from './resources/blanks_listing_by_item'
-import { BLIWCEdit, BLIWCListing } from './resources/blanks_listing_item_with_cost'
+import { BLIWCListing } from './resources/blanks_listing_item_with_cost'
 import { BoxCreate, BoxEdit, BoxListing } from './resources/box'
 import { ColorCreate, ColorEdit, ColorList } from './resources/color'
 import { CostCalCulatorCreate } from './resources/cost_calculator'
@@ -107,7 +107,6 @@ const App = () => {
       <Resource
         name='blanks_listing_item_with_costs'
         list={BLIWCListing}
-        edit={BLIWCEdit}
       />
       <Resource
         name='blanks_listing_by_items'

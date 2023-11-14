@@ -1,9 +1,6 @@
-import EditIcon from '@mui/icons-material/Edit'
-import ShowIcon from '@mui/icons-material/Visibility'
 import { Card } from '@mui/material'
 import React from 'react'
-import { Datagrid, EditButton, Filter, FunctionField, List, TextField, TextInput, TopToolbar } from 'react-admin'
-import { isModifyPermission } from '../../helpers/functions'
+import { Datagrid, Filter, FunctionField, List, TextField, TextInput, TopToolbar } from 'react-admin'
 
 const BLIWCListingFilter = (props) => (
   <Filter {...props}>
@@ -68,11 +65,6 @@ export const BLIWCListing = (props) => (
             record => {
               return <span>${record.total_blank_cost_for_inventory}</span>
           }}
-        />
-
-        <EditButton
-          label={isModifyPermission() ? 'Edit' : 'View'}
-          icon={isModifyPermission() ? <EditIcon /> : <ShowIcon />}
         />
       </Datagrid>
     </List>
