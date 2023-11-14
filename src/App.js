@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Admin, Resource } from 'react-admin'
 import Dashboard from './layout/Dashboard'
-import Menu from './layout/Menu'
+import Layout from './layout/Layout'
 import authClient from './providers/authClient'
 import restClient from './providers/restClient'
 import { BlankTypeCreate, BlankTypeEdit } from './resources/blank_type'
@@ -41,8 +41,8 @@ const App = () => {
       title='Aakron Costing Module'
       authProvider={authClient}
       dataProvider={restClient}
+      layout={Layout}
       dashboard={Dashboard}
-      menu={Menu}
     >
       <Resource
         name='spreadsheet'

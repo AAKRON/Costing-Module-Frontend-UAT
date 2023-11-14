@@ -6,12 +6,13 @@ import {
   Modal, Select, TextField,
 } from '@mui/material'
 import { useState } from 'react'
-import { useNotify } from 'react-admin'
+import { useNotify, useRefresh } from 'react-admin'
 import { login } from '../actions/authActions'
 import { isAdmin } from '../helpers/functions'
 import Charts from './charts'
 
 export default () => {
+  const refresh = useRefresh()
   const notify = useNotify()
   const [database, setDatabase] = useState('')
   const [openConfirm, setOpenConfirm] = useState(false)
@@ -30,6 +31,7 @@ export default () => {
           localStorage.setItem('db', database)
           setOpenConfirm(false)
           setDatabase('')
+          refresh()
         } else {
           notify('Incorrect username or password', 'error')
         }
