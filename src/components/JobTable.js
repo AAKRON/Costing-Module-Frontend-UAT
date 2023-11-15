@@ -1,10 +1,10 @@
 import ContentCreate from '@mui/icons-material/Create'
-import DeleteIcon from '@mui/icons-material/DeleteForever'
 import {
   Autocomplete,
   Box,
   Button,
   Card,
+  Checkbox,
   FormControl,
   IconButton,
   InputLabel,
@@ -52,9 +52,11 @@ const JobTable = ({ jobsInitial, resource, docNumber }) => {
   const removeJob = (job) => {
     const currentItemJobs = jobs.map((j) => {
       if(j.job_pk_id === job.job_pk_id){
+        const deleted = j.deleted ? false : true
+
         return {
           ...j,
-          deleted: true
+          deleted,
         }
       }else{
         return j
@@ -222,9 +224,14 @@ const JobTable = ({ jobsInitial, resource, docNumber }) => {
     setJobs(jobsInitial)
   }, [jobsInitial])
 
-  const jobField = (job, index) => {
+  const JobField = ({job, index}) => {
     return (
-      <TableRow key={index} style={{ borderTop: '1px solid #cdcdcd' }}>
+      <TableRow
+        key={index}
+        style={{
+          borderTop: '1px solid #cdcdcd',
+        }}
+      >
         <th style={{ width: '30%', textAlign: 'left', fontWeight: 400, height: '40px' }}>
           <span>{job.job_number} - {job.description}</span>
         </th>
@@ -250,11 +257,10 @@ const JobTable = ({ jobsInitial, resource, docNumber }) => {
             >
               <ContentCreate />
             </IconButton>
-            <IconButton
-              onClick={() => removeJob(job)}
-            >
-              <DeleteIcon />
-            </IconButton>
+            <Checkbox
+              checked={job.deleted}
+              onChange={() => removeJob(job)}
+            />
           </th>
         }
       </TableRow>
@@ -306,9 +312,7 @@ const JobTable = ({ jobsInitial, resource, docNumber }) => {
               </thead>
 
               <TableBody>
-                {jobs?.map((job, index) => {
-                  if(!job?.deleted) return jobField(job, index)
-                })}
+                {jobs?.map((job, index) => <JobField key={index} job={job} index={index} />)}
               </TableBody>
             </Table>
 

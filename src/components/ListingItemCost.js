@@ -1,10 +1,10 @@
 import ContentCreate from '@mui/icons-material/Create'
-import DeleteIcon from '@mui/icons-material/DeleteForever'
 import {
   Autocomplete,
   Box,
   Button,
   Card,
+  Checkbox,
   IconButton,
   Modal,
   Table,
@@ -95,9 +95,11 @@ const ListingItemCost = ({ blanksInitial, resource, docNumber }) => {
   const removeBlank = (blank) => {
     const currentItemBlanks = blanks.map((b) => {
       if(b.blank_number === blank.blank_number){
+        const deleted = b.deleted ? false : true
+
         return {
           ...b,
-          deleted: true
+          deleted,
         }
       }else{
         return b
@@ -163,7 +165,7 @@ const ListingItemCost = ({ blanksInitial, resource, docNumber }) => {
     }
   }
 
-  const blankField = (blank, index) => {
+  const BlankField = ({blank, index}) => {
     return (
       <TableRow key={index} style={{ borderTop: '1px solid #cdcdcd' }}>
         <th style={{ fontWeight: 400, height: '40px' }}>{blank.blank_number}</th>
@@ -177,11 +179,10 @@ const ListingItemCost = ({ blanksInitial, resource, docNumber }) => {
             >
               <ContentCreate />
             </IconButton>
-            <IconButton
-              onClick={() => removeBlank(blank)}
-            >
-              <DeleteIcon />
-            </IconButton>
+            <Checkbox
+              checked={blank.deleted}
+              onChange={() => removeBlank(blank)}
+            />
           </th>
         }
       </TableRow>
@@ -223,15 +224,13 @@ const ListingItemCost = ({ blanksInitial, resource, docNumber }) => {
               </thead>
 
               <TableBody>
-                {blanks?.map((blank, index) => {
-                  if(!blank?.deleted) return blankField(blank, index)
-                })}
+                {blanks?.map((blank, index) => <BlankField key={index} blank={blank} index={index} />)}
               </TableBody>
             </Table>
 
             {isModifyPermission() && blanks.filter((b) => b.deleted).length > 0 &&
               <Button
-                color='primary'
+                color='error'
                 variant='contained'
                 onClick={handleRemoveBlank}
               >
