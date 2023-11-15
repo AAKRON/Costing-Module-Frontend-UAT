@@ -1,5 +1,5 @@
-import React from 'react'
-import { Create, ListButton, NumberInput, SimpleForm, TextInput, TopToolbar, required } from 'react-admin'
+import React, { useState } from 'react'
+import { Create, ListButton, NumberInput, SaveButton, SimpleForm, TextInput, Toolbar, TopToolbar, required, useNotify, useRedirect, useResourceContext } from 'react-admin'
 import { isModifyPermission } from '../../helpers/functions'
 
 export const ItemTypeCreate = (props) => {
@@ -7,18 +7,65 @@ export const ItemTypeCreate = (props) => {
     return null
   }
 
+  const [redirectTo, setRedirectTo] = useState('list')
+  const redirect = useRedirect()
+  const notify = useNotify()
+  const resource = useResourceContext()
+
   const Actions = () => (
 		<TopToolbar>
 				<ListButton />
 		</TopToolbar>
 	)
 
+  const ToolbarForm = (props) => {
+    return (
+      <Toolbar {...props}>
+        <SaveButton
+          onClick={() => {
+            setRedirectTo('list')
+          }}
+        />
+
+        <SaveButton
+          label='Save and Add'
+          sx={{ mx: '1em' }}
+          onClick={() => {
+            setRedirectTo('create')
+          }}
+        />
+      </Toolbar>
+    )
+  }
+
   return (
     <Create
+      mutationOptions={{
+        onSuccess: (data) => {
+          notify(`Item type ${data.id} has been created`)
+
+          if(redirectTo === 'create') {
+            redirect(redirectTo, resource)
+
+            setTimeout(() => {
+              window.location.reload()
+            }, 500)
+          }
+
+          if(redirectTo === 'list') {
+            redirect(redirectTo, resource)
+          }
+        },
+        onError: () => {
+          notify('No item type has been created, please try again', 'warning')
+        }
+      }}
       actions={<Actions />}
       {...props}
     >
-      <SimpleForm>
+      <SimpleForm
+        toolbar={<ToolbarForm />}
+      >
         <NumberInput source='type_number' validate={required()}/>
         <TextInput source='description' validate={required()}/>
       </SimpleForm>

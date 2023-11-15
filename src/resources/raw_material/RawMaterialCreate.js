@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { AutocompleteInput, Create, ListButton, NumberInput, SimpleForm, TextInput, TopToolbar, required } from 'react-admin'
+import { AutocompleteInput, Create, ListButton, NumberInput, SaveButton, SimpleForm, TextInput, Toolbar, TopToolbar, required, useNotify, useRedirect, useResourceContext } from 'react-admin'
 import { isModifyPermission } from '../../helpers/functions'
 import restClient from '../../providers/restClient'
 
@@ -7,6 +7,11 @@ const RawMaterialCreate = (props) => {
 	if(!isModifyPermission()){
     return null
   }
+
+  const [redirectTo, setRedirectTo] = useState('list')
+  const redirect = useRedirect()
+  const notify = useNotify()
+  const resource = useResourceContext()
 
 	const [unitsMeasures, setUnitsMeasures] = useState({
     loading: true,
@@ -30,6 +35,26 @@ const RawMaterialCreate = (props) => {
 				<ListButton />
 		</TopToolbar>
 	)
+
+  const ToolbarForm = (props) => {
+    return (
+      <Toolbar {...props}>
+        <SaveButton
+          onClick={() => {
+            setRedirectTo('list')
+          }}
+        />
+
+        <SaveButton
+          label='Save and Add'
+          sx={{ mx: '1em' }}
+          onClick={() => {
+            setRedirectTo('create')
+          }}
+        />
+      </Toolbar>
+    )
+  }
 
   const fetchUnitsMeasures = () =>
     restClient.getList('units-of-measure-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }})
@@ -73,14 +98,34 @@ const RawMaterialCreate = (props) => {
     })
   }, [])
 
-  console.log('unitsMeasures', unitsMeasures.data)
-
   return(
     <Create
+      mutationOptions={{
+        onSuccess: (data) => {
+          notify(`Raw material ${data.id} has been created`)
+
+          if(redirectTo === 'create') {
+            redirect(redirectTo, resource)
+
+            setTimeout(() => {
+              window.location.reload()
+            }, 500)
+          }
+
+          if(redirectTo === 'list') {
+            redirect(redirectTo, resource)
+          }
+        },
+        onError: () => {
+          notify('No raw material has been created, please try again', 'warning')
+        }
+      }}
       actions={<Actions />}
       {...props}
     >
-      <SimpleForm>
+      <SimpleForm
+        toolbar={<ToolbarForm />}
+      >
         <TextInput source='name' validate={required()}/>
         <NumberInput source='cost' label='Cost ($)' validate={required()}/>
         <AutocompleteInput

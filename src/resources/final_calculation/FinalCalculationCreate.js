@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { AutocompleteInput, Create, ListButton, NumberInput, SimpleForm, TextInput, TopToolbar, required } from 'react-admin'
+import { AutocompleteInput, Create, ListButton, NumberInput, SaveButton, SimpleForm, TextInput, Toolbar, TopToolbar, required, useNotify, useRedirect, useResourceContext } from 'react-admin'
 import { isModifyPermission } from '../../helpers/functions'
 import restClient from '../../providers/restClient'
 
@@ -8,11 +8,36 @@ const FinalCalculationCreate = (props) => {
     return null
   }
 
+  const [redirectTo, setRedirectTo] = useState('list')
+  const redirect = useRedirect()
+  const notify = useNotify()
+  const resource = useResourceContext()
+
   const Actions = () => (
 		<TopToolbar>
 				<ListButton />
 		</TopToolbar>
 	)
+
+  const ToolbarForm = (props) => {
+    return (
+      <Toolbar {...props}>
+        <SaveButton
+          onClick={() => {
+            setRedirectTo('list')
+          }}
+        />
+
+        <SaveButton
+          label='Save and Add'
+          sx={{ mx: '1em' }}
+          onClick={() => {
+            setRedirectTo('create')
+          }}
+        />
+      </Toolbar>
+    )
+  }
 
 	const [blanks, setBlanks] = useState({
 		loading: true,
@@ -53,10 +78,32 @@ const FinalCalculationCreate = (props) => {
 
   return (
     <Create
+      mutationOptions={{
+        onSuccess: (data) => {
+          notify(`Final calculation ${data.id} has been created`)
+
+          if(redirectTo === 'create') {
+            redirect(redirectTo, resource)
+
+            setTimeout(() => {
+              window.location.reload()
+            }, 500)
+          }
+
+          if(redirectTo === 'list') {
+            redirect(redirectTo, resource)
+          }
+        },
+        onError: () => {
+          notify('No final calculation has been created, please try again', 'warning')
+        }
+      }}
       {...props}
       actions={<Actions />}
     >
-      <SimpleForm>
+      <SimpleForm
+        toolbar={<ToolbarForm />}
+      >
         <AutocompleteInput
           isLoading={blanks.loading}
           source='blank_id'
