@@ -229,13 +229,13 @@ const ListingItemCost = ({ blanksInitial, resource, docNumber }) => {
               </TableBody>
             </Table>
 
-            {isModifyPermission() &&
+            {isModifyPermission() && blanks.filter((b) => b.deleted).length > 0 &&
               <Button
                 color='primary'
                 variant='contained'
                 onClick={handleRemoveBlank}
               >
-                Save
+                Delete selected records
               </Button>
             }
 

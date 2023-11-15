@@ -312,13 +312,13 @@ const JobTable = ({ jobsInitial, resource, docNumber }) => {
               </TableBody>
             </Table>
 
-            {isModifyPermission() &&
+            {isModifyPermission() && jobs.filter((j) => j.deleted).length > 0 &&
               <Button
-                color='primary'
+                color='error'
                 variant='contained'
                 onClick={handleRemoveJob}
               >
-                Save
+                Delete selected records
               </Button>
             }
 
