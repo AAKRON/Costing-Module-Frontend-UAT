@@ -16,6 +16,7 @@ export function logout() {
   localStorage.removeItem('token');
   localStorage.removeItem('username');
   localStorage.removeItem('role');
+  localStorage.removeItem('tokenExpiry');
   return Promise.resolve();
 }
 
@@ -37,12 +38,24 @@ export function login(data) {
 
       return response.json();
     })
-    .then(({ username, token, role }) => {
-      localStorage.setItem('username', username);
+    .then(({ token }) => {
       localStorage.setItem('token', token);
-      localStorage.setItem('role', role);
+      
+      // Decode JWT to get user info (basic decode - no verification needed on frontend)
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        localStorage.setItem('username', payload.username || 'user');
+        localStorage.setItem('role', payload.role || 'user');
+        localStorage.setItem('tokenExpiry', payload.exp * 1000); // Convert to milliseconds
+      } catch (e) {
+        console.warn('Could not decode JWT token:', e);
+        localStorage.setItem('username', 'user');
+        localStorage.setItem('role', 'user');
+      }
+      
       return true
     }).catch((err) => {
-      console.log('Error logging in', err)
+      console.log('Error logging in', err);
+      throw err; // Re-throw to show login errors
     })
 }

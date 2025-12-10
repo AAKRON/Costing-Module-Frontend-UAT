@@ -10,9 +10,27 @@ export default (type, params) => {
 			return logout()
 		}
 		case AUTH_CHECK:{
-			return (localStorage.getItem('username') && localStorage.getItem('token'))
-				? Promise.resolve()
-				: Promise.reject()
+			const token = localStorage.getItem('token');
+			const username = localStorage.getItem('username');
+			const tokenExpiry = localStorage.getItem('tokenExpiry');
+			
+			// Check if token exists and hasn't expired
+			if (token && username) {
+				if (tokenExpiry) {
+					const now = Date.now();
+					if (now >= parseInt(tokenExpiry)) {
+						// Token expired, clear storage
+						localStorage.removeItem('token');
+						localStorage.removeItem('username');
+						localStorage.removeItem('role');
+						localStorage.removeItem('tokenExpiry');
+						return Promise.reject('Token expired');
+					}
+				}
+				return Promise.resolve();
+			}
+			
+			return Promise.reject('No valid token found');
 		}
 		case AUTH_GET_PERMISSIONS:{
 			return Promise.resolve()

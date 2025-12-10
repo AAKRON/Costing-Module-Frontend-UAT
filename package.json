@@ -9,7 +9,7 @@
     "react-dom": "^18.2.0",
     "react-scripts": "^5.0.1"
   },
-  "name": "test-admin",
+  "name": "costing-module-frontend-uat",
   "private": true,
   "scripts": {
     "build": "react-scripts build",
