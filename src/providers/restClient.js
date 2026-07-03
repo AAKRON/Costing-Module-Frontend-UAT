@@ -2,21 +2,19 @@ import { stringify } from 'querystring-es3'
 import { setAuthorizationToken } from '../actions/authActions'
 import { SERVER_URL } from '../config'
 
+const rethrow = (error) => { throw error }
+
 export default {
   getCustom: (resource, params) => {
     const url = `${SERVER_URL}/${resource}?${stringify(params)}`
-
     return setAuthorizationToken(url)
-    .then(({ json }) => ({
-      data: json,
-    }))
-    .catch(error => console.log(error))
+      .then(({ json }) => ({ data: json }))
+      .catch(rethrow)
   },
-  
+
   getList: (resource, params) => {
     const { page, perPage } = params.pagination
     const { field, order } = params.sort
-
     const query = {
       _sort: field,
       _order: order,
@@ -25,28 +23,24 @@ export default {
       ...params.filter,
     }
     const url = `${SERVER_URL}/${resource}?${stringify(query)}`
-
     return setAuthorizationToken(url)
       .then(({ headers, json }) => ({
         data: json,
-        total: parseInt(headers.get('x-total-count') || 0)
+        total: parseInt(headers.get('x-total-count') || 0),
       }))
-      .catch(error => console.log(error))
+      .catch(rethrow)
   },
 
-  getOne: (resource, params) => {
-    return setAuthorizationToken(`${SERVER_URL}/${resource}/${params.id}`)
+  getOne: (resource, params) =>
+    setAuthorizationToken(`${SERVER_URL}/${resource}/${params.id}`)
       .then(({ json }) => ({ data: json }))
-      .catch(error => console.log(error))
-  },
+      .catch(rethrow),
+
   getMany: (resource, params) => {
-    const query = {
-      id: params.ids,
-    }
-    const url = `${SERVER_URL}/${resource}?${stringify(query)}`
+    const url = `${SERVER_URL}/${resource}?${stringify({ id: params.ids })}`
     return setAuthorizationToken(url)
       .then(({ json }) => ({ data: json }))
-      .catch(error => console.log(error))
+      .catch(rethrow)
   },
 
   getManyReference: (resource, params) => {
@@ -60,54 +54,52 @@ export default {
       ...params.filter,
       [params.target]: params.id,
     }
-  
     const url = `${SERVER_URL}/${resource}?${stringify(query)}`
-
-    return setAuthorizationToken(url).then(({ headers, json }) => ({
-      data: json,
-      total: parseInt(headers.get('x-total-count') || 0)
-    })).catch(error => console.log(error))
+    return setAuthorizationToken(url)
+      .then(({ headers, json }) => ({
+        data: json,
+        total: parseInt(headers.get('x-total-count') || 0),
+      }))
+      .catch(rethrow)
   },
 
-  update: (resource, params) => {
-    return setAuthorizationToken(`${SERVER_URL}/${resource}/${params.id}`, {
+  update: (resource, params) =>
+    setAuthorizationToken(`${SERVER_URL}/${resource}/${params.id}`, {
       method: 'PUT',
       body: JSON.stringify(params.data),
-    }).then(({ json }) => ({ data: json })).catch(error => console.log(error))
-  },
+    })
+      .then(({ json }) => ({ data: json }))
+      .catch(rethrow),
 
-  updateMany: (resource, params) => {
-    const query = {
-      id: params.ids,
-    }
-    return setAuthorizationToken(`${SERVER_URL}/${resource}?${stringify(query)}`, {
-      method: 'PUT',
-      body: JSON.stringify(params.data),
-    }).then(({ json }) => ({ data: json })).catch(error => console.log(error))
-  },
+  updateMany: (resource, params) =>
+    setAuthorizationToken(
+      `${SERVER_URL}/${resource}?${stringify({ id: params.ids })}`,
+      { method: 'PUT', body: JSON.stringify(params.data) }
+    )
+      .then(({ json }) => ({ data: json }))
+      .catch(rethrow),
 
   create: (resource, params) =>
     setAuthorizationToken(`${SERVER_URL}/${resource}`, {
       method: 'POST',
       body: JSON.stringify(params.data),
-    }).then(({ json }) => ({
-      data: { ...params.data, id: json.id },
-    })).catch(error => console.log(error)),
+    })
+      .then(({ json }) => ({ data: { ...params.data, id: json.id } }))
+      .catch(rethrow),
 
   delete: (resource, params) =>
     setAuthorizationToken(`${SERVER_URL}/${resource}/${params.id}`, {
       method: 'DELETE',
       ...(params.data ? { body: JSON.stringify(params.data) } : {}),
     })
-    .then(({ json }) => ({ data: json }))
-    .catch(error => console.log(error)),
+      .then(({ json }) => ({ data: json }))
+      .catch(rethrow),
 
-  deleteMany: (resource, params) => {
-    const query = {
-      id: params.ids
-    }
-    return setAuthorizationToken(`${SERVER_URL}/${resource}?${stringify(query)}`, {
-      method: 'DELETE',
-    }).catch(error => console.log(error))
-  },
+  deleteMany: (resource, params) =>
+    setAuthorizationToken(
+      `${SERVER_URL}/${resource}?${stringify({ id: params.ids })}`,
+      { method: 'DELETE' }
+    )
+      .then(({ json }) => ({ data: json || params.ids }))
+      .catch(rethrow),
 }
