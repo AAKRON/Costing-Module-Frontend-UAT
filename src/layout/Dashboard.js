@@ -33,11 +33,11 @@ export default () => {
           setDatabase('')
           refresh()
         } else {
-          notify('Incorrect username or password', 'error')
+          notify('Incorrect username or password', { type: 'error' })
         }
       })
       .catch(() => {
-        notify('Incorrect username or password', 'error')
+        notify('Incorrect username or password', { type: 'error' })
       })
   }
 
