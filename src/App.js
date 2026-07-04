@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
-import { Admin, Resource } from 'react-admin'
+import { Admin, Resource, nanoLightTheme } from 'react-admin'
+import { createTheme } from '@mui/material/styles'
 import Dashboard from './layout/Dashboard'
 import Layout from './layout/Layout'
 import authClient from './providers/authClient'
@@ -29,15 +30,17 @@ import { UnitsOfMeasureCreate, UnitsOfMeasureEdit, UnitsOfMeasureList } from './
 import { UserCreate, UserEdit, UserListing } from './resources/user'
 import { VendorCreate, VendorEdit, VendorList } from './resources/vendor'
 
-// Passing a plain options object lets RA v5 deep-merge with its own nanoLightTheme,
-// which preserves all login page / component styles while only overriding secondary.
-const theme = {
+// Use nanoLightTheme as the exact base so all RA layout/login styles are preserved.
+// Only secondary.main is overridden to blue to eliminate the red accent color.
+const theme = createTheme({
+  ...nanoLightTheme,
   palette: {
+    ...nanoLightTheme.palette,
     secondary: {
       main: '#1565c0',
     },
   },
-}
+})
 
 const App = () => {
   useEffect(() => {
