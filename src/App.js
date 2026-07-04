@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { Admin, Resource } from 'react-admin'
+import { createTheme } from '@mui/material/styles'
 import Dashboard from './layout/Dashboard'
 import Layout from './layout/Layout'
 import authClient from './providers/authClient'
@@ -29,6 +30,23 @@ import { UnitsOfMeasureCreate, UnitsOfMeasureEdit, UnitsOfMeasureList } from './
 import { UserCreate, UserEdit, UserListing } from './resources/user'
 import { VendorCreate, VendorEdit, VendorList } from './resources/vendor'
 
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#1976d2',
+      light: '#63a4ff',
+      dark: '#004ba0',
+      contrastText: '#fff',
+    },
+    secondary: {
+      main: '#1565c0',
+      light: '#5e92f3',
+      dark: '#003c8f',
+      contrastText: '#fff',
+    },
+  },
+})
+
 const App = () => {
   useEffect(() => {
     if (localStorage.getItem('db') === null) {
@@ -43,6 +61,7 @@ const App = () => {
       dataProvider={restClient}
       layout={Layout}
       dashboard={Dashboard}
+      theme={theme}
     >
       <Resource
         name='spreadsheet'
