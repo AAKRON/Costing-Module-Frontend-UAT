@@ -42,6 +42,30 @@ const theme = createTheme({
   },
 })
 
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { error: null }
+  }
+  static getDerivedStateFromError(error) {
+    return { error }
+  }
+  render() {
+    if (this.state.error) {
+      return (
+        <div style={{ padding: '2rem', fontFamily: 'monospace' }}>
+          <h2>App Error</h2>
+          <pre style={{ color: 'red', whiteSpace: 'pre-wrap' }}>
+            {this.state.error.toString()}
+            {this.state.error.stack}
+          </pre>
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
+
 const App = () => {
   useEffect(() => {
     if (localStorage.getItem('db') === null) {
@@ -50,47 +74,49 @@ const App = () => {
   }, [])
 
   return (
-    <Admin
-      title='Aakron Costing Module'
-      authProvider={authClient}
-      dataProvider={restClient}
-      layout={Layout}
-      dashboard={Dashboard}
-      theme={theme}
-    >
-      <CustomRoutes>
-        <Route path='/year-management' element={<YearManagement />} />
-      </CustomRoutes>
+    <ErrorBoundary>
+      <Admin
+        title='Aakron Costing Module'
+        authProvider={authClient}
+        dataProvider={restClient}
+        layout={Layout}
+        dashboard={Dashboard}
+        theme={theme}
+      >
+        <CustomRoutes>
+          <Route path='/year-management' element={<YearManagement />} />
+        </CustomRoutes>
 
-      <Resource name='spreadsheet' list={Spreadsheet} />
+        <Resource name='spreadsheet' list={Spreadsheet} />
 
-      <Resource name='job_listings' list={JobList} edit={JobEdit} create={JobCreate} />
-      <Resource name='screens' list={ScreenListing} edit={ScreenEdit} create={ScreenCreate} />
+        <Resource name='job_listings' list={JobList} edit={JobEdit} create={JobCreate} />
+        <Resource name='screens' list={ScreenListing} edit={ScreenEdit} create={ScreenCreate} />
 
-      <Resource name='blanks' list={BlankList} edit={BlankEdit} create={BlankCreate} />
-      <Resource name='blank_jobs' list={BlanksJobList} edit={BlankJobEdit} />
-      <Resource name='blank_types' list={BlankTypeListing} edit={BlankTypeEdit} create={BlankTypeCreate} />
+        <Resource name='blanks' list={BlankList} edit={BlankEdit} create={BlankCreate} />
+        <Resource name='blank_jobs' list={BlanksJobList} edit={BlankJobEdit} />
+        <Resource name='blank_types' list={BlankTypeListing} edit={BlankTypeEdit} create={BlankTypeCreate} />
 
-      <Resource name='items' list={ItemList} edit={ItemEdit} create={ItemCreate} />
-      <Resource name='item_jobs' list={ItemJobsList} edit={ItemJobEdit} />
-      <Resource name='boxes' list={BoxListing} edit={BoxEdit} create={BoxCreate} />
-      <Resource name='item_types' list={ItemTypeListing} edit={ItemTypeEdit} create={ItemTypeCreate} />
+        <Resource name='items' list={ItemList} edit={ItemEdit} create={ItemCreate} />
+        <Resource name='item_jobs' list={ItemJobsList} edit={ItemJobEdit} />
+        <Resource name='boxes' list={BoxListing} edit={BoxEdit} create={BoxCreate} />
+        <Resource name='item_types' list={ItemTypeListing} edit={ItemTypeEdit} create={ItemTypeCreate} />
 
-      <Resource name='blanks_listing_item_with_costs' list={BLIWCListing} />
-      <Resource name='blanks_listing_by_items' list={BLBIListing} create={BLBICreate} edit={BLBIEdit} />
+        <Resource name='blanks_listing_item_with_costs' list={BLIWCListing} />
+        <Resource name='blanks_listing_by_items' list={BLBIListing} create={BLBICreate} edit={BLBIEdit} />
 
-      <Resource name='raw_materials' list={RawMaterialListing} create={RawMaterialCreate} edit={RawMaterialEdit} />
-      <Resource name='colors' list={ColorList} edit={ColorEdit} create={ColorCreate} />
-      <Resource name='units_of_measures' list={UnitsOfMeasureList} edit={UnitsOfMeasureEdit} create={UnitsOfMeasureCreate} />
-      <Resource name='rawmaterialtypes' list={RawMaterialTypeList} edit={RawMaterialTypeEdit} create={RawMaterialTypeCreate} />
-      <Resource name='vendors' list={VendorList} create={VendorCreate} edit={VendorEdit} />
+        <Resource name='raw_materials' list={RawMaterialListing} create={RawMaterialCreate} edit={RawMaterialEdit} />
+        <Resource name='colors' list={ColorList} edit={ColorEdit} create={ColorCreate} />
+        <Resource name='units_of_measures' list={UnitsOfMeasureList} edit={UnitsOfMeasureEdit} create={UnitsOfMeasureCreate} />
+        <Resource name='rawmaterialtypes' list={RawMaterialTypeList} edit={RawMaterialTypeEdit} create={RawMaterialTypeCreate} />
+        <Resource name='vendors' list={VendorList} create={VendorCreate} edit={VendorEdit} />
 
-      <Resource name='final_calculations' list={FinalCalculationList} create={FinalCalculationCreate} edit={FinalCalculationEdit} />
-      <Resource name='cost_calculator' create={CostCalCulatorCreate} />
+        <Resource name='final_calculations' list={FinalCalculationList} create={FinalCalculationCreate} edit={FinalCalculationEdit} />
+        <Resource name='cost_calculator' create={CostCalCulatorCreate} />
 
-      <Resource name='users' list={UserListing} edit={UserEdit} create={UserCreate} />
-      <Resource name='app_constants' list={GlobalVariableListing} edit={GlobalVariableEdit} create={GlobalVariableCreate} />
-    </Admin>
+        <Resource name='users' list={UserListing} edit={UserEdit} create={UserCreate} />
+        <Resource name='app_constants' list={GlobalVariableListing} edit={GlobalVariableEdit} create={GlobalVariableCreate} />
+      </Admin>
+    </ErrorBoundary>
   )
 }
 
