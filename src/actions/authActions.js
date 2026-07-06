@@ -1,16 +1,13 @@
 import { fetchUtils } from 'react-admin'
 import { SERVER_URL } from '../config/'
 
-const DEFAULT_YEAR = '2026'
-
 export function setAuthorizationToken(url, options = {}) {
   if (!options.headers) {
     options.headers = new Headers({ Accept: 'application/json' });
   }
   const token = localStorage.getItem('token');
   options.headers.set('Authorization', `Bearer ${token}`);
-  options.headers.set('Database', localStorage.getItem('db') || DEFAULT_YEAR)
-
+  options.headers.set('Database', localStorage.getItem('db') || '')
   return fetchUtils.fetchJson(url, options);
 }
 
@@ -18,13 +15,31 @@ export function logout() {
   localStorage.removeItem('token');
   localStorage.removeItem('username');
   localStorage.removeItem('role');
+  localStorage.removeItem('db');
+  localStorage.removeItem('yearFrozen');
   localStorage.removeItem('tokenExpiry');
   return Promise.resolve();
 }
 
-export function login(data) {
+async function fetchActiveYear() {
+  try {
+    const res = await fetch(`${SERVER_URL}/year_management/active_year`);
+    const json = await res.json();
+    return String(json.active_year);
+  } catch {
+    return String(new Date().getFullYear());
+  }
+}
+
+export async function login(data) {
   const { username, password, db } = data;
-  const database = db || localStorage.getItem('db') || DEFAULT_YEAR;
+
+  // Use explicit db, or stored db, or fetch from backend
+  let database = db || localStorage.getItem('db');
+  if (!database) {
+    database = await fetchActiveYear();
+  }
+
   const request = new Request(`${SERVER_URL}/sessions`, {
     method: 'POST',
     body: JSON.stringify({ username, password }),
@@ -33,6 +48,7 @@ export function login(data) {
       'Database': database,
     }),
   });
+
   return fetch(request)
     .then((response) => {
       if (response.status < 200 || response.status >= 300) {
@@ -42,9 +58,7 @@ export function login(data) {
     })
     .then(({ token }) => {
       localStorage.setItem('token', token);
-      if (!localStorage.getItem('db')) {
-        localStorage.setItem('db', DEFAULT_YEAR);
-      }
+      localStorage.setItem('db', database);
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
         localStorage.setItem('username', payload.username || 'user');
@@ -55,9 +69,10 @@ export function login(data) {
         localStorage.setItem('username', 'user');
         localStorage.setItem('role', 'user');
       }
-      return true
-    }).catch((err) => {
+      return true;
+    })
+    .catch((err) => {
       console.log('Error logging in', err);
       throw err;
-    })
+    });
 }

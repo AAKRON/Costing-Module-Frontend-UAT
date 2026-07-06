@@ -32,8 +32,6 @@ import { UnitsOfMeasureCreate, UnitsOfMeasureEdit, UnitsOfMeasureList } from './
 import { UserCreate, UserEdit, UserListing } from './resources/user'
 import { VendorCreate, VendorEdit, VendorList } from './resources/vendor'
 
-const DEFAULT_YEAR = '2026'
-
 const theme = createTheme({
   ...nanoLightTheme,
   palette: {
@@ -56,8 +54,9 @@ class ErrorBoundary extends React.Component {
         <div style={{ padding: '2rem', fontFamily: 'monospace' }}>
           <h2>App Error</h2>
           <pre style={{ color: 'red', whiteSpace: 'pre-wrap' }}>
-            {this.state.error.toString()}
-            {this.state.error.stack}
+            {String(this.state.error)}
+            {'\n'}
+            {this.state.error?.stack}
           </pre>
         </div>
       )
@@ -67,12 +66,6 @@ class ErrorBoundary extends React.Component {
 }
 
 const App = () => {
-  useEffect(() => {
-    if (localStorage.getItem('db') === null) {
-      localStorage.setItem('db', DEFAULT_YEAR)
-    }
-  }, [])
-
   return (
     <ErrorBoundary>
       <Admin
