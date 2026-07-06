@@ -278,7 +278,15 @@ const AddCostCalculator = () => {
       total_cost: getTotalCost(),
     }
 
-    axios.post(downloadPath, { data }).then((res) => {
+    const token = localStorage.getItem('token')
+    const db = localStorage.getItem('db')
+
+    axios.post(downloadPath, { data }, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Database': db || '',
+      }
+    }).then((res) => {
       window.open(`${SERVER_URL}/download/item_cost_invoice`, '_blank')
     }).catch((err) => {
       console.log('Error downloading invoice', err)
