@@ -26,22 +26,20 @@ export default () => {
   const notify  = useNotify()
   const refresh = useRefresh()
 
-  const [years,      setYears]      = useState([])
-  const [loading,    setLoading]    = useState(true)
-  const [openFreeze, setOpenFreeze] = useState(false)
-  const [freezing,   setFreezing]   = useState(false)
+  const [years,       setYears]       = useState([])
+  const [loading,     setLoading]     = useState(true)
+  const [openFreeze,  setOpenFreeze]  = useState(false)
+  const [freezing,    setFreezing]    = useState(false)
   const [rollingBack, setRollingBack] = useState(false)
 
-  const currentYear   = localStorage.getItem('db')
-  const currentEntry  = years.find(y => y.year === parseInt(currentYear))
-  const currentFrozen = currentEntry?.frozen === true
-  const latestYear    = years.length ? Math.max(...years.map(y => y.year)) : null
-  const isLatestYear  = latestYear !== null && parseInt(currentYear) === latestYear
-
-  // Rollback is available when the latest year exists and the year before it is frozen
-  const secondLatestYear = years.length > 1 ? Math.max(...years.filter(y => y.year !== latestYear).map(y => y.year)) : null
+  const currentYear       = localStorage.getItem('db')
+  const currentEntry      = years.find(y => y.year === parseInt(currentYear))
+  const currentFrozen     = currentEntry?.frozen === true
+  const latestYear        = years.length ? Math.max(...years.map(y => y.year)) : null
+  const isLatestYear      = latestYear !== null && parseInt(currentYear) === latestYear
+  const secondLatestYear  = years.length > 1 ? Math.max(...years.filter(y => y.year !== latestYear).map(y => y.year)) : null
   const secondLatestEntry = secondLatestYear ? years.find(y => y.year === secondLatestYear) : null
-  const canRollback = secondLatestEntry?.frozen === true
+  const canRollback       = secondLatestEntry?.frozen === true
 
   const authHeaders = () => ({
     Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -84,23 +82,27 @@ export default () => {
   }
 
   const handleRollback = () => {
-    if (!window.confirm(`Roll back ${latestYear}? This will drop the ${latestYear} database and unfreeze ${secondLatestYear}.`)) return
+    if (!window.confirm(`Roll back ${latestYear}? This will drop the ${latestYear} database and restore ${secondLatestYear} to read/write.`)) return
     setRollingBack(true)
     fetch(`${SERVER_URL}/year_management/rollback_freeze`, {
       method: 'POST',
       headers: authHeaders(),
+      body: JSON.stringify({
+        year_to_unfreeze:  secondLatestYear,
+        next_year_to_drop: latestYear,
+      }),
     })
       .then(r => r.json())
       .then(data => {
         setRollingBack(false)
-        if (data.status === 'success') {
+        if (data.status === 'rolled_back') {
           notify(`Rolled back: ${latestYear} dropped, ${secondLatestYear} is now active.`)
           localStorage.setItem('db', String(secondLatestYear))
           localStorage.setItem('yearFrozen', 'false')
           fetchYears()
           refresh()
         } else {
-          notify(`Rollback failed: ${data.message || JSON.stringify(data)}`, { type: 'error' })
+          notify(`Rollback failed: ${JSON.stringify(data)}`, { type: 'error' })
         }
       })
       .catch(err => { setRollingBack(false); notify(`Error: ${err.message}`, { type: 'error' }) })
@@ -108,7 +110,6 @@ export default () => {
 
   return (
     <>
-      {/* Full-screen freeze overlay */}
       {freezing && (
         <div style={{
           position: 'fixed', inset: 0, zIndex: 9999,
