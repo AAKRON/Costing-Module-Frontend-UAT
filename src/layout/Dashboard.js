@@ -36,7 +36,15 @@ export default () => {
       },
     })
       .then(r => r.json())
-      .then(data => { setYears(data.years || []); setLoadingYears(false) })
+      .then(data => {
+        const list = data.years || []
+        setYears(list)
+        setLoadingYears(false)
+        // Sync frozen status for current db
+        const currentDb = localStorage.getItem('db')
+        const current = list.find(y => String(y.year) === currentDb)
+        if (current) localStorage.setItem('yearFrozen', String(current.frozen))
+      })
       .catch(() => setLoadingYears(false))
   }, [])
 
@@ -45,8 +53,10 @@ export default () => {
     login({ username: localStorage.getItem('username'), password: confirmPassword })
       .then((res) => {
         if (res) {
-          notify('Database Changed Successfully')
+          const selected = years.find(y => String(y.year) === database)
           localStorage.setItem('db', database)
+          localStorage.setItem('yearFrozen', String(selected?.frozen ?? false))
+          notify('Database Changed Successfully')
           setOpenConfirm(false)
           setDatabase('')
           setConfirmPassword('')
@@ -80,7 +90,7 @@ export default () => {
                 >
                   {years.map(y => (
                     <MenuItem key={y.year} value={String(y.year)}>
-                      {y.year}{y.frozen ? ' — frozen' : ''}
+                      {y.year}{y.frozen ? ' — read only' : ''}
                     </MenuItem>
                   ))}
                 </Select>

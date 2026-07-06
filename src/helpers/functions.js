@@ -1,7 +1,7 @@
 export const isAdmin = () => localStorage.getItem('role') === 'admin'
 
 export const isModifyPermission = () => {
-  return new Date().getFullYear() === parseInt(localStorage.getItem('db'))
+  return localStorage.getItem('yearFrozen') !== 'true'
 }
 
 export const getDate = ({

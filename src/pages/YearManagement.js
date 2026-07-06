@@ -18,8 +18,7 @@ import { SERVER_URL } from '../config/'
 
 function AccessChip({ isActive, frozen }) {
   if (isActive)  return <Chip label='Read / Write' size='small' color='success' />
-  if (frozen)    return <Chip label='Frozen'       size='small' color='error' />
-  return               <Chip label='View'          size='small' variant='outlined' />
+  return               <Chip label='Read Only'     size='small' color='default' variant='outlined' />
 }
 
 export default () => {
@@ -67,6 +66,7 @@ export default () => {
         if (data.status === 'success') {
           notify(`Year ${currentYear} frozen. Switched to ${nextYear}.`)
           localStorage.setItem('db', String(nextYear))
+          localStorage.setItem('yearFrozen', 'false')
           fetchYears()
           refresh()
         } else {
