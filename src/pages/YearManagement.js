@@ -17,10 +17,9 @@ import { useNotify, useRefresh } from 'react-admin'
 import { SERVER_URL } from '../config/'
 
 function AccessChip({ isActive, frozen }) {
-  if (isActive && !frozen) return <Chip label='Read / Write' size='small' color='success' />
-  if (frozen)              return <Chip label='Frozen'       size='small' color='error' />
-  // not active, not frozen
-  return <Chip label='View' size='small' variant='outlined' />
+  if (isActive)  return <Chip label='Read / Write' size='small' color='success' />
+  if (frozen)    return <Chip label='Frozen'       size='small' color='error' />
+  return               <Chip label='View'          size='small' variant='outlined' />
 }
 
 export default () => {
@@ -97,12 +96,7 @@ export default () => {
                   <TableCell>
                     <strong>{y.year}</strong>
                     {isActive && (
-                      <Chip
-                        label='Active'
-                        size='small'
-                        color='primary'
-                        style={{ marginLeft: 8 }}
-                      />
+                      <Chip label='Active' size='small' color='primary' style={{ marginLeft: 8 }} />
                     )}
                   </TableCell>
                   <TableCell>
@@ -126,11 +120,7 @@ export default () => {
             <strong>{parseInt(currentYear) + 1}</strong> database and make{' '}
             <strong>{currentYear}</strong> read-only.
           </Typography>
-          <Button
-            variant='contained'
-            color='error'
-            onClick={() => setOpenFreeze(true)}
-          >
+          <Button variant='contained' color='error' onClick={() => setOpenFreeze(true)}>
             Freeze {currentYear} &amp; Create {parseInt(currentYear) + 1}
           </Button>
         </div>
