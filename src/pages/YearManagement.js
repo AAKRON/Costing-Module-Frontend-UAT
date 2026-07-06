@@ -4,6 +4,7 @@ import {
   Chip,
   CircularProgress,
   Divider,
+  LinearProgress,
   Modal,
   Table,
   TableBody,
@@ -16,9 +17,9 @@ import { useEffect, useState } from 'react'
 import { useNotify, useRefresh } from 'react-admin'
 import { SERVER_URL } from '../config/'
 
-function AccessChip({ isActive, frozen }) {
-  if (isActive)  return <Chip label='Read / Write' size='small' color='success' />
-  return               <Chip label='Read Only'     size='small' color='default' variant='outlined' />
+function AccessChip({ isActive }) {
+  if (isActive) return <Chip label='Read / Write' size='small' color='success' />
+  return             <Chip label='Read Only'     size='small' color='default' variant='outlined' />
 }
 
 export default () => {
@@ -29,12 +30,18 @@ export default () => {
   const [loading,    setLoading]    = useState(true)
   const [openFreeze, setOpenFreeze] = useState(false)
   const [freezing,   setFreezing]   = useState(false)
+  const [rollingBack, setRollingBack] = useState(false)
 
   const currentYear   = localStorage.getItem('db')
   const currentEntry  = years.find(y => y.year === parseInt(currentYear))
   const currentFrozen = currentEntry?.frozen === true
   const latestYear    = years.length ? Math.max(...years.map(y => y.year)) : null
   const isLatestYear  = latestYear !== null && parseInt(currentYear) === latestYear
+
+  // Rollback is available when the latest year exists and the year before it is frozen
+  const secondLatestYear = years.length > 1 ? Math.max(...years.filter(y => y.year !== latestYear).map(y => y.year)) : null
+  const secondLatestEntry = secondLatestYear ? years.find(y => y.year === secondLatestYear) : null
+  const canRollback = secondLatestEntry?.frozen === true
 
   const authHeaders = () => ({
     Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -54,15 +61,15 @@ export default () => {
 
   const handleFreeze = () => {
     setFreezing(true)
+    setOpenFreeze(false)
     const nextYear = parseInt(currentYear) + 1
     fetch(`${SERVER_URL}/year_management/freeze_and_advance`, {
       method: 'POST',
-      headers: { ...authHeaders(), Database: currentYear },
+      headers: authHeaders(),
     })
       .then(r => r.json())
       .then(data => {
         setFreezing(false)
-        setOpenFreeze(false)
         if (data.status === 'success') {
           notify(`Year ${currentYear} frozen. Switched to ${nextYear}.`)
           localStorage.setItem('db', String(nextYear))
@@ -76,84 +83,142 @@ export default () => {
       .catch(err => { setFreezing(false); notify(`Error: ${err.message}`, { type: 'error' }) })
   }
 
-  return (
-    <Card style={{ margin: '2rem', padding: '1.5rem' }}>
-      <h2 style={{ margin: '0 0 1.5rem' }}>Year Management</h2>
+  const handleRollback = () => {
+    if (!window.confirm(`Roll back ${latestYear}? This will drop the ${latestYear} database and unfreeze ${secondLatestYear}.`)) return
+    setRollingBack(true)
+    fetch(`${SERVER_URL}/year_management/rollback_freeze`, {
+      method: 'POST',
+      headers: authHeaders(),
+    })
+      .then(r => r.json())
+      .then(data => {
+        setRollingBack(false)
+        if (data.status === 'success') {
+          notify(`Rolled back: ${latestYear} dropped, ${secondLatestYear} is now active.`)
+          localStorage.setItem('db', String(secondLatestYear))
+          localStorage.setItem('yearFrozen', 'false')
+          fetchYears()
+          refresh()
+        } else {
+          notify(`Rollback failed: ${data.message || JSON.stringify(data)}`, { type: 'error' })
+        }
+      })
+      .catch(err => { setRollingBack(false); notify(`Error: ${err.message}`, { type: 'error' }) })
+  }
 
-      {loading ? (
-        <CircularProgress />
-      ) : (
-        <Table size='small' style={{ maxWidth: 480, marginBottom: '2rem' }}>
-          <TableHead>
-            <TableRow>
-              <TableCell><strong>Year</strong></TableCell>
-              <TableCell><strong>Access</strong></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {years.map(y => {
-              const isActive = String(y.year) === currentYear
-              return (
-                <TableRow key={y.year} selected={isActive}>
-                  <TableCell>
-                    <strong>{y.year}</strong>
-                    {isActive && (
-                      <Chip label='Active' size='small' color='primary' style={{ marginLeft: 8 }} />
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <AccessChip isActive={isActive} frozen={y.frozen} />
-                  </TableCell>
-                </TableRow>
-              )
-            })}
-          </TableBody>
-        </Table>
+  return (
+    <>
+      {/* Full-screen freeze overlay */}
+      {freezing && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 9999,
+          background: 'rgba(0,0,0,0.75)',
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          color: '#fff',
+        }}>
+          <Typography variant='h5' style={{ marginBottom: '1.5rem' }}>
+            Creating {parseInt(currentYear) + 1}…
+          </Typography>
+          <Typography variant='body2' style={{ marginBottom: '1rem', opacity: 0.8 }}>
+            Copying all data from {currentYear}. Do not close this window.
+          </Typography>
+          <div style={{ width: 360 }}>
+            <LinearProgress color='inherit' />
+          </div>
+        </div>
       )}
 
-      <Divider style={{ marginBottom: '1.5rem' }} />
+      <Card style={{ margin: '2rem', padding: '1.5rem' }}>
+        <h2 style={{ margin: '0 0 1.5rem' }}>Year Management</h2>
 
-      {isLatestYear && !currentFrozen ? (
-        <div>
-          <Typography variant='body2' style={{ marginBottom: '1rem' }}>
-            Freezing <strong>{currentYear}</strong> will copy all data into a new{' '}
-            <strong>{parseInt(currentYear) + 1}</strong> database and make{' '}
-            <strong>{currentYear}</strong> read-only.
-          </Typography>
-          <Button variant='contained' color='error' onClick={() => setOpenFreeze(true)}>
-            Freeze {currentYear} &amp; Create {parseInt(currentYear) + 1}
-          </Button>
+        {loading ? (
+          <CircularProgress />
+        ) : (
+          <Table size='small' style={{ maxWidth: 480, marginBottom: '2rem' }}>
+            <TableHead>
+              <TableRow>
+                <TableCell><strong>Year</strong></TableCell>
+                <TableCell><strong>Access</strong></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {years.map(y => {
+                const isActive = String(y.year) === currentYear
+                return (
+                  <TableRow key={y.year} selected={isActive}>
+                    <TableCell>
+                      <strong>{y.year}</strong>
+                      {isActive && (
+                        <Chip label='Active' size='small' color='primary' style={{ marginLeft: 8 }} />
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <AccessChip isActive={isActive} />
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+        )}
+
+        <Divider style={{ marginBottom: '1.5rem' }} />
+
+        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+          {isLatestYear && !currentFrozen && (
+            <div>
+              <Typography variant='body2' style={{ marginBottom: '0.75rem' }}>
+                Freeze <strong>{currentYear}</strong> and create <strong>{parseInt(currentYear) + 1}</strong>.
+                All data will be copied. <strong>{currentYear}</strong> becomes read-only.
+              </Typography>
+              <Button variant='contained' color='error' onClick={() => setOpenFreeze(true)} disabled={freezing}>
+                Freeze {currentYear} &amp; Create {parseInt(currentYear) + 1}
+              </Button>
+            </div>
+          )}
+
+          {canRollback && (
+            <div>
+              <Typography variant='body2' style={{ marginBottom: '0.75rem' }}>
+                Roll back: drop <strong>{latestYear}</strong> and restore <strong>{secondLatestYear}</strong> to read/write.
+              </Typography>
+              <Button
+                variant='outlined'
+                color='warning'
+                onClick={handleRollback}
+                disabled={rollingBack}
+                startIcon={rollingBack ? <CircularProgress size={16} /> : null}
+              >
+                {rollingBack ? 'Rolling back…' : `Roll Back ${latestYear}`}
+              </Button>
+            </div>
+          )}
         </div>
-      ) : null}
 
-      <Modal
-        open={openFreeze}
-        onClose={() => !freezing && setOpenFreeze(false)}
-        sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-      >
-        <Card style={{ padding: '1.5rem', maxWidth: 440 }}>
-          <h3 style={{ margin: '0 0 0.75rem' }}>Confirm: Freeze Year {currentYear}?</h3>
-          <Typography variant='body2' style={{ marginBottom: '1.5rem' }}>
-            All data from <strong>{currentYear}</strong> (including users) will be copied to{' '}
-            <strong>{parseInt(currentYear) + 1}</strong>. Year <strong>{currentYear}</strong> becomes
-            read-only permanently. You will be switched to {parseInt(currentYear) + 1} automatically.
-          </Typography>
-          <div style={{ display: 'flex', gap: '0.75rem' }}>
-            <Button
-              variant='contained'
-              color='error'
-              onClick={handleFreeze}
-              disabled={freezing}
-              startIcon={freezing ? <CircularProgress size={16} color='inherit' /> : null}
-            >
-              {freezing ? 'Working…' : `Freeze ${currentYear} & Create ${parseInt(currentYear) + 1}`}
-            </Button>
-            <Button variant='outlined' onClick={() => setOpenFreeze(false)} disabled={freezing}>
-              Cancel
-            </Button>
-          </div>
-        </Card>
-      </Modal>
-    </Card>
+        <Modal
+          open={openFreeze}
+          onClose={() => setOpenFreeze(false)}
+          sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          <Card style={{ padding: '1.5rem', maxWidth: 440 }}>
+            <h3 style={{ margin: '0 0 0.75rem' }}>Confirm: Freeze Year {currentYear}?</h3>
+            <Typography variant='body2' style={{ marginBottom: '1.5rem' }}>
+              All data from <strong>{currentYear}</strong> (including users) will be copied to{' '}
+              <strong>{parseInt(currentYear) + 1}</strong>. Year <strong>{currentYear}</strong> becomes
+              read-only permanently. The system will be locked during the copy.
+            </Typography>
+            <div style={{ display: 'flex', gap: '0.75rem' }}>
+              <Button variant='contained' color='error' onClick={handleFreeze}>
+                Freeze {currentYear} &amp; Create {parseInt(currentYear) + 1}
+              </Button>
+              <Button variant='outlined' onClick={() => setOpenFreeze(false)}>
+                Cancel
+              </Button>
+            </div>
+          </Card>
+        </Modal>
+      </Card>
+    </>
   )
 }
