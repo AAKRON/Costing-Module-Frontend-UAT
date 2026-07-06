@@ -14,7 +14,7 @@ import {
   Typography,
 } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { useNotify, useRefresh } from 'react-admin'
+import { useNotify } from 'react-admin'
 import { SERVER_URL } from '../config/'
 
 function AccessChip({ isActive }) {
@@ -23,8 +23,7 @@ function AccessChip({ isActive }) {
 }
 
 export default () => {
-  const notify  = useNotify()
-  const refresh = useRefresh()
+  const notify = useNotify()
 
   const [years,       setYears]       = useState([])
   const [loading,     setLoading]     = useState(true)
@@ -67,14 +66,12 @@ export default () => {
     })
       .then(r => r.json())
       .then(data => {
-        setFreezing(false)
         if (data.status === 'success') {
-          notify(`Year ${currentYear} frozen. Switched to ${nextYear}.`)
           localStorage.setItem('db', String(nextYear))
           localStorage.setItem('yearFrozen', 'false')
-          fetchYears()
-          refresh()
+          window.location.href = '/'
         } else {
+          setFreezing(false)
           notify(`Freeze failed: ${data.message || data.error || JSON.stringify(data)}`, { type: 'error' })
         }
       })
@@ -94,14 +91,12 @@ export default () => {
     })
       .then(r => r.json())
       .then(data => {
-        setRollingBack(false)
         if (data.status === 'rolled_back') {
-          notify(`Rolled back: ${latestYear} dropped, ${secondLatestYear} is now active.`)
           localStorage.setItem('db', String(secondLatestYear))
           localStorage.setItem('yearFrozen', 'false')
-          fetchYears()
-          refresh()
+          window.location.href = '/'
         } else {
+          setRollingBack(false)
           notify(`Rollback failed: ${JSON.stringify(data)}`, { type: 'error' })
         }
       })
