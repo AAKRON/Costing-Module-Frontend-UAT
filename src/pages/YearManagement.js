@@ -25,9 +25,9 @@ export default () => {
   const [openFreeze,  setOpenFreeze]  = useState(false)
   const [freezing,    setFreezing]    = useState(false)
 
-  const currentYear      = localStorage.getItem('db')
-  const currentEntry     = years.find(y => y.year === parseInt(currentYear))
-  const currentFrozen    = currentEntry?.frozen === true
+  const currentYear   = localStorage.getItem('db')
+  const currentEntry  = years.find(y => y.year === parseInt(currentYear))
+  const currentFrozen = currentEntry?.frozen === true
 
   const authHeaders = () => ({
     Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -75,29 +75,33 @@ export default () => {
       {loading ? (
         <CircularProgress />
       ) : (
-        <Table size='small' style={{ maxWidth: 400, marginBottom: '2rem' }}>
+        <Table size='small' style={{ maxWidth: 520, marginBottom: '2rem' }}>
           <TableHead>
             <TableRow>
               <TableCell><strong>Year</strong></TableCell>
-              <TableCell><strong>Status</strong></TableCell>
+              <TableCell><strong>Currently Viewing</strong></TableCell>
+              <TableCell><strong>Access</strong></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {years.map(y => (
-              <TableRow key={y.year} selected={String(y.year) === currentYear}>
-                <TableCell>
-                  {y.year}
-                  {String(y.year) === currentYear && (
-                    <span style={{ marginLeft: 8, fontSize: '0.75rem', color: '#666' }}>(active)</span>
-                  )}
-                </TableCell>
-                <TableCell>
-                  {y.frozen
-                    ? <Chip label='Frozen' size='small' color='error' />
-                    : <Chip label='Active' size='small' color='success' />}
-                </TableCell>
-              </TableRow>
-            ))}
+            {years.map(y => {
+              const isActive = String(y.year) === currentYear
+              return (
+                <TableRow key={y.year} selected={isActive}>
+                  <TableCell><strong>{y.year}</strong></TableCell>
+                  <TableCell>
+                    {isActive
+                      ? <Chip label='Active' size='small' color='primary' />
+                      : <span style={{ color: '#aaa', fontSize: '0.8rem' }}>—</span>}
+                  </TableCell>
+                  <TableCell>
+                    {y.frozen
+                      ? <Chip label='Read Only' size='small' color='error' />
+                      : <Chip label='Read / Write' size='small' color='success' />}
+                  </TableCell>
+                </TableRow>
+              )
+            })}
           </TableBody>
         </Table>
       )}
