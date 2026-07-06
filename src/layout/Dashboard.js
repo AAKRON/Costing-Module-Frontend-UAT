@@ -27,6 +27,11 @@ export default () => {
   const [years,           setYears]           = useState([])
   const [loadingYears,    setLoadingYears]    = useState(true)
 
+  // The only read/write year is the latest non-frozen one
+  const latestWritableYear = years.length
+    ? Math.max(...years.filter(y => !y.frozen).map(y => y.year))
+    : null
+
   useEffect(() => {
     if (!isAdmin()) return
     fetch(`${SERVER_URL}/year_management/years`, {
@@ -88,11 +93,14 @@ export default () => {
                   value={database}
                   onChange={e => setDatabase(e.target.value)}
                 >
-                  {years.map(y => (
-                    <MenuItem key={y.year} value={String(y.year)}>
-                      {y.year}{y.frozen ? ' — read only' : ''}
-                    </MenuItem>
-                  ))}
+                  {years.map(y => {
+                    const isWritable = y.year === latestWritableYear
+                    return (
+                      <MenuItem key={y.year} value={String(y.year)}>
+                        {y.year}{!isWritable ? ' — read only' : ''}
+                      </MenuItem>
+                    )
+                  })}
                 </Select>
               )}
 
