@@ -1,13 +1,15 @@
 import { fetchUtils } from 'react-admin'
 import { SERVER_URL } from '../config/'
 
+const DEFAULT_YEAR = '2026'
+
 export function setAuthorizationToken(url, options = {}) {
   if (!options.headers) {
     options.headers = new Headers({ Accept: 'application/json' });
   }
   const token = localStorage.getItem('token');
   options.headers.set('Authorization', `Bearer ${token}`);
-  options.headers.set('Database', localStorage.getItem('db'))
+  options.headers.set('Database', localStorage.getItem('db') || DEFAULT_YEAR)
 
   return fetchUtils.fetchJson(url, options);
 }
@@ -27,7 +29,7 @@ export function login(data) {
     body: JSON.stringify({ username, password }),
     headers: new Headers({
       'Content-Type': 'application/json',
-      'Database': localStorage.getItem('db'),
+      'Database': localStorage.getItem('db') || DEFAULT_YEAR,
     }),
   });
   return fetch(request)
@@ -40,7 +42,10 @@ export function login(data) {
     })
     .then(({ token }) => {
       localStorage.setItem('token', token);
-      
+      if (!localStorage.getItem('db')) {
+        localStorage.setItem('db', DEFAULT_YEAR);
+      }
+
       // Decode JWT to get user info (basic decode - no verification needed on frontend)
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
@@ -52,7 +57,7 @@ export function login(data) {
         localStorage.setItem('username', 'user');
         localStorage.setItem('role', 'user');
       }
-      
+
       return true
     }).catch((err) => {
       console.log('Error logging in', err);
