@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react'
-import { Admin, Resource, nanoLightTheme } from 'react-admin'
+import { Route } from 'react-router-dom'
+import { Admin, CustomRoutes, Resource, nanoLightTheme } from 'react-admin'
 import { createTheme } from '@mui/material/styles'
 import Dashboard from './layout/Dashboard'
 import Layout from './layout/Layout'
 import authClient from './providers/authClient'
 import restClient from './providers/restClient'
+import YearManagement from './pages/YearManagement'
 import { BlankTypeCreate, BlankTypeEdit } from './resources/blank_type'
 import { BlankTypeListing } from './resources/blank_type/BlankTypeListing'
 import { BlankCreate, BlankEdit, BlankList } from './resources/blanks'
@@ -30,15 +32,11 @@ import { UnitsOfMeasureCreate, UnitsOfMeasureEdit, UnitsOfMeasureList } from './
 import { UserCreate, UserEdit, UserListing } from './resources/user'
 import { VendorCreate, VendorEdit, VendorList } from './resources/vendor'
 
-// Use nanoLightTheme as the exact base so all RA layout/login styles are preserved.
-// Only secondary.main is overridden to blue to eliminate the red accent color.
 const theme = createTheme({
   ...nanoLightTheme,
   palette: {
     ...nanoLightTheme.palette,
-    secondary: {
-      main: '#1565c0',
-    },
+    secondary: { main: '#1565c0' },
   },
 })
 
@@ -58,128 +56,38 @@ const App = () => {
       dashboard={Dashboard}
       theme={theme}
     >
-      <Resource
-        name='spreadsheet'
-        list={Spreadsheet}
-      />
-  
-      <Resource
-        name='job_listings'
-        list={JobList}
-        edit={JobEdit}
-        create={JobCreate}
-      />
-      <Resource
-        name='screens'
-        list={ScreenListing}
-        edit={ScreenEdit}
-        create={ScreenCreate}
-      />
-  
-      <Resource
-        name='blanks'
-        list={BlankList}
-        edit={BlankEdit}
-        create={BlankCreate}
-      />
-      <Resource
-        name='blank_jobs'
-        list={BlanksJobList}
-        edit={BlankJobEdit}
-      />
-      <Resource
-        name='blank_types'
-        list={BlankTypeListing}
-        edit={BlankTypeEdit}
-        create={BlankTypeCreate}
-      />
-  
-      <Resource
-        name='items'
-        list={ItemList}
-        edit={ItemEdit}
-        create={ItemCreate}
-      />
-      <Resource
-        name='item_jobs'
-        list={ItemJobsList}
-        edit={ItemJobEdit}
-      />
-      <Resource
-        name='boxes'
-        list={BoxListing}
-        edit={BoxEdit}
-        create={BoxCreate}
-      />
-      <Resource
-        name='item_types'
-        list={ItemTypeListing}
-        edit={ItemTypeEdit}
-        create={ItemTypeCreate}
-      />
-  
-      <Resource
-        name='blanks_listing_item_with_costs'
-        list={BLIWCListing}
-      />
-      <Resource
-        name='blanks_listing_by_items'
-        list={BLBIListing}
-        create={BLBICreate}
-        edit={BLBIEdit}
-      />
-  
-      <Resource
-        name='raw_materials'
-        list={RawMaterialListing}
-        create={RawMaterialCreate}
-        edit={RawMaterialEdit}
-      />
-      <Resource
-        name='colors'
-        list={ColorList}
-        edit={ColorEdit}
-        create={ColorCreate}
-      />
-      <Resource
-        name='units_of_measures'
-        list={UnitsOfMeasureList}
-        edit={UnitsOfMeasureEdit}
-        create={UnitsOfMeasureCreate}
-      />
-      <Resource
-        name='rawmaterialtypes'
-        list={RawMaterialTypeList}
-        edit={RawMaterialTypeEdit}
-        create={RawMaterialTypeCreate}
-      />
-      <Resource
-        name='vendors'
-        list={VendorList}
-        create={VendorCreate}
-        edit={VendorEdit}
-      />
-  
-      <Resource
-        name='final_calculations'
-        list={FinalCalculationList}
-        create={FinalCalculationCreate}
-        edit={FinalCalculationEdit}
-      />
+      <CustomRoutes>
+        <Route path='/year-management' element={<YearManagement />} />
+      </CustomRoutes>
+
+      <Resource name='spreadsheet' list={Spreadsheet} />
+
+      <Resource name='job_listings' list={JobList} edit={JobEdit} create={JobCreate} />
+      <Resource name='screens' list={ScreenListing} edit={ScreenEdit} create={ScreenCreate} />
+
+      <Resource name='blanks' list={BlankList} edit={BlankEdit} create={BlankCreate} />
+      <Resource name='blank_jobs' list={BlanksJobList} edit={BlankJobEdit} />
+      <Resource name='blank_types' list={BlankTypeListing} edit={BlankTypeEdit} create={BlankTypeCreate} />
+
+      <Resource name='items' list={ItemList} edit={ItemEdit} create={ItemCreate} />
+      <Resource name='item_jobs' list={ItemJobsList} edit={ItemJobEdit} />
+      <Resource name='boxes' list={BoxListing} edit={BoxEdit} create={BoxCreate} />
+      <Resource name='item_types' list={ItemTypeListing} edit={ItemTypeEdit} create={ItemTypeCreate} />
+
+      <Resource name='blanks_listing_item_with_costs' list={BLIWCListing} />
+      <Resource name='blanks_listing_by_items' list={BLBIListing} create={BLBICreate} edit={BLBIEdit} />
+
+      <Resource name='raw_materials' list={RawMaterialListing} create={RawMaterialCreate} edit={RawMaterialEdit} />
+      <Resource name='colors' list={ColorList} edit={ColorEdit} create={ColorCreate} />
+      <Resource name='units_of_measures' list={UnitsOfMeasureList} edit={UnitsOfMeasureEdit} create={UnitsOfMeasureCreate} />
+      <Resource name='rawmaterialtypes' list={RawMaterialTypeList} edit={RawMaterialTypeEdit} create={RawMaterialTypeCreate} />
+      <Resource name='vendors' list={VendorList} create={VendorCreate} edit={VendorEdit} />
+
+      <Resource name='final_calculations' list={FinalCalculationList} create={FinalCalculationCreate} edit={FinalCalculationEdit} />
       <Resource name='cost_calculator' create={CostCalCulatorCreate} />
-  
-      <Resource
-        name='users'
-        list={UserListing}
-        edit={UserEdit}
-        create={UserCreate}
-      />
-      <Resource
-        name='app_constants'
-        list={GlobalVariableListing}
-        edit={GlobalVariableEdit}
-        create={GlobalVariableCreate}
-      />
+
+      <Resource name='users' list={UserListing} edit={UserEdit} create={UserCreate} />
+      <Resource name='app_constants' list={GlobalVariableListing} edit={GlobalVariableEdit} create={GlobalVariableCreate} />
     </Admin>
   )
 }
