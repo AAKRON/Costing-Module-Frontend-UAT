@@ -32,6 +32,8 @@ import { UnitsOfMeasureCreate, UnitsOfMeasureEdit, UnitsOfMeasureList } from './
 import { UserCreate, UserEdit, UserListing } from './resources/user'
 import { VendorCreate, VendorEdit, VendorList } from './resources/vendor'
 
+const DEFAULT_YEAR = '2027'
+
 const theme = createTheme({
   ...nanoLightTheme,
   palette: {
@@ -43,7 +45,7 @@ const theme = createTheme({
 const App = () => {
   useEffect(() => {
     if (localStorage.getItem('db') === null) {
-      localStorage.setItem('db', new Date().getFullYear())
+      localStorage.setItem('db', DEFAULT_YEAR)
     }
   }, [])
 
