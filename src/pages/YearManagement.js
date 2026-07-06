@@ -34,6 +34,8 @@ export default () => {
   const currentYear   = localStorage.getItem('db')
   const currentEntry  = years.find(y => y.year === parseInt(currentYear))
   const currentFrozen = currentEntry?.frozen === true
+  const latestYear    = years.length ? Math.max(...years.map(y => y.year)) : null
+  const isLatestYear  = latestYear !== null && parseInt(currentYear) === latestYear
 
   const authHeaders = () => ({
     Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -111,9 +113,7 @@ export default () => {
 
       <Divider style={{ marginBottom: '1.5rem' }} />
 
-      {currentFrozen ? (
-        <Typography color='error'>Year {currentYear} is frozen and read-only.</Typography>
-      ) : (
+      {isLatestYear && !currentFrozen ? (
         <div>
           <Typography variant='body2' style={{ marginBottom: '1rem' }}>
             Freezing <strong>{currentYear}</strong> will copy all data into a new{' '}
@@ -124,7 +124,7 @@ export default () => {
             Freeze {currentYear} &amp; Create {parseInt(currentYear) + 1}
           </Button>
         </div>
-      )}
+      ) : null}
 
       <Modal
         open={openFreeze}
