@@ -27,7 +27,6 @@ export default () => {
   const [years,           setYears]           = useState([])
   const [loadingYears,    setLoadingYears]    = useState(true)
 
-  // The only read/write year is the latest non-frozen one
   const latestWritableYear = years.length
     ? Math.max(...years.filter(y => !y.frozen).map(y => y.year))
     : null
@@ -45,7 +44,6 @@ export default () => {
         const list = data.years || []
         setYears(list)
         setLoadingYears(false)
-        // Sync frozen status for current db
         const currentDb = localStorage.getItem('db')
         const current = list.find(y => String(y.year) === currentDb)
         if (current) localStorage.setItem('yearFrozen', String(current.frozen))
@@ -55,7 +53,8 @@ export default () => {
 
   const handleConfirmAuth = (e) => {
     e.preventDefault()
-    login({ username: localStorage.getItem('username'), password: confirmPassword })
+    // Authenticate against the TARGET year so frozen current years don't block the switch
+    login({ username: localStorage.getItem('username'), password: confirmPassword, db: database })
       .then((res) => {
         if (res) {
           const selected = years.find(y => String(y.year) === database)

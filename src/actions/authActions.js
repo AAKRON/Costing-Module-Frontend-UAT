@@ -22,14 +22,17 @@ export function logout() {
   return Promise.resolve();
 }
 
+// db param lets callers authenticate against a specific year (e.g. when switching
+// away from a frozen year — the current localStorage db would be rejected).
 export function login(data) {
-  const { username, password } = data;
+  const { username, password, db } = data;
+  const database = db || localStorage.getItem('db') || DEFAULT_YEAR;
   const request = new Request(`${SERVER_URL}/sessions`, {
     method: 'POST',
     body: JSON.stringify({ username, password }),
     headers: new Headers({
       'Content-Type': 'application/json',
-      'Database': localStorage.getItem('db') || DEFAULT_YEAR,
+      'Database': database,
     }),
   });
   return fetch(request)
@@ -46,12 +49,11 @@ export function login(data) {
         localStorage.setItem('db', DEFAULT_YEAR);
       }
 
-      // Decode JWT to get user info (basic decode - no verification needed on frontend)
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
         localStorage.setItem('username', payload.username || 'user');
         localStorage.setItem('role', payload.role || 'user');
-        localStorage.setItem('tokenExpiry', payload.exp * 1000); // Convert to milliseconds
+        localStorage.setItem('tokenExpiry', payload.exp * 1000);
       } catch (e) {
         console.warn('Could not decode JWT token:', e);
         localStorage.setItem('username', 'user');
@@ -61,6 +63,6 @@ export function login(data) {
       return true
     }).catch((err) => {
       console.log('Error logging in', err);
-      throw err; // Re-throw to show login errors
+      throw err;
     })
 }
