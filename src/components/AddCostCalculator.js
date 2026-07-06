@@ -58,7 +58,9 @@ const bottomBorder = {
 
 const BlankField = ({ blank, blankIndex, editBlank, deleteBlank }) => (
   <TableRow style={topBorder}>
-    <td colSpan={6} style={textLeftAlign}>{blank.id} - {blank.name}</td>
+    <td colSpan={6} style={textLeftAlign}>
+      {blank.id !== undefined ? `${blank.id} - ${blank.name}` : blank.name}
+    </td>
     <td style={textRightAlign}>${blank.cost}</td>
     <td>
       <Button
@@ -155,7 +157,7 @@ const AddCostCalculator = () => {
   const deleteBlank = (blankIndex) => setBlanks([...blanks.slice(0, blankIndex), ...blanks.slice(blankIndex + 1)])
 
   const handleSaveBlank = () => {
-    if(modalBlank.data?.id === undefined || modalBlank.data?.cost === undefined || modalBlank.data?.cost <= 0){
+    if(!modalBlank.data?.name || modalBlank.data?.cost === undefined || modalBlank.data?.cost <= 0){
       return notify('Please fill all the fields')
     }
 
@@ -242,8 +244,8 @@ const AddCostCalculator = () => {
       return notify('Please add at least one job')
     }
 
-    if(!box?.id || !box?.name){
-      return notify('Please select the box')
+    if(!box?.name){
+      return notify('Please enter a box name')
     }
 
     if(!box?.cost){
@@ -256,13 +258,13 @@ const AddCostCalculator = () => {
 
     const transformedBlanks = blanks.map((blank) => {
       return {
-        name: blank.id + ' - ' + blank.name,
+        name: blank.id !== undefined ? `${blank.id} - ${blank.name}` : blank.name,
         cost: blank.cost,
       }
     })
 
     const transformedBox = {
-      name: box.id + ' - ' + box.name,
+      name: box.id !== undefined ? `${box.id} - ${box.name}` : box.name,
       cost: box.cost,
     }
 
@@ -447,12 +449,29 @@ const AddCostCalculator = () => {
             <TableRow style={topBorder}>
               <td colSpan={6}>
                 <Autocomplete
+                  freeSolo
                   options={boxesList.data.map((box) => `${box.id} - ${box.name}`)}
-                  value={box?.id !== undefined ? `${box.id} - ${box.name}` : ''}
+                  value={box?.id !== undefined ? `${box.id} - ${box.name}` : (box?.name || '')}
                   onChange={(event, newValue) => {
+                    if (!newValue) {
+                      setBox({ ...box, id: undefined, name: '' })
+                      return
+                    }
                     const id = stringHelpers.extractLeadingNumber(newValue)
-                    const name = stringHelpers.extractStringAfterDash(newValue)
-                    setBox({ ...box, id, name })
+                    if (isNaN(id)) {
+                      setBox({ ...box, id: undefined, name: newValue })
+                    } else {
+                      const name = stringHelpers.extractStringAfterDash(newValue)
+                      setBox({ ...box, id, name })
+                    }
+                  }}
+                  onInputChange={(event, newInputValue, reason) => {
+                    if (reason === 'input') {
+                      const id = stringHelpers.extractLeadingNumber(newInputValue)
+                      if (isNaN(id)) {
+                        setBox({ ...box, id: undefined, name: newInputValue })
+                      }
+                    }
                   }}
                   renderInput={(params) =>
                     <TextField {...params} label='Box Name' />
@@ -549,20 +568,35 @@ const AddCostCalculator = () => {
             }}
           >
             <Autocomplete
+              freeSolo
               loading={blanksList.loading}
               options={blanksList.data
                 .filter((blank) => !blanks.find((b) => b.id === blank.id))
                 .map((blank) => `${blank.id} - ${blank.description}`)
               }
-              value={modalBlank.data?.id !== undefined ? `${modalBlank.data?.id} - ${modalBlank.data?.name}` : ''}
+              value={modalBlank.data?.id !== undefined
+                ? `${modalBlank.data?.id} - ${modalBlank.data?.name}`
+                : (modalBlank.data?.name || '')}
               onChange={(event, newValue) => {
+                if (!newValue) {
+                  setModalBlank({ ...modalBlank, data: { ...modalBlank.data, id: undefined, name: '' } })
+                  return
+                }
                 const id = stringHelpers.extractLeadingNumber(newValue)
-                const name = stringHelpers.extractStringAfterDash(newValue)
-                setModalBlank({ ...modalBlank, data: {
-                  ...modalBlank.data,
-                  id,
-                  name,
-                }})
+                if (isNaN(id)) {
+                  setModalBlank({ ...modalBlank, data: { ...modalBlank.data, id: undefined, name: newValue } })
+                } else {
+                  const name = stringHelpers.extractStringAfterDash(newValue)
+                  setModalBlank({ ...modalBlank, data: { ...modalBlank.data, id, name } })
+                }
+              }}
+              onInputChange={(event, newInputValue, reason) => {
+                if (reason === 'input') {
+                  const id = stringHelpers.extractLeadingNumber(newInputValue)
+                  if (isNaN(id)) {
+                    setModalBlank({ ...modalBlank, data: { ...modalBlank.data, id: undefined, name: newInputValue } })
+                  }
+                }
               }}
               renderInput={(params) =>
                 <TextField {...params} label='Blank Name' />
