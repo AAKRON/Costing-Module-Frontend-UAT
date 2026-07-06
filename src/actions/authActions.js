@@ -1,7 +1,7 @@
 import { fetchUtils } from 'react-admin'
 import { SERVER_URL } from '../config/'
 
-const DEFAULT_YEAR = '2027'
+const DEFAULT_YEAR = '2026'
 
 export function setAuthorizationToken(url, options = {}) {
   if (!options.headers) {
@@ -22,8 +22,6 @@ export function logout() {
   return Promise.resolve();
 }
 
-// db param lets callers authenticate against a specific year (e.g. when switching
-// away from a frozen year — the current localStorage db would be rejected).
 export function login(data) {
   const { username, password, db } = data;
   const database = db || localStorage.getItem('db') || DEFAULT_YEAR;
@@ -40,7 +38,6 @@ export function login(data) {
       if (response.status < 200 || response.status >= 300) {
         throw new Error(response.statusText);
       }
-
       return response.json();
     })
     .then(({ token }) => {
@@ -48,7 +45,6 @@ export function login(data) {
       if (!localStorage.getItem('db')) {
         localStorage.setItem('db', DEFAULT_YEAR);
       }
-
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
         localStorage.setItem('username', payload.username || 'user');
@@ -59,7 +55,6 @@ export function login(data) {
         localStorage.setItem('username', 'user');
         localStorage.setItem('role', 'user');
       }
-
       return true
     }).catch((err) => {
       console.log('Error logging in', err);

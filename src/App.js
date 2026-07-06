@@ -32,7 +32,7 @@ import { UnitsOfMeasureCreate, UnitsOfMeasureEdit, UnitsOfMeasureList } from './
 import { UserCreate, UserEdit, UserListing } from './resources/user'
 import { VendorCreate, VendorEdit, VendorList } from './resources/vendor'
 
-const DEFAULT_YEAR = '2027'
+const DEFAULT_YEAR = '2026'
 
 const theme = createTheme({
   ...nanoLightTheme,
