@@ -1,7 +1,7 @@
 import { fetchUtils } from 'react-admin'
 import { SERVER_URL } from '../config/'
 
-const DEFAULT_YEAR = '2026'
+const DEFAULT_YEAR = '2027'
 
 export function setAuthorizationToken(url, options = {}) {
   if (!options.headers) {
