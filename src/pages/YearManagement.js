@@ -16,14 +16,21 @@ import { useEffect, useState } from 'react'
 import { useNotify, useRefresh } from 'react-admin'
 import { SERVER_URL } from '../config/'
 
+function AccessChip({ isActive, frozen }) {
+  if (isActive && !frozen) return <Chip label='Read / Write' size='small' color='success' />
+  if (frozen)              return <Chip label='Frozen'       size='small' color='error' />
+  // not active, not frozen
+  return <Chip label='View' size='small' variant='outlined' />
+}
+
 export default () => {
   const notify  = useNotify()
   const refresh = useRefresh()
 
-  const [years,       setYears]       = useState([])
-  const [loading,     setLoading]     = useState(true)
-  const [openFreeze,  setOpenFreeze]  = useState(false)
-  const [freezing,    setFreezing]    = useState(false)
+  const [years,      setYears]      = useState([])
+  const [loading,    setLoading]    = useState(true)
+  const [openFreeze, setOpenFreeze] = useState(false)
+  const [freezing,   setFreezing]   = useState(false)
 
   const currentYear   = localStorage.getItem('db')
   const currentEntry  = years.find(y => y.year === parseInt(currentYear))
@@ -75,11 +82,10 @@ export default () => {
       {loading ? (
         <CircularProgress />
       ) : (
-        <Table size='small' style={{ maxWidth: 520, marginBottom: '2rem' }}>
+        <Table size='small' style={{ maxWidth: 480, marginBottom: '2rem' }}>
           <TableHead>
             <TableRow>
               <TableCell><strong>Year</strong></TableCell>
-              <TableCell><strong>Currently Viewing</strong></TableCell>
               <TableCell><strong>Access</strong></TableCell>
             </TableRow>
           </TableHead>
@@ -88,16 +94,19 @@ export default () => {
               const isActive = String(y.year) === currentYear
               return (
                 <TableRow key={y.year} selected={isActive}>
-                  <TableCell><strong>{y.year}</strong></TableCell>
                   <TableCell>
-                    {isActive
-                      ? <Chip label='Active' size='small' color='primary' />
-                      : <span style={{ color: '#aaa', fontSize: '0.8rem' }}>—</span>}
+                    <strong>{y.year}</strong>
+                    {isActive && (
+                      <Chip
+                        label='Active'
+                        size='small'
+                        color='primary'
+                        style={{ marginLeft: 8 }}
+                      />
+                    )}
                   </TableCell>
                   <TableCell>
-                    {y.frozen
-                      ? <Chip label='Read Only' size='small' color='error' />
-                      : <Chip label='Read / Write' size='small' color='success' />}
+                    <AccessChip isActive={isActive} frozen={y.frozen} />
                   </TableCell>
                 </TableRow>
               )
