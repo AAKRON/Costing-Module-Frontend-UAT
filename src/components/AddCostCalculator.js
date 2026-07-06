@@ -15,11 +15,11 @@ import {
   TableRow,
   TextField
 } from '@mui/material'
-import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useNotify } from 'react-admin'
 import { SERVER_URL } from '../config'
 import { stringHelpers } from '../helpers/stringHelpers'
+import { setAuthorizationToken } from '../actions/authActions'
 import restClient from '../providers/restClient'
 
 const downloadPath = `${SERVER_URL}/cost-pdf-download`;
@@ -278,15 +278,10 @@ const AddCostCalculator = () => {
       total_cost: getTotalCost(),
     }
 
-    const token = localStorage.getItem('token')
-    const db = localStorage.getItem('db')
-
-    axios.post(downloadPath, { data }, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Database': db || '',
-      }
-    }).then((res) => {
+    setAuthorizationToken(downloadPath, {
+      method: 'POST',
+      body: JSON.stringify({ data }),
+    }).then(() => {
       window.open(`${SERVER_URL}/download/item_cost_invoice`, '_blank')
     }).catch((err) => {
       console.log('Error downloading invoice', err)
