@@ -282,7 +282,26 @@ const AddCostCalculator = () => {
       method: 'POST',
       body: JSON.stringify({ data }),
     }).then(() => {
-      window.open(`${SERVER_URL}/download/item_cost_invoice`, '_blank')
+      const token = localStorage.getItem('token')
+      const db = localStorage.getItem('db')
+      return fetch(`${SERVER_URL}/download/item_cost_invoice`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Database': db || '',
+        },
+      })
+    }).then(response => {
+      if (!response.ok) throw new Error(`Download failed: ${response.status}`)
+      return response.blob()
+    }).then(blob => {
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'item-cost-invoice.pdf'
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
     }).catch((err) => {
       console.log('Error downloading invoice', err)
       notify('Error downloading invoice')
