@@ -16,3 +16,24 @@ export const getDate = ({
 
   return `${_year}-${_month < 10 ? `0${_month}` : _month}-${_day < 10 ? `0${_day}` : _day}`
 }
+
+export const Divider = (a, b) => {
+  const divider = Number(a)
+  const dividend = Number(b)
+
+  if (isNaN(divider) || isNaN(dividend) || dividend === 0) {
+    return 0
+  }
+
+  return (a / b).toFixed(4)
+}
+
+export const roundNumber = (num, decimalPlaces = 4) => {
+  const number = Number(num)
+
+  if (isNaN(number)) {
+    return 0
+  }
+
+  return number.toFixed(decimalPlaces)
+}

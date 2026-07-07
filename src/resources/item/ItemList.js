@@ -3,7 +3,7 @@ import ShowIcon from '@mui/icons-material/Visibility'
 import { Card } from '@mui/material'
 import React from 'react'
 import { ChipField, CreateButton, Datagrid, EditButton, FunctionField, List, TextField, TopToolbar } from 'react-admin'
-import { isModifyPermission } from '../../helpers/functions'
+import { isModifyPermission, roundNumber } from '../../helpers/functions'
 import ItemExportModal from './ItemExportModal'
 import { ItemFilter } from './ItemFilter'
 
@@ -23,7 +23,7 @@ const Actions = ({
       filterValues,
       context: 'button',
     })}
-  
+
     {isModifyPermission() && <CreateButton />}
 
     <ItemExportModal />
@@ -47,13 +47,14 @@ export const ItemList = (props) => (
         <TextField source='description' />
         <ChipField source='type_description' label='Item Type' />
         <ChipField source='box_name' />
+        <TextField source='total_jobs_count' label='Jobs' sortable={false} />
         <TextField source='number_of_pcs_per_box' label='Pcs/Box' />
         <FunctionField
           source='ink_cost'
           label='Ink Cost($)'
           render={
             record => {
-              return <span>${record.ink_cost}</span>
+              return <span>${roundNumber(record.ink_cost)}</span>
           }}
         />
         <FunctionField
@@ -61,7 +62,15 @@ export const ItemList = (props) => (
           label='Box Cost($)'
           render={
             record => {
-              return <span>${record.box_cost}</span>
+              return <span>${roundNumber(record.box_cost)}</span>
+          }}
+        />
+        <FunctionField
+          source='secondary_box_cost'
+          label='Box 2 Cost($)'
+          render={
+            record => {
+              return <span>${roundNumber(record.secondary_box_cost)}</span>
           }}
         />
         <FunctionField
@@ -69,7 +78,7 @@ export const ItemList = (props) => (
           label='Price Cost($)'
           render={
             record => {
-              return <span>${record.total_price_cost}</span>
+              return <span>${roundNumber(record.total_price_cost)}</span>
           }}
         />
         <FunctionField
@@ -77,7 +86,7 @@ export const ItemList = (props) => (
           label='Inventory Cost($)'
           render={
             record => {
-              return <span>${record.total_inventory_cost}</span>
+              return <span>${roundNumber(record.total_inventory_cost)}</span>
           }}
         />
 
