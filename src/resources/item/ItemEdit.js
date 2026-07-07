@@ -13,14 +13,9 @@ export const ItemEdit = (props) => {
 		loading: true,
 		data: []
 	})
-	const [inks, setInks] = useState({
-		loading: true,
-		data: []
-	})
 
 	const fetchBoxes = () => restClient.getList('box-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }})
 	const fetchItemTypes = () => restClient.getList('item-type-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }})
-	const fetchInks = () => restClient.getList('ink-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }})
 
 	const Actions = () => (
     <TopToolbar>
@@ -53,13 +48,6 @@ export const ItemEdit = (props) => {
 		}).catch((err) => {
 			console.log('Error fetching item types', err)
 		})
-
-		fetchInks().then(({data}) => {
-			const inks = data.map(ink => ({id: ink.id, name: ink.name}))
-			setInks({ loading: false, data: inks })
-		}).catch((err) => {
-			console.log('Error fetching inks', err)
-		})
 	}, [])
 
 	return (
@@ -79,6 +67,7 @@ export const ItemEdit = (props) => {
 					choices={boxes.data}
 					validate={required()}
 				/>
+				<NumberInput source='number_of_pcs_per_box' label='Number Of PCS/Box' validate={required()}/>
 				<AutocompleteInput
 					isLoading={boxes.loading}
 					source='secondary_box_id'
@@ -90,14 +79,7 @@ export const ItemEdit = (props) => {
 					choices={itemsType.data}
 					isLoading={itemsType.loading}
 				/>
-				<AutocompleteInput
-					isLoading={inks.loading}
-					source='ink_id'
-					choices={inks.data}
-					helperText="If ink is not selected, ink_cost will be used for calculations"
-				/>
 				<NumberInput source='ink_cost' label='Ink Cost($)'/>
-				<NumberInput source='number_of_pcs_per_box' label='Number Of PCS/Box' validate={required()}/>
 				<ItemCostView type='price'/>
 				<ItemCostView type='inventory'/>
 			</SimpleForm>

@@ -21,14 +21,9 @@ const ItemCreate = (props) => {
 		loading: true,
 		data: []
 	})
-	const [inks, setInks] = useState({
-		loading: true,
-		data: []
-	})
 
 	const fetchBoxes = () => restClient.getList('box-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }})
 	const fetchItemTypes = () => restClient.getList('item-type-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }})
-	const fetchInks = () => restClient.getList('ink-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }})
 
 	useEffect(() => {
 		fetchBoxes().then(({data}) => {
@@ -43,13 +38,6 @@ const ItemCreate = (props) => {
 			setItemsType({ loading: false, data: item_types })
 		}).catch((err) => {
 			console.log('Error fetching item types', err)
-		})
-
-		fetchInks().then(({data}) => {
-			const inks = data.map(ink => ({id: ink.id, name: ink.name}))
-			setInks({ loading: false, data: inks })
-		}).catch((err) => {
-			console.log('Error fetching inks', err)
 		})
 	}, [])
 
@@ -127,12 +115,7 @@ const ItemCreate = (props) => {
 					source='item_type_id'
 					choices={itemsType.data}
 				/>
-				<AutocompleteInput
-					isLoading={inks.loading}
-					source='ink_id'
-					choices={inks.data}
-					validate={required()}
-				/>
+				<NumberInput source='ink_cost' label='Ink Cost($)'/>
 			</SimpleForm>
 		</Create>
 	)
