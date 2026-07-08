@@ -67,13 +67,20 @@ export const ItemEdit = (props) => {
 					source='box_id'
 					choices={boxes.data}
 				/>
+				<NumberInput source='number_of_pcs_per_box' label='Number Of PCS/Box' validate={required()}/>
+				<AutocompleteInput
+					isLoading={boxes.loading}
+					source='secondary_box_id'
+					label='Secondary Box'
+					choices={boxes.data}
+				/>
+				<NumberInput source='number_of_pcs_per_secondary_box' label='Number Of PCS/Secondary Box'/>
 				<AutocompleteInput
 					source='item_type_id'
 					choices={itemsType.data}
 					isLoading={itemsType.loading}
 				/>
 				<NumberInput source='ink_cost' label='Ink Cost($)' validate={required()}/>
-				<NumberInput source='number_of_pcs_per_box' label='Number Of PCS/Box' validate={required()}/>
 				<ItemCostView type='price'/>
 				<ItemCostView type='inventory'/>
 			</SimpleForm>
