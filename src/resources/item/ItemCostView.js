@@ -6,7 +6,6 @@ import {
 } from '@mui/material'
 import React from 'react'
 import { Link, useEditController } from 'react-admin'
-import { Divider, roundNumber } from '../../helpers/functions'
 
 const style = {
   width: '100%',
@@ -46,21 +45,21 @@ const BlankField = ({ blank, type }) => (
     <td colSpan={2} style={textLeftAlign}>{blank.blank_type}</td>
     {type === 'price' &&
       <td style={textRightAlign}>
-        <Link to={`/blanks/${blank.blank_number}`} style={{ textDecoration : 'none', color : '#00bcd4'}}>${roundNumber(blank.total_blank_cost_for_price)}</Link>
+        <Link to={`blanks/${blank.blank_number}`} style={{ textDecoration : 'none', color : '#00bcd4'}}>${blank.total_blank_cost_for_price}</Link>
       </td>
     }
     {type === 'inventory' &&
       <td style={textRightAlign}>
-        <Link to={`/blanks/${blank.blank_number}`} style={{ textDecoration : 'none', color : '#00bcd4'}}>${roundNumber(blank.total_blank_cost_for_inventory)}</Link>
+        <Link to={`blanks/${blank.blank_number}`} style={{ textDecoration : 'none', color : '#00bcd4'}}>${blank.total_blank_cost_for_inventory}</Link>
       </td>
     }
     <td style={textCenterAlign}>{blank.multiplication}</td>
     <td style={textCenterAlign}>{blank.division}</td>
     {type === 'price' &&
-      <td style={textRightAlign}><b>${roundNumber(blank.total_blank_cost_for_price_modify)}</b></td>
+      <td style={textRightAlign}><b>${blank.total_blank_cost_for_price_modify}</b></td>
     }
     {type === 'inventory' &&
-      <td style={textRightAlign}><b>${roundNumber(blank.total_blank_cost_for_inventory_modify)}</b></td>
+      <td style={textRightAlign}><b>${blank.total_blank_cost_for_inventory_modify}</b></td>
     }
   </TableRow>
 )
@@ -68,20 +67,20 @@ const BlankField = ({ blank, type }) => (
 const JobField = ({ job, type }) => (
   <TableRow style={bottomBorder}>
     <td colSpan={4} style={textLeftAlign}>{job.job_number} - {job.description}</td>
-    <td style={textRightAlign}>${roundNumber(job.wages_per_hour)}</td>
+    <td style={textRightAlign}>${job.wages_per_hour}</td>
     <td style={textCenterAlign}>{job.hour_per_piece}</td>
-    <td style={textRightAlign}>${roundNumber(job.direct_labor_cost)}</td>
+    <td style={textRightAlign}>${job.direct_labor_cost}</td>
     {type === 'price' &&
-    <td style={textRightAlign}>${roundNumber(job.overhead_pricing_cost)}</td>
+    <td style={textRightAlign}>${job.overhead_pricing_cost}</td>
     }
     {type === 'price' &&
-    <td style={textRightAlign}><b>${roundNumber(job.total_pricing_cost)}</b></td>
+    <td style={textRightAlign}><b>${job.total_pricing_cost}</b></td>
     }
     {type === 'inventory' &&
-    <td style={textRightAlign}>${roundNumber(job.overhead_inventory_cost)}</td>
+    <td style={textRightAlign}>${job.overhead_inventory_cost}</td>
     }
     {type === 'inventory' &&
-    <td style={textRightAlign}><b>${roundNumber(job.total_inventory_cost)}</b></td>
+    <td style={textRightAlign}><b>${job.total_inventory_cost}</b></td>
     }
   </TableRow>
 )
@@ -92,7 +91,7 @@ const ScreenField = ({ screen }) => {
       <TableRow style={bottomBorder}>
         <td colSpan={6} style={textLeftAlign}>{screen.job_number} - {screen.description}</td>
         <td colSpan={2} style={textCenterAlign}>{screen.screen_name}</td>
-        <td style={textRightAlign}><b>${roundNumber(screen.screen_cost)}</b></td>
+        <td style={textRightAlign}><b>${screen.screen_cost}</b></td>
       </TableRow>
     )
   }
@@ -112,10 +111,10 @@ const ItemCostView = ({ type }) => {
   return (
     <div style={{ width: '100%', fontSize: '0.8rem' }}>
       {type === 'price' &&
-      <h3>Price Cost($) : <b>${roundNumber(item.record.total_price_cost)}</b></h3>
+      <h3>Price Cost($) : <b>${item.record.total_price_cost}</b></h3>
       }
       {type === 'inventory' &&
-      <h3>Inventory Cost($) : <b>${roundNumber(item.record.total_inventory_cost)}</b></h3>
+      <h3>Inventory Cost($) : <b>${item.record.total_inventory_cost}</b></h3>
       }
       <Paper style={style}>
         <Table>
@@ -174,7 +173,7 @@ const ItemCostView = ({ type }) => {
               }
               { item.record.box_name &&
                 <TableRow style={bottomBorder}>
-                  <td rowSpan={item.record.secondary_box_name ? 3 : 2} style={rightColumnBorder}>
+                  <td rowSpan={2} style={rightColumnBorder}>
                     Box
                   </td>
                   <th colSpan={4} style={textLeftAlign}>Name</th>
@@ -185,23 +184,15 @@ const ItemCostView = ({ type }) => {
               { item.record.box_name &&
                 <TableRow style={bottomBorder}>
                   <td colSpan={4} style={textLeftAlign}>{item.record.box_name}</td>
-                  <td colSpan={2} style={textCenterAlign}>${roundNumber(item.record.box_cost)}</td>
+                  <td colSpan={2} style={textCenterAlign}>${item.record.box_cost}</td>
                   <td colSpan={2} style={textCenterAlign}>{item.record.number_of_pcs_per_box}</td>
-                  <td style={textRightAlign}><b>${roundNumber(item.record.item_box_cost)}</b></td>
+                  <td style={textRightAlign}><b>${item.record.item_box_cost}</b></td>
                 </TableRow>
               }
-              { item.record.secondary_box_name &&
-                <TableRow style={bottomBorder}>
-                  <td colSpan={4} style={textLeftAlign}>{item.record.secondary_box_name}</td>
-                  <td colSpan={2} style={textCenterAlign}>${roundNumber(item.record.secondary_box_cost)}</td>
-                  <td colSpan={2} style={textCenterAlign}>{item.record.number_of_pcs_per_secondary_box}</td>
-                  <td style={textRightAlign}><b>${Divider(item.record.secondary_box_cost, item.record.number_of_pcs_per_secondary_box)}</b></td>
-                </TableRow>
-              }
-
+              
               <TableRow style={bottomBorder}>
                 <td  style={rightColumnBorder}>Ink Cost</td>
-                <td colSpan={9} style={textRightAlign}><b>${roundNumber(item.record.ink_cost)}</b></td>
+                <td colSpan={9} style={textRightAlign}><b>${item.record.ink_cost}</b></td>
               </TableRow>
 
               <TableRow>
@@ -214,10 +205,10 @@ const ItemCostView = ({ type }) => {
                 }
                 </td>
                 { type === 'price' &&
-                <td style={textRightAlign}><b>${roundNumber(item.record.total_price_cost)}</b></td>
+                <td style={textRightAlign}><b>${item.record.total_price_cost}</b></td>
                 }
                 { type === 'inventory' &&
-                <td style={textRightAlign}><b>${roundNumber(item.record.total_inventory_cost)}</b></td>
+                <td style={textRightAlign}><b>${item.record.total_inventory_cost}</b></td>
                 }
 
               </TableRow>

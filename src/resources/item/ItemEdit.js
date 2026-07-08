@@ -15,6 +15,7 @@ export const ItemEdit = (props) => {
 	})
 
 	const fetchBoxes = () => restClient.getList('box-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }})
+
 	const fetchItemTypes = () => restClient.getList('item-type-list-only', {pagination: { page: 1, perPage: -1 }, sort: { field: 'id', order: 'ASC' }})
 
 	const Actions = () => (
@@ -25,7 +26,7 @@ export const ItemEdit = (props) => {
 
 	const ToolbarForm = (props) => {
 		if(!isModifyPermission()) return false
-
+	
 		return (
 			<Toolbar {...props}>
 				<SaveButton />
@@ -36,14 +37,14 @@ export const ItemEdit = (props) => {
 
 	useEffect(() => {
 		fetchBoxes().then(({data}) => {
-			const boxes = data.map(box => ({id: box.id, name: box.name}))
+			const boxes = data.map(box => ({id: box.id, name: box.name}));
 			setBoxes({ loading: false, data: boxes })
 		}).catch((err) => {
 			console.log('Error fetching boxes', err)
 		})
 
 		fetchItemTypes().then(({data}) => {
-			const item_types = data.map(box => ({id: box.type_number, name: box.description}))
+			const item_types = data.map(box => ({id: box.type_number, name: box.description}));
 			setItemsType({ loading: false, data: item_types })
 		}).catch((err) => {
 			console.log('Error fetching item types', err)
@@ -65,21 +66,14 @@ export const ItemEdit = (props) => {
 					isLoading={boxes.loading}
 					source='box_id'
 					choices={boxes.data}
-					validate={required()}
 				/>
-				<NumberInput source='number_of_pcs_per_box' label='Number Of PCS/Box' validate={required()}/>
-				<AutocompleteInput
-					isLoading={boxes.loading}
-					source='secondary_box_id'
-					choices={boxes.data}
-				/>
-				<NumberInput source='number_of_pcs_per_secondary_box' label='Number Of PCS/Secondary Box'/>
 				<AutocompleteInput
 					source='item_type_id'
 					choices={itemsType.data}
 					isLoading={itemsType.loading}
 				/>
-				<NumberInput source='ink_cost' label='Ink Cost($)'/>
+				<NumberInput source='ink_cost' label='Ink Cost($)' validate={required()}/>
+				<NumberInput source='number_of_pcs_per_box' label='Number Of PCS/Box' validate={required()}/>
 				<ItemCostView type='price'/>
 				<ItemCostView type='inventory'/>
 			</SimpleForm>
