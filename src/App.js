@@ -20,10 +20,12 @@ import { FinalCalculationCreate, FinalCalculationEdit, FinalCalculationList } fr
 import { GlobalVariableEdit } from './resources/global_variable'
 import { GlobalVariableCreate } from './resources/global_variable/GlobalVariableCreate'
 import { GlobalVariableListing } from './resources/global_variable/GlobalVariableListing'
+import { InkCreate, InkEdit, InkListing } from './resources/inks'
 import { ItemCreate, ItemEdit, ItemList } from './resources/item'
 import { ItemJobEdit, ItemJobsList } from './resources/item_job'
 import { ItemTypeCreate, ItemTypeEdit, ItemTypeListing } from './resources/item_type'
 import { JobCreate, JobEdit, JobList } from './resources/job'
+import { LocationCreate, LocationEdit, LocationList } from './resources/locations'
 import { RawMaterialCreate, RawMaterialEdit, RawMaterialListing } from './resources/raw_material'
 import { RawMaterialTypeCreate, RawMaterialTypeEdit, RawMaterialTypeList } from './resources/raw_material_type'
 import { ScreenCreate, ScreenEdit, ScreenListing } from './resources/screen'
@@ -93,6 +95,7 @@ const App = () => {
         <Resource name='item_jobs' list={ItemJobsList} edit={ItemJobEdit} />
         <Resource name='boxes' list={BoxListing} edit={BoxEdit} create={BoxCreate} />
         <Resource name='item_types' list={ItemTypeListing} edit={ItemTypeEdit} create={ItemTypeCreate} />
+        <Resource name='inks' list={InkListing} edit={InkEdit} create={InkCreate} />
 
         <Resource name='blanks_listing_item_with_costs' list={BLIWCListing} />
         <Resource name='blanks_listing_by_items' list={BLBIListing} create={BLBICreate} edit={BLBIEdit} />
@@ -105,6 +108,8 @@ const App = () => {
 
         <Resource name='final_calculations' list={FinalCalculationList} create={FinalCalculationCreate} edit={FinalCalculationEdit} />
         <Resource name='cost_calculator' create={CostCalCulatorCreate} />
+
+        <Resource name='locations' list={LocationList} edit={LocationEdit} create={LocationCreate} />
 
         <Resource name='users' list={UserListing} edit={UserEdit} create={UserCreate} />
         <Resource name='app_constants' list={GlobalVariableListing} edit={GlobalVariableEdit} create={GlobalVariableCreate} />
