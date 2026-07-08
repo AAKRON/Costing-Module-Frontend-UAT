@@ -11,7 +11,6 @@ import { useNotify } from 'react-admin'
 import { SERVER_URL } from '../config'
 import { isModifyPermission } from '../helpers/functions'
 
-// const UPLOAD_PATH = `${SERVER_URL}/items-and-blanks-listings`
 const VALID_FILE_TYPE =
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 const REDIRECT_PATH = {
@@ -39,6 +38,15 @@ const UPLOAD_PATHS = {
   item_listing_with_item_types: '/item_listing_with_item_types_dashboard',
 }
 
+const authHeaders = () => {
+  const token = localStorage.getItem('token')
+  const db = localStorage.getItem('db')
+  return {
+    Authorization: `Bearer ${token}`,
+    ...(db ? { Database: db } : {}),
+  }
+}
+
 const FileUpload = () => {
   const notify = useNotify()
 
@@ -59,16 +67,8 @@ const FileUpload = () => {
   }
 
   const handleUpload = (e) => {
-    const UPLOAD_PATH = UPLOAD_PATHS[documentType]
-    // const UPLOAD_PATH =
-    //   this.state.document_type === 'box_list_for_costing_module'
-    //     ? `${SERVER_URL}/${this.state.document_type}`
-    //     : this.state.document_type === 'raw_materials'
-    //     ? `${SERVER_URL}/${this.state.document_type}_dashboard`
-    //     : `${SERVER_URL}/items-and-blanks-listings`
-
     e.preventDefault()
-  
+
     if (!file) {
       notify('Please upload a file')
       return false
@@ -84,19 +84,21 @@ const FileUpload = () => {
       return false
     }
 
+    const UPLOAD_PATH = UPLOAD_PATHS[documentType]
     const formData = new FormData()
     formData.append('file', file)
     formData.append('document_type', documentType)
 
-    // axios.post(UPLOAD_PATH, formData).then((response) => {
     setLoading(true)
-    axios.post(`${SERVER_URL}${UPLOAD_PATH}`, formData).then((response) => {
+    axios.post(`${SERVER_URL}${UPLOAD_PATH}`, formData, {
+      headers: authHeaders(),
+    }).then((response) => {
       notify(response.data.message)
       setTimeout(() => {
         location.replace(REDIRECT_PATH[documentType])
       }, 500)
     }).catch((err) => {
-      notify(err.response.data.message)
+      notify(err?.response?.data?.message || 'Upload failed')
       setLoading(false)
     })
   }
@@ -104,15 +106,29 @@ const FileUpload = () => {
   const handleDownload = (e) => {
     e.preventDefault()
 
-    if(!documentType){
+    if (!documentType) {
       notify('Please select a type')
       return
     }
 
-    window.open(
+    axios.get(
       `${SERVER_URL}/${documentType}_download/${documentType}.xlsx`,
-      '_blank'
-    )
+      {
+        responseType: 'blob',
+        headers: authHeaders(),
+      }
+    ).then((response) => {
+      const url = window.URL.createObjectURL(new Blob([response.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', `${documentType}.xlsx`)
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.URL.revokeObjectURL(url)
+    }).catch((err) => {
+      notify('Download failed, please try again')
+    })
   }
 
   useEffect(() => {
@@ -120,12 +136,8 @@ const FileUpload = () => {
     style.type = 'text/css'
     style.innerHTML = `
       @keyframes spin {
-        0% {
-          transform: rotate(0deg)
-        }
-        100% {
-          transform: rotate(360deg)
-        }
+        0% { transform: rotate(0deg) }
+        100% { transform: rotate(360deg) }
       }
     `
     document.getElementsByTagName('head')[0].appendChild(style)
@@ -183,7 +195,7 @@ const FileUpload = () => {
       </Button>
 
       {loading && <div style={spinnerStyle} />}
-    </div> 
+    </div>
   )
 }
 
