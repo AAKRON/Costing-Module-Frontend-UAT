@@ -189,6 +189,24 @@ const ItemCostView = ({ type }) => {
                   <td style={textRightAlign}><b>${item.record.item_box_cost}</b></td>
                 </TableRow>
               }
+              { item.record.secondary_box_name &&
+                <TableRow style={bottomBorder}>
+                  <td rowSpan={2} style={rightColumnBorder}>
+                    Secondary Box
+                  </td>
+                  <th colSpan={4} style={textLeftAlign}>Name</th>
+                  <th colSpan={2} style={textCenterAlign}>Cost</th>
+                  <th colSpan={2} style={textCenterAlign}>Number Of pcs/box</th>
+                </TableRow>
+              }
+              { item.record.secondary_box_name &&
+                <TableRow style={bottomBorder}>
+                  <td colSpan={4} style={textLeftAlign}>{item.record.secondary_box_name}</td>
+                  <td colSpan={2} style={textCenterAlign}>${item.record.secondary_box_cost}</td>
+                  <td colSpan={2} style={textCenterAlign}>{item.record.number_of_pcs_per_secondary_box}</td>
+                  <td style={textRightAlign}><b>${item.record.secondary_box_cost}</b></td>
+                </TableRow>
+              }
               
               <TableRow style={bottomBorder}>
                 <td  style={rightColumnBorder}>Ink Cost</td>
