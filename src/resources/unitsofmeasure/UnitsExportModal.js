@@ -7,7 +7,6 @@ import {
   Divider,
   TextField
 } from '@mui/material'
-import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { SERVER_URL } from '../../config'
 import { stringHelpers } from '../../helpers/stringHelpers'
@@ -32,27 +31,6 @@ const styles = {
   },
 }
 
-const downloadWithAuth = (url, filename) => {
-  const token = localStorage.getItem('token')
-  const db = localStorage.getItem('db')
-  const headers = {
-    Authorization: `Bearer ${token}`,
-    ...(db ? { Database: db } : {}),
-  }
-  axios.get(url, { responseType: 'blob', headers }).then((response) => {
-    const blobUrl = window.URL.createObjectURL(new Blob([response.data]))
-    const link = document.createElement('a')
-    link.href = blobUrl
-    link.setAttribute('download', filename)
-    document.body.appendChild(link)
-    link.click()
-    link.remove()
-    window.URL.revokeObjectURL(blobUrl)
-  }).catch((err) => {
-    console.error('Download failed', err)
-  })
-}
-
 const UnitsExportModal = () => {
   const [open, setOpen] = useState(false)
   const [blanks, setBlanks] = useState([])
@@ -69,12 +47,12 @@ const UnitsExportModal = () => {
 
   const handleBlankPriceCostDownload = (e) => {
     e.preventDefault()
-    downloadWithAuth(`${SERVER_URL}/units-download/listing-units.csv`, 'listing-units.csv')
+    window.open(`${SERVER_URL}/units-download/listing-units.csv`, '_blank')
   }
 
   const handleBlankInventoryCostDownload = (e) => {
     e.preventDefault()
-    downloadWithAuth(`${SERVER_URL}/units-download/listing-units.csv`, 'listing-units.csv')
+    window.open(`${SERVER_URL}/units-download/listing-units.csv`, '_blank')
   }
 
   const handleSeletedBlankPriceCostDownload = (e) => {
@@ -84,9 +62,9 @@ const UnitsExportModal = () => {
       return stringHelpers.extractLeadingNumber(blank)
     })
 
-    downloadWithAuth(
+    window.open(
       `${SERVER_URL}/units-download/listing-units.csv?blanks=${blanks.toString()}`,
-      'listing-units.csv'
+      '_blank'
     )
   }
 
@@ -97,9 +75,9 @@ const UnitsExportModal = () => {
       return stringHelpers.extractLeadingNumber(blank)
     })
 
-    downloadWithAuth(
+    window.open(
       `${SERVER_URL}/units-download/listing-units.csv?blanks=${blanks.toString()}`,
-      'listing-units.csv'
+      '_blank'
     )
   }
 
@@ -209,3 +187,4 @@ const UnitsExportModal = () => {
 }
 
 export default UnitsExportModal
+

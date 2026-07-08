@@ -1,6 +1,5 @@
 import { Edit, ListButton, SimpleForm, TextInput, TopToolbar, required, useEditController } from 'react-admin'
 import AddBlankModal from '../../components/AddBlankModal'
-import CopyBlankModal from '../../components/CopyBlankModal'
 import ListingItemCost from '../../components/ListingItemCost'
 import { isAdmin, isModifyPermission } from '../../helpers/functions'
 
@@ -14,13 +13,9 @@ export const BLBIEdit = (props) => {
   const Actions = ({ data, docNumber }) => (
     <TopToolbar>
       <ListButton />
-
+  
       {isAdmin() && isModifyPermission() && (
         <AddBlankModal data={data} docNumber={docNumber} />
-      )}
-
-      {isAdmin() && isModifyPermission() && (
-        <CopyBlankModal data={data} docNumber={docNumber} />
       )}
     </TopToolbar>
   )
