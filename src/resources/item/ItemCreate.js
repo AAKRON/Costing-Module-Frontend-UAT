@@ -105,6 +105,13 @@ const ItemCreate = (props) => {
 				/>
 				<NumberInput source='number_of_pcs_per_box' label='Number Of PCS/Box' validate={required()}/>
 				<AutocompleteInput
+					isLoading={boxes.loading}
+					source='secondary_box_id'
+					label='Secondary Box'
+					choices={boxes.data}
+				/>
+				<NumberInput source='number_of_pcs_per_secondary_box' label='Number Of PCS/Secondary Box'/>
+				<AutocompleteInput
 					isLoading={itemsType.loading}
 					source='item_type_id'
 					choices={itemsType.data}
