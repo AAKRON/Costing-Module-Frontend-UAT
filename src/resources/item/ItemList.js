@@ -48,6 +48,8 @@ export const ItemList = (props) => (
         <ChipField source='type_description' label='Item Type' />
         <ChipField source='box_name' />
         <TextField source='number_of_pcs_per_box' label='Pcs/Box' />
+        <ChipField source='secondary_box_name' label='Secondary Box' />
+        <TextField source='number_of_pcs_per_secondary_box' label='Pcs/Secondary Box' />
         <FunctionField
           source='ink_cost'
           label='Ink Cost($)'
@@ -62,6 +64,14 @@ export const ItemList = (props) => (
           render={
             record => {
               return <span>${record.box_cost}</span>
+          }}
+        />
+        <FunctionField
+          source='secondary_box_cost'
+          label='Secondary Box Cost($)'
+          render={
+            record => {
+              return <span>${record.secondary_box_cost}</span>
           }}
         />
         <FunctionField
