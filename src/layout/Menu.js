@@ -96,6 +96,7 @@ export default () => {
           { to: 'item_jobs', label: 'Jobs' },
           { to: 'boxes', label: 'Boxes' },
           { to: 'item_types', label: 'Types' },
+          { to: 'inks', label: 'Inks' },
         ],
       })}
       <Divider style={{ margin: '0' }} />
