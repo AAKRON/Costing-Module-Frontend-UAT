@@ -3,11 +3,13 @@ import ShowIcon from '@mui/icons-material/Visibility'
 import { Card } from '@mui/material'
 import React from 'react'
 import { CreateButton, Datagrid, EditButton, FunctionField, List, TextField, TopToolbar } from 'react-admin'
-import { isModificationPermission, roundNumber } from '../../helpers/functions'
+import { isModifyPermission } from '../../helpers/functions'
 import { InkFilter } from './InkFilter'
 
+const roundNumber = (n) => parseFloat(n || 0).toFixed(2)
+
 export const InkListing = (props) => {
-  if(!isModificationPermission()) return null
+  if(!isModifyPermission()) return null
 
   const Actions = ({
     filters,
@@ -26,7 +28,7 @@ export const InkListing = (props) => {
           context: 'button',
         })}
   
-      {isModificationPermission() && <CreateButton />}
+      {isModifyPermission() && <CreateButton />}
     </TopToolbar>
   )
 
@@ -54,8 +56,8 @@ export const InkListing = (props) => {
           />
 
           <EditButton
-            label={isModificationPermission() ? 'Edit' : 'View'}
-            icon={isModificationPermission() ? <EditIcon /> : <ShowIcon />}
+            label={isModifyPermission() ? 'Edit' : 'View'}
+            icon={isModifyPermission() ? <EditIcon /> : <ShowIcon />}
           />
         </Datagrid>
       </List>

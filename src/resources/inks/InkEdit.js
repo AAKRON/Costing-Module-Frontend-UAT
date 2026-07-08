@@ -1,6 +1,6 @@
 import React from 'react'
 import { DeleteButton, Edit, ListButton, NumberInput, SaveButton, SimpleForm, TextInput, Toolbar, TopToolbar, required } from 'react-admin'
-import { isModificationPermission } from '../../helpers/functions'
+import { isModifyPermission } from '../../helpers/functions'
 
 const Actions = () => (
   <TopToolbar>
@@ -9,7 +9,7 @@ const Actions = () => (
 )
 
 const ToolbarForm = (props) => {
-  if(!isModificationPermission()) return false
+  if(!isModifyPermission()) return false
 
   return (
     <Toolbar {...props}>

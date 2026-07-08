@@ -3,7 +3,7 @@ import ShowIcon from '@mui/icons-material/Visibility'
 import { Card } from '@mui/material'
 import React from 'react'
 import { CreateButton, Datagrid, EditButton, FunctionField, List, TextField, TopToolbar } from 'react-admin'
-import { isModificationPermission } from '../../helpers/functions'
+import { isModifyPermission } from '../../helpers/functions'
 import { LocationFilter } from './LocationFilter'
 
 const Actions = ({
@@ -23,7 +23,7 @@ const Actions = ({
       context: 'button',
     })}
   
-    {isModificationPermission() && <CreateButton />}
+    {isModifyPermission() && <CreateButton />}
   </TopToolbar>
 )
 
@@ -49,8 +49,8 @@ export const LocationList = (props) => {
           />
 
           <EditButton
-            label={isModificationPermission() ? 'Edit' : 'View'}
-            icon={isModificationPermission() ? <EditIcon /> : <ShowIcon />}
+            label={isModifyPermission() ? 'Edit' : 'View'}
+            icon={isModifyPermission() ? <EditIcon /> : <ShowIcon />}
           />
         </Datagrid>
       </List>

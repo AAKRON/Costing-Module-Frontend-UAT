@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { Create, ListButton, NumberInput, SaveButton, SimpleForm, TextInput, Toolbar, TopToolbar, required, useNotify, useRedirect, useResourceContext } from 'react-admin'
-import { isModificationPermission } from '../../helpers/functions'
+import { isModifyPermission } from '../../helpers/functions'
 
 export const InkCreate = (props) => {
-  if(!isModificationPermission()){
+  if(!isModifyPermission()){
     return null
   }
 

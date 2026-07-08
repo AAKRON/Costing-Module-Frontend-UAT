@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { BooleanInput, Create, ListButton, SaveButton, SimpleForm, TextInput, Toolbar, TopToolbar, required, useNotify, useRedirect, useResourceContext } from 'react-admin'
-import { isModificationPermission } from '../../helpers/functions'
+import { isModifyPermission } from '../../helpers/functions'
 
 export const LocationCreate = (props) => {
-  if(!isModificationPermission()){
+  if(!isModifyPermission()){
     return null
   }
 
