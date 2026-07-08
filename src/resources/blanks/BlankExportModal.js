@@ -7,6 +7,7 @@ import {
   Divider,
   TextField
 } from '@mui/material'
+import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { SERVER_URL } from '../../config'
 import { stringHelpers } from '../../helpers/stringHelpers'
@@ -30,6 +31,27 @@ const styles = {
   },
 }
 
+const downloadWithAuth = (url, filename) => {
+  const token = localStorage.getItem('token')
+  const db = localStorage.getItem('db')
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    ...(db ? { Database: db } : {}),
+  }
+  axios.get(url, { responseType: 'blob', headers }).then((response) => {
+    const blobUrl = window.URL.createObjectURL(new Blob([response.data]))
+    const link = document.createElement('a')
+    link.href = blobUrl
+    link.setAttribute('download', filename)
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    window.URL.revokeObjectURL(blobUrl)
+  }).catch((err) => {
+    console.error('Download failed', err)
+  })
+}
+
 const BlankExportModal = () => {
   const [open, setOpen] = useState(false)
   const [blanks, setBlanks] = useState([])
@@ -46,15 +68,12 @@ const BlankExportModal = () => {
 
   const handleBlankPriceCostDownload = (e) => {
     e.preventDefault()
-    window.open(`${SERVER_URL}/blank-download/blank-price-cost.csv`, '_blank')
+    downloadWithAuth(`${SERVER_URL}/blank-download/blank-price-cost.csv`, 'blank-price-cost.csv')
   }
 
   const handleBlankInventoryCostDownload = (e) => {
     e.preventDefault()
-    window.open(
-      `${SERVER_URL}/blank-download/blank-inventory-cost.csv`,
-      '_blank'
-    )
+    downloadWithAuth(`${SERVER_URL}/blank-download/blank-inventory-cost.csv`, 'blank-inventory-cost.csv')
   }
 
   const handleSeletedBlankPriceCostDownload = (e) => {
@@ -64,9 +83,9 @@ const BlankExportModal = () => {
       return stringHelpers.extractLeadingNumber(blank)
     })
   
-    window.open(
+    downloadWithAuth(
       `${SERVER_URL}/blank-download/blank-price-cost.csv?blanks=${blanks.toString()}`,
-      '_blank'
+      'blank-price-cost.csv'
     )
   }
 
@@ -77,9 +96,9 @@ const BlankExportModal = () => {
       return stringHelpers.extractLeadingNumber(blank)
     })
 
-    window.open(
+    downloadWithAuth(
       `${SERVER_URL}/blank-download/blank-inventory-cost.csv?blanks=${blanks.toString()}`,
-      '_blank'
+      'blank-inventory-cost.csv'
     )
   }
 
