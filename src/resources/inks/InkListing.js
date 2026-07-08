@@ -6,7 +6,7 @@ import { CreateButton, Datagrid, EditButton, FunctionField, List, TextField, Top
 import { isModifyPermission } from '../../helpers/functions'
 import { InkFilter } from './InkFilter'
 
-const roundNumber = (n) => parseFloat(n || 0).toFixed(2)
+const roundNumber = (n) => parseFloat(n || 0).toFixed(4)
 
 export const InkListing = (props) => {
   if(!isModifyPermission()) return null
