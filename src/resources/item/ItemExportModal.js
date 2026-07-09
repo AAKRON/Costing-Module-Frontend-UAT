@@ -7,6 +7,7 @@ import {
   Divider,
   TextField
 } from '@mui/material'
+import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { SERVER_URL } from '../../config'
 import { stringHelpers } from '../../helpers/stringHelpers'
@@ -30,6 +31,27 @@ const styles = {
   },
 }
 
+const downloadWithAuth = (url, filename) => {
+  const token = localStorage.getItem('token')
+  const db = localStorage.getItem('db')
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    ...(db ? { Database: db } : {}),
+  }
+  axios.get(url, { responseType: 'blob', headers }).then((response) => {
+    const blobUrl = window.URL.createObjectURL(new Blob([response.data]))
+    const link = document.createElement('a')
+    link.href = blobUrl
+    link.setAttribute('download', filename)
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    window.URL.revokeObjectURL(blobUrl)
+  }).catch((err) => {
+    console.error('Download failed', err)
+  })
+}
+
 const ItemExportModal = () => {
   const [open, setOpen] = useState(false)
   const [items, setItems] = useState([])
@@ -46,15 +68,12 @@ const ItemExportModal = () => {
 
   const handleItemPriceCostDownload = (e) => {
     e.preventDefault()
-    window.open(`${SERVER_URL}/item-download/item-price-cost.csv`, '_blank')
+    downloadWithAuth(`${SERVER_URL}/item-download/item-price-cost.csv`, 'item-price-cost.csv')
   }
 
   const handleItemInventoryCostDownload = (e) => {
     e.preventDefault()
-    window.open(
-      `${SERVER_URL}/item-download/item-inventory-cost.csv`,
-      '_blank'
-    )
+    downloadWithAuth(`${SERVER_URL}/item-download/item-inventory-cost.csv`, 'item-inventory-cost.csv')
   }
 
   const handleSeletedItemPriceCostDownload = (e) => {
@@ -64,9 +83,9 @@ const ItemExportModal = () => {
       return stringHelpers.extractLeadingNumber(item)
     })
 
-    window.open(
+    downloadWithAuth(
       `${SERVER_URL}/item-download/item-price-cost.csv?items=${items.toString()}`,
-      '_blank'
+      'item-price-cost.csv'
     )
   }
 
@@ -77,9 +96,9 @@ const ItemExportModal = () => {
       return stringHelpers.extractLeadingNumber(item)
     })
   
-    window.open(
+    downloadWithAuth(
       `${SERVER_URL}/item-download/item-inventory-cost.csv?items=${items.toString()}`,
-      '_blank'
+      'item-inventory-cost.csv'
     )
   }
 
@@ -189,4 +208,3 @@ const ItemExportModal = () => {
 }
 
 export default ItemExportModal
-

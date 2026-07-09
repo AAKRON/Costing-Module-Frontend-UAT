@@ -7,6 +7,7 @@ import {
   Divider,
   TextField
 } from '@mui/material'
+import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { SERVER_URL } from '../../config'
 import { stringHelpers } from '../../helpers/stringHelpers'
@@ -31,6 +32,27 @@ const styles = {
   },
 }
 
+const downloadWithAuth = (url, filename) => {
+  const token = localStorage.getItem('token')
+  const db = localStorage.getItem('db')
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    ...(db ? { Database: db } : {}),
+  }
+  axios.get(url, { responseType: 'blob', headers }).then((response) => {
+    const blobUrl = window.URL.createObjectURL(new Blob([response.data]))
+    const link = document.createElement('a')
+    link.href = blobUrl
+    link.setAttribute('download', filename)
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    window.URL.revokeObjectURL(blobUrl)
+  }).catch((err) => {
+    console.error('Download failed', err)
+  })
+}
+
 const VendorExportModal = () => {
   const [open, setOpen] = useState(false)
   const [blanks, setBlanks] = useState([])
@@ -47,12 +69,12 @@ const VendorExportModal = () => {
 
   const handleBlankPriceCostDownload = (e) => {
     e.preventDefault()
-    window.open(`${SERVER_URL}/vendors-download/vendors-listing.csv`, '_blank')
+    downloadWithAuth(`${SERVER_URL}/vendors-download/vendors-listing.csv`, 'vendors-listing.csv')
   }
 
   const handleBlankInventoryCostDownload = (e) => {
     e.preventDefault()
-    window.open(`${SERVER_URL}/vendors-download/vendors-listing.csv`, '_blank')
+    downloadWithAuth(`${SERVER_URL}/vendors-download/vendors-listing.csv`, 'vendors-listing.csv')
   }
 
   const handleSeletedBlankPriceCostDownload = (e) => {
@@ -62,9 +84,9 @@ const VendorExportModal = () => {
       return stringHelpers.extractLeadingNumber(blank)
     })
 
-    window.open(
+    downloadWithAuth(
       `${SERVER_URL}/vendors-download/vendors-listing.csv?blanks=${blanks.toString()}`,
-      '_blank'
+      'vendors-listing.csv'
     )
   }
 
@@ -75,9 +97,9 @@ const VendorExportModal = () => {
       return stringHelpers.extractLeadingNumber(blank)
     })
 
-    window.open(
+    downloadWithAuth(
       `${SERVER_URL}/vendors-download/vendors-listing.csv?blanks=${blanks.toString()}`,
-      '_blank'
+      'vendors-listing.csv'
     )
   }
 
@@ -133,15 +155,6 @@ const VendorExportModal = () => {
             Vendors Listing
           </Button>
 
-          {/* <Button
-            variant='contained'
-            color='error'
-            style={styles.RaisedButton.SecondButton}
-            onClick={handleBlankInventoryCostDownload}
-          >
-            <FileFileDownload />
-            Inventory Cost Blanks
-          </Button> */}
           <Divider />
 
           <h2 style={{ marginBottom: 0 }}>Export Selected Vendors</h2>
@@ -168,23 +181,12 @@ const VendorExportModal = () => {
                 <FileFileDownload />
                 Export Selected Vendors
               </Button>
-
-              {/* <Button
-                variant='contained'
-                color='info'
-                style={styles.RaisedButton.SecondButton}
-                onClick={handleSeletedBlankInventoryCostDownload}
-              >
-                <FileFileDownload />
-                Inventory Cost Blanks
-              </Button> */}
             </>
           )}
         </div>
       </Dialog>
     </span>
-  )
-} 
+  ) 
+}
 
 export default VendorExportModal
-

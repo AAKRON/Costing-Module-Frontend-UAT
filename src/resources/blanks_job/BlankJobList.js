@@ -8,14 +8,14 @@ import { isModifyPermission } from '../../helpers/functions'
 const BlanksJobFilter = (props) => (
   <Filter {...props}>
     <NumberInput
-      label='Search by number of jobs'
-      source='number_of_jobs'
+      label='Search by blank number'
+      source='blank_number'
       alwaysOn
     />
     <TextInput label='Search by description' source='description' alwaysOn />
     <NumberInput
-      label='Search by blank number'
-      source='blank_number'
+      label='Search by number of jobs'
+      source='number_of_jobs'
       alwaysOn
     />
   </Filter>
