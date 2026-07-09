@@ -8,7 +8,7 @@ export const BLBIEdit = (props) => {
   const { record } = useEditController(props)
 
   if (!record) {
-    return null
+    return <div style={{ padding: '2rem' }}>Loading...</div>
   }
 
   const Actions = ({ data, docNumber }) => (
@@ -19,7 +19,7 @@ export const BLBIEdit = (props) => {
         <AddBlankModal data={data} docNumber={docNumber} />
       )}
 
-      {isAdmin() && isModifyPermission() && (
+      {isModifyPermission() && (
         <CopyBlankModal data={data} docNumber={docNumber} />
       )}
     </TopToolbar>

@@ -33,7 +33,7 @@ export const BlankJobEdit = (props) => {
   const { record } = useEditController(props)
 
   if (!record) {
-    return null
+    return <div style={{ padding: '2rem' }}>Loading...</div>
   }
 
   return (

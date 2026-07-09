@@ -170,8 +170,8 @@ const ListingItemCost = ({ blanksInitial, resource, docNumber }) => {
       <TableRow key={index} style={{ borderTop: '1px solid #cdcdcd' }}>
         <th style={{ fontWeight: 400, height: '40px' }}>{blank.blank_number}</th>
         <th style={{ fontWeight: 400, textAlign: 'left' }}>{blank.blank_description || '-'}</th>
-        <th style={{ fontWeight: 400 }}>{blank.mult}</th>
-        <th style={{ fontWeight: 400 }}>{blank.div}</th>
+        <th style={{ fontWeight: 400 }}>{blank.mult ?? blank.multiplication}</th>
+        <th style={{ fontWeight: 400 }}>{blank.div ?? blank.division}</th>
         {isModifyPermission() &&
           <th>
             <IconButton
@@ -201,7 +201,7 @@ const ListingItemCost = ({ blanksInitial, resource, docNumber }) => {
   }, [])
 
   useEffect(() => {
-    setBlanks(blanksInitial)
+    setBlanks((blanksInitial || []).filter(b => b.blank_number != null))
   }, [blanksInitial])
 
   if(blanks === undefined) return <div>Loading...</div>
