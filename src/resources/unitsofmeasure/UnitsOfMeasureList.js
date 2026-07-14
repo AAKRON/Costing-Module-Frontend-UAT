@@ -31,8 +31,8 @@ const Actions = ({
 
 const FilterSearch = (props) => (
   <Filter {...props}>
-    <TextInput label='Search by unit abbreviation' source='abbr' alwaysOn />
     <TextInput label='Search by unit name' source='name' alwaysOn />
+    <TextInput label='Search by unit abbreviation' source='abbr' alwaysOn />
   </Filter>
 )
 

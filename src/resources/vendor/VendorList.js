@@ -9,8 +9,8 @@ import VendorExportModal from './VendorExportModal'
 export const VendorList = (props) => {
   const FilterSearch = (props) => (
     <Filter {...props}>
-      <TextInput label='Search by vendor code ' source='code' alwaysOn />
-      <TextInput label='Search by vendor name ' source='name' alwaysOn />
+      <TextInput label='Search by vendor name' source='name' alwaysOn />
+      <TextInput label='Search by vendor code' source='code' alwaysOn />
     </Filter>
   )
 

@@ -4,10 +4,8 @@ import { Filter, NumberInput, ReferenceInput, SelectInput, TextInput } from 'rea
 export const JobFilter = (props) => {
   return (
     <Filter {...props}>
-      <TextInput label='Search by description' source='description' alwaysOn />
       <NumberInput label='Search by job number' source='job_number' alwaysOn />
-
-      <TextInput label='Search by Wages/HR' source='wages_hr' />
+      <TextInput label='Search by description' source='description' alwaysOn />
       <ReferenceInput
         label='Search by screen size'
         reference='screens'
@@ -17,6 +15,7 @@ export const JobFilter = (props) => {
       >
         <SelectInput optionText='screen_size' />
       </ReferenceInput>
+      <NumberInput label='Search by Wages/HR' source='wages_per_hour' />
     </Filter>
   )
 }

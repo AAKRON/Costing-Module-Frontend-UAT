@@ -31,9 +31,9 @@ const Actions = ({
 
 const FilterSearch = (props) => (
   <Filter {...props}>
-    <NumberInput label='Search by color cost' source='cost_of_color' alwaysOn />
-    <TextInput label='Search by color name' source='name' alwaysOn />
     <TextInput label='Search by color code' source='code' alwaysOn />
+    <TextInput label='Search by color name' source='name' alwaysOn />
+    <NumberInput label='Search by color cost' source='cost_of_color' alwaysOn />
   </Filter>
 )
 

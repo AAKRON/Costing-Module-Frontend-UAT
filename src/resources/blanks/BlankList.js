@@ -9,14 +9,11 @@ import BlankExportModal from './BlankExportModal'
 const BlankFilter = (props) => (
   <Filter {...props}>
     <NumberInput
-      label='Search by inventory cost'
-      source='total_blank_cost_for_inventory'
+      label='Search by blank number'
+      source='blank_number'
+      alwaysOn
     />
-    <NumberInput
-      label='Search by price cost'
-      source='total_blank_cost_for_price'
-    />
-    <NumberInput label='Search by cost' source='cost' alwaysOn />
+    <TextInput label='Search by description' source='description' alwaysOn />
     <ReferenceInput
       label='Search by blank type'
       reference='blank_types'
@@ -26,11 +23,14 @@ const BlankFilter = (props) => (
     >
       <SelectInput optionText='description' />
     </ReferenceInput>
-    <TextInput label='Search by description' source='description' alwaysOn />
+    <NumberInput label='Search by cost' source='cost' alwaysOn />
     <NumberInput
-      label='Search by blank number'
-      source='blank_number'
-      alwaysOn
+      label='Search by price cost'
+      source='total_blank_cost_for_price'
+    />
+    <NumberInput
+      label='Search by inventory cost'
+      source='total_blank_cost_for_inventory'
     />
   </Filter>
 )

@@ -7,12 +7,12 @@ import { isModifyPermission } from '../../helpers/functions'
 
 const BlankTypeFilter = (props) => (
   <Filter {...props}>
-    <TextInput label='Search by description' source='description' alwaysOn />
     <NumberInput
       label='Search by blank type number'
       source='type_number'
       alwaysOn
     />
+    <TextInput label='Search by description' source='description' alwaysOn />
   </Filter>
 )
 
