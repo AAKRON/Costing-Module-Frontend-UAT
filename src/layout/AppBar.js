@@ -8,8 +8,11 @@ const AppBar = () => {
 
   useEffect(() => {
     restClient.getList('locations', { pagination: { page: 1, perPage: 100 }, sort: { field: 'id', order: 'ASC' } })
-      .then(({ data }) => setLocations(data.filter(l => l.active_flag)))
-      .catch(err => console.log('Error fetching locations', err))
+      .then(({ data }) => {
+        console.log('[AppBar] locations response:', data)
+        setLocations(data.filter(l => l.active_flag !== false && l.active_flag !== 0))
+      })
+      .catch(err => console.log('[AppBar] Error fetching locations', err))
   }, [])
 
   const handleChange = (e) => {
