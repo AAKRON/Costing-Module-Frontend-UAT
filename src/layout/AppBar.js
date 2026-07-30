@@ -7,7 +7,10 @@ const AppBar = () => {
   const [locationId, setLocationId] = useState(localStorage.getItem('location_id') || '')
 
   useEffect(() => {
-    restClient.getList('locations', { pagination: { page: 1, perPage: 100 }, sort: { field: 'id', order: 'ASC' } })
+    // LocationsController#index paginates with a hardcoded per_page=10 and
+    // derives the page from _end/10 (ignoring _start) - perPage must be 10
+    // here for _end to resolve to page 1 instead of some empty later page.
+    restClient.getList('locations', { pagination: { page: 1, perPage: 10 }, sort: { field: 'id', order: 'ASC' } })
       .then(({ data }) => {
         console.log('[AppBar] locations response:', data)
         setLocations(data.filter(l => l.active_flag !== false && l.active_flag !== 0))
