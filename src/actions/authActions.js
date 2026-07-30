@@ -8,6 +8,7 @@ export function setAuthorizationToken(url, options = {}) {
   const token = localStorage.getItem('token');
   options.headers.set('Authorization', `Bearer ${token}`);
   options.headers.set('Database', localStorage.getItem('db') || '')
+  options.headers.set('Location', localStorage.getItem('location_id') || '')
   return fetchUtils.fetchJson(url, options);
 }
 
@@ -16,6 +17,7 @@ export function logout() {
   localStorage.removeItem('username');
   localStorage.removeItem('role');
   localStorage.removeItem('db');
+  localStorage.removeItem('location_id');
   localStorage.removeItem('yearFrozen');
   localStorage.removeItem('tokenExpiry');
   return Promise.resolve();
