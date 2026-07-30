@@ -7,6 +7,7 @@ import RawMaterialIcon from '@mui/icons-material/Dns'
 import FileDownloadRounded from '@mui/icons-material/FileDownloadRounded'
 import JobIcon from '@mui/icons-material/Gavel'
 import BlankIcon from '@mui/icons-material/Loyalty'
+import LocationIcon from '@mui/icons-material/LocationOn'
 import AdminIcon from '@mui/icons-material/Settings'
 import ItemIcon from '@mui/icons-material/ViewStream'
 import { Divider, MenuItem, Popover } from '@mui/material'
@@ -122,6 +123,9 @@ export default () => {
           { to: 'vendors', label: 'Vendor' },
         ],
       })}
+      <Divider style={{ margin: '0' }} />
+
+      {Option({ icon: <LocationIcon />, to: '/locations', label: 'Locations' })}
       <Divider style={{ margin: '0' }} />
 
       {Option({ icon: <FinalCalcIcon />, to: '/final_calculations', label: 'Final Calc' })}
