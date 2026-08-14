@@ -45,12 +45,12 @@ const BlankField = ({ blank, type }) => (
     <td colSpan={2} style={textLeftAlign}>{blank.blank_type}</td>
     {type === 'price' &&
       <td style={textRightAlign}>
-        <Link to={`blanks/${blank.blank_number}`} style={{ textDecoration : 'none', color : '#00bcd4'}}>${blank.total_blank_cost_for_price}</Link>
+        <Link to={`/blanks/${blank.id}`} style={{ textDecoration : 'none', color : '#00bcd4'}}>${blank.total_blank_cost_for_price}</Link>
       </td>
     }
     {type === 'inventory' &&
       <td style={textRightAlign}>
-        <Link to={`blanks/${blank.blank_number}`} style={{ textDecoration : 'none', color : '#00bcd4'}}>${blank.total_blank_cost_for_inventory}</Link>
+        <Link to={`/blanks/${blank.id}`} style={{ textDecoration : 'none', color : '#00bcd4'}}>${blank.total_blank_cost_for_inventory}</Link>
       </td>
     }
     <td style={textCenterAlign}>{blank.multiplication}</td>
