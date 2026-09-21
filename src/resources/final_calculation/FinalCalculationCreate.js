@@ -135,16 +135,13 @@ const FinalCalculationCreate = (props) => {
           isLoading={colors.loading}
           source='colorant_two'
           choices={colors.data}
-          validate={required()}
         />
 
-        <NumberInput source='number_of_pieces_per_unit_two' validate={required()} />
-        <NumberInput source='percentage_of_colorant_two' validate={required()}/>
+        <NumberInput source='number_of_pieces_per_unit_two' />
+        <NumberInput source='percentage_of_colorant_two' />
       </SimpleForm>
     </Create>
   )
 }
 
 export default FinalCalculationCreate
-
-
