@@ -17,9 +17,9 @@ import { useEffect, useState } from 'react'
 import { useNotify } from 'react-admin'
 import { SERVER_URL } from '../config/'
 
-function AccessChip({ isActive }) {
-  if (isActive) return <Chip label='Read / Write' size='small' color='success' />
-  return             <Chip label='Read Only'     size='small' color='default' variant='outlined' />
+function AccessChip({ frozen }) {
+  if (frozen) return <Chip label='Read Only'   size='small' color='default' variant='outlined' />
+  return             <Chip label='Read / Write' size='small' color='success' />
 }
 
 export default () => {
@@ -150,7 +150,7 @@ export default () => {
                       )}
                     </TableCell>
                     <TableCell>
-                      <AccessChip isActive={isActive} />
+                      <AccessChip frozen={y.frozen} />
                     </TableCell>
                   </TableRow>
                 )
