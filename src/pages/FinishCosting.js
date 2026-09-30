@@ -70,7 +70,7 @@ export default () => {
   }
 
   const erpSummary = result?.erp_response
-  const isLocalTarget = target?.local_only === true
+  const isProductionTarget = target?.erp_sync_url?.includes('arc1967.tiory.com')
 
   return (
     <Card style={{ margin: '2rem', padding: '1.5rem', maxWidth: 720 }}>
@@ -85,10 +85,14 @@ export default () => {
         <CircularProgress />
       ) : (
         <>
-          <Alert severity='warning' style={{ marginBottom: '1.5rem' }}>
-            Test mode: this build only pushes to a local ERP instance. Target:{' '}
+          <Alert severity={isProductionTarget ? 'error' : 'warning'} style={{ marginBottom: '1.5rem' }}>
+            {isProductionTarget ? 'LIVE production target:' : 'Test/clone target:'}{' '}
             <strong>{target?.erp_sync_url || 'not configured'}</strong>
-            {!isLocalTarget && ' (not recognized as local - sync will be blocked)'}
+            {target?.allowed_hosts && (
+              <div style={{ marginTop: '0.5rem', fontSize: '0.85em', opacity: 0.8 }}>
+                Allowed hosts: {target.allowed_hosts.join(', ')}
+              </div>
+            )}
           </Alert>
 
           <Typography variant='body2' style={{ marginBottom: '1rem' }}>
