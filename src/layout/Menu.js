@@ -143,6 +143,7 @@ export default () => {
               { to: 'users',            label: 'Users' },
               { to: 'app_constants',    label: 'Global' },
               { to: 'year-management',  label: 'Year Management' },
+              { to: 'finish-costing',   label: 'Finish Costing' },
             ],
           })}
         </div>
