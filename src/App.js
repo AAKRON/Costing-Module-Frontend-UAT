@@ -6,6 +6,7 @@ import Dashboard from './layout/Dashboard'
 import Layout from './layout/Layout'
 import authClient from './providers/authClient'
 import restClient from './providers/restClient'
+import FinishCosting from './pages/FinishCosting'
 import YearManagement from './pages/YearManagement'
 import { BlankTypeCreate, BlankTypeEdit } from './resources/blank_type'
 import { BlankTypeListing } from './resources/blank_type/BlankTypeListing'
@@ -80,6 +81,7 @@ const App = () => {
       >
         <CustomRoutes>
           <Route path='/year-management' element={<YearManagement />} />
+          <Route path='/finish-costing' element={<FinishCosting />} />
         </CustomRoutes>
 
         <Resource name='spreadsheet' list={Spreadsheet} />
